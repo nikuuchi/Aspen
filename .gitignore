@@ -3,4 +3,5 @@ node_modules/
 config/development.yaml
 config/production.yaml
 
+npm-debug.log
 *.swp

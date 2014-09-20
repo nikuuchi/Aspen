@@ -1,5 +1,14 @@
 extends layout
 
+block header
+  script(src="/vendor/ace/ace.js", type="text/javascript", charset="utf-8")
+
 block content
   h1= title
   p Welcome to #{title}
+  #editor
+    | hello();
+  script
+    | var editor = ace.edit("editor");
+    | editor.setTheme("ace/theme/monokai");
+    | editor.getSession().setMode("ace/mode/javascript");
