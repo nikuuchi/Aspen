@@ -10,6 +10,7 @@ var bodyParser = require('body-parser');
 var config = require('config');
 
 var routes = require('./app/routes/index');
+var passport = require('./app/routes/passport');
 
 var app = express();
 
@@ -24,7 +25,18 @@ app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+//passport
+app.use(passport.passport.initialize());
+app.use(passport.passport.session());
+
 app.use('/', routes);
+
+app.get('/auth/github', passport.passport.authenticate('github'), function (req, res) {
+});
+
+app.get('/auth/github/callback', passport.passport.authenticate('github', { failureRedirect: '/' }), passport.login);
+
+app.get('/logout', passport.logout);
 
 /// catch 404 and forward to error handler
 app.use(function (req, res, next) {
