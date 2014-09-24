@@ -33,7 +33,7 @@ app.use(passport.passport.session());
 
 app.use('/', routes);
 
-app.get('/auth/github',
+app.get('/login/github',
   passport.passport.authenticate('github'),
   function(req, res) {}
 );

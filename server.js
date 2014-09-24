@@ -31,7 +31,7 @@ app.use(passport.passport.session());
 
 app.use('/', routes);
 
-app.get('/auth/github', passport.passport.authenticate('github'), function (req, res) {
+app.get('/login/github', passport.passport.authenticate('github'), function (req, res) {
 });
 
 app.get('/auth/github/callback', passport.passport.authenticate('github', { failureRedirect: '/' }), passport.login);
