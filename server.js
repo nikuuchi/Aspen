@@ -11,6 +11,7 @@ var config = require('config');
 
 var routes = require('./app/routes/index');
 var passport = require('./app/routes/passport');
+var subject = require('./app/routes/subject');
 
 var app = express();
 
@@ -30,6 +31,8 @@ app.use(passport.passport.initialize());
 app.use(passport.passport.session());
 
 app.use('/', routes);
+
+app.get('/subject/:file', subject.editor);
 
 app.get('/login/github', passport.passport.authenticate('github'), function (req, res) {
 });
