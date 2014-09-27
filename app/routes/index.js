@@ -2,10 +2,16 @@
 ///<reference path='../../typings/express/express.d.ts'/>
 var express = require('express');
 var router = express.Router();
+var db = require('../models');
 
 /* GET home page. */
 router.get('/', function (req, res) {
-    res.render('index', { title: 'Express' });
+    console.log(db.User);
+    db.User.findAll().success(function (users) {
+        res.render('index', { title: 'Express' });
+    }).error(function (error) {
+        res.send("error");
+    });
 });
 
 module.exports = router;
