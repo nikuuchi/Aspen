@@ -1,6 +1,6 @@
 cookie:
   secret: 'REPLACE SECRET IN LOCAL.YAML'
-mysql:
+db:
   host: 'localhost'
   user: 'root'
   password: ''
