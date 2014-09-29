@@ -6,12 +6,11 @@ var db = require('../models');
 
 /* GET home page. */
 router.get('/', function (req, res) {
-    console.log(db.User);
-    db.User.findAll().success(function (users) {
-        res.render('index', { title: 'Express' });
-    }).error(function (error) {
-        res.send("error");
-    });
+    res.render('index', { title: 'Express' });
+});
+
+router.get('/hoge', function (req, res) {
+    res.send('hogehogehoge');
 });
 
 module.exports = router;

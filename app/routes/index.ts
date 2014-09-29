@@ -10,4 +10,8 @@ router.get('/', function(req, res) {
     res.render('index', { title: 'Express' });
 });
 
+router.get('/hoge', function(req, res) {
+    res.send('hogehogehoge');
+});
+
 module.exports = router;
