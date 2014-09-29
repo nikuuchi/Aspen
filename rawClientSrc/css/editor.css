@@ -1,0 +1,19 @@
+#create-file {
+  background-color: #5cb85c;
+  color: #fff;
+}
+
+#delete-file {
+  background-color: #d9534f;
+  color: #fff;
+}
+
+pre {
+  border: none;
+  font-size: 100%;
+  background-color: #fff;
+}
+
+code {
+  font-size: 100%;
+}

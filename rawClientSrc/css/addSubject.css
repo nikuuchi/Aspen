@@ -1,0 +1,15 @@
+body {
+  padding-top: 80px;
+  height: 100%;
+  width: 100%;
+}
+
+.container{
+  width: 80%;
+}
+
+.btn-primary{
+  height: 70px;
+  width: 100%;
+  font-size: 24px;
+}
