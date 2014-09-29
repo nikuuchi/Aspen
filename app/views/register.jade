@@ -13,15 +13,15 @@ html(lang="ja")
     script(src='vendor/bootstrap/js/bootstrap.min.js')
   body
     .container
-      form.form-horizontal(role="form")
+      form.form-horizontal(role="form", action="/register", method="post")
         .form-group
           label.col-sm-2.control-label(for="inputNumber") 学籍番号
           .col-sm-10
-            input.form-control(type="text", placeholder="bXX64XXX", required autofocus)
+            input.form-control(type="text", name="inputNumber", placeholder="bXX64XXX", required autofocus)
         .form-group
           label.col-sm-2.control-label(for="inputName") 氏名
           .col-sm-10
-            input.form-control(type="text", placeholder="横国太郎", required)
+            input.form-control(type="text", name="inputName", placeholder="横国太郎", required)
         .form-group
           .col-sm-offset-2.col-sm-10
-            button.btn.btn-primary.pull-right(type="submit") Regist
+            button.btn.btn-primary.pull-right(type="submit") Register
