@@ -24,8 +24,6 @@ exports.login = function (req, res) {
             //Login succeeded.
             console.log("user is found.");
             var auth = new Auth.Auth(req, res);
-            console.log(userId);
-            console.log(userName);
             auth.set(userId, userName);
             console.log(res);
             console.log("Redirect.");

@@ -5,7 +5,7 @@ export class Auth {
     }
 
     set(UserId:string, UserName:string): void {
-        this.res.cookie('UserId', UserId, {path: '/'});
+        //this.res.cookie('UserId', UserId, {path: '/'});
         this.res.cookie('UserName', UserName, {path: '/'});
         this.res.cookie('sessionUserId', UserId, { signed: true });
         this.res.cookie('sessionUserName', UserName, { signed: true }); 
@@ -24,7 +24,7 @@ export class Auth {
     }
 
     clear(): void {
-        this.res.clearCookie('UserId');
+        //this.res.clearCookie('UserId');
         this.res.clearCookie('UserName');
         this.res.clearCookie('sessionUserId');
         this.res.clearCookie('sessionUserName'); 

@@ -6,9 +6,8 @@ var db = require('../models');
 
 /* GET home page. */
 router.get('/', function (req, res) {
-    console.log(req.cookies);
-    if (req.cookies) {
-        db.User.find({ where: { github_id: req.cookies.UserId } }).then(function (user) {
+    if (req.signedCookies) {
+        db.User.find({ where: { github_id: req.signedCookies.sessionUserId } }).then(function (user) {
             console.log(user);
             if (user) {
                 //Login

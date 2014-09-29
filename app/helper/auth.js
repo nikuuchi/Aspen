@@ -8,7 +8,7 @@ var Auth = (function () {
     };
 
     Auth.prototype.set = function (UserId, UserName) {
-        this.res.cookie('UserId', UserId, { path: '/' });
+        //this.res.cookie('UserId', UserId, {path: '/'});
         this.res.cookie('UserName', UserName, { path: '/' });
         this.res.cookie('sessionUserId', UserId, { signed: true });
         this.res.cookie('sessionUserName', UserName, { signed: true });
@@ -28,7 +28,7 @@ var Auth = (function () {
     };
 
     Auth.prototype.clear = function () {
-        this.res.clearCookie('UserId');
+        //this.res.clearCookie('UserId');
         this.res.clearCookie('UserName');
         this.res.clearCookie('sessionUserId');
         this.res.clearCookie('sessionUserName');
