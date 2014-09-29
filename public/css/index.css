@@ -81,6 +81,7 @@ body {
 
 .search-panel-head{
   display: inline-block;
+  transition: all .15s cubic-bezier(.4,0,.2,1);
 }
 
 .search-panel-list{
