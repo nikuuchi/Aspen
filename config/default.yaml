@@ -9,10 +9,5 @@ analytics:
   Analytics_UA: '' #e.g., UA-********-*
   Analytics_Domain: '' #e.g., www.example.com
 passport:
-  resolveURL: 'localhost:3000'
-  FACEBOOK_APP_ID: ''
-  FACEBOOK_APP_SECRET: ''
-  TWITTER_CONSUMER_KEY: ''
-  TWITTER_CONSUMER_SECRET: ''
   GITHUB_CLIENT_ID: ''
   GITHUB_CLIENT_SECRET: ''

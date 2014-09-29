@@ -13,7 +13,7 @@ var config = require('config');
 
 var routes    = require('./app/routes/index');
 var passport  = require('./app/routes/passport');
-var subject  = require('./app/routes/subject');
+var post_api  = require('./app/routes/post');
 
 var app = express();
 
@@ -32,16 +32,15 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport.passport.initialize());
 app.use(passport.passport.session());
 
-app.use('/', routes);
-
-app.get('/subject/:file', subject.editor);
+app.use(routes);
+app.use(post_api);
 
 app.get('/login/github',
   passport.passport.authenticate('github'),
   function(req, res) {}
 );
 
-app.get('/auth/github/callback',
+app.get('/login/github/callback',
   passport.passport.authenticate('github', { failureRedirect: '/' }),
   passport.login
 );

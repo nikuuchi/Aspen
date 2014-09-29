@@ -6,12 +6,35 @@ var db = require('../models');
 
 /* GET home page. */
 router.get('/', function (req, res) {
-    console.log(db.User);
-    db.User.findAll().success(function (users) {
-        res.render('index', { title: 'Express' });
-    }).error(function (error) {
-        res.send("error");
-    });
+    res.render('index', { title: 'Aspen' });
+});
+
+router.get('/subject/:file', function (req, res) {
+    res.render('editor'); //FIXME
+});
+
+router.get('/user/:userid/subject/:file', function (req, res) {
+    res.send('user:' + req.params.userid + ', subject:' + req.params.file);
+});
+
+router.get('/user/:userid/editor', function (req, res) {
+    res.send('Editor: user:' + req.params.userid);
+});
+
+router.get('/user/:userid', function (req, res) {
+    res.render('mypage');
+});
+
+router.get('/list/all', function (req, res) {
+    res.render('submitedList');
+});
+
+router.get('/subject/:file', function (req, res) {
+    res.send('file: ' + req.params.file);
+});
+
+router.get('/subject', function (req, res) {
+    res.render('addSubject');
 });
 
 module.exports = router;

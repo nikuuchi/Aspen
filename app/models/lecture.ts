@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DATE,
             defaultValue: DataTypes.NOW
         },
-        delereFlag: {
+        deleteFlag: {
             type: DataTypes.BOOLEAN,
             defaultValue: false
         }
