@@ -1,0 +1,96 @@
+doctype html
+html(lang="ja")
+  head
+    title= pageTitle
+    meta(http-equiv="Content-Type" content="text/html; charset=UTF-8")
+    meta(http-equiv="X-UA-Compatible" content="IE=edge")
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+    link(rel='stylesheet', href='vendor/bootstrap/css/bootstrap.css')
+    link(rel='stylesheet', href='vendor/codemirror/codemirror.css')
+    link(rel='stylesheet', href='css/index.css')
+    link(rel='stylesheet', href='css/editor.css')
+    script(src='http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js')
+    script(src='js/submitedList.js')
+    script(src='vendor/bootstrap/js/bootstrap.min.js')
+    style.
+      .errorLine {
+        background: #f2dede !important;
+      }
+
+    - var tableHead = new Array("学籍番号", "氏名", "課題名", "提出状況", "締切");
+    - var data = new Array([0, 1464183, "田村健介", "sort", "未提出", "14/10/11"]);
+    - data.push([1, 1464183, "田村健介", "fib", "未提出", "14/10/04"]);
+    - data.push([2, 1464150, "須藤建", "fib", "未提出", "14/10/04"]);
+    - data.push([3, 1464184, "田村侑士", "fib", "提出済", "14/10/04"]);
+    - data.push([4, 1464275, "山口真弥", "fib", "未提出", "14/10/04"]);
+    - data.push([5, 1464311, "本多峻", "fib", "提出済", "14/10/04"]);
+    - var students = new Array();
+    - students.push([1464183, "田村健介"]);
+    - students.push([1464150, "須藤建"]);
+    - students.push([1464184, "田村侑士"]);
+    - students.push([1464275, "山口真弥"]);
+    - students.push([1464311, "本多峻"]);
+    - var subjects = new Array();
+    - subjects.push([1, "fib"]);
+    - subjects.push([2, "sort"]);
+    - subjects.push([3, "if"]);
+    - subjects.push([4, "Hello World"]);
+
+  body
+    .site-wrapper
+      .site-wrapper-inner-center-off
+        .cover-container
+          .masthead.clearfix
+            .inner
+              h3.masthead-brand
+               a(href="#") Aspen
+              ul.nav.masthead-nav
+                li
+                  a(href="#") Sign out
+          .inner.cover.shadow-off
+            .inner
+              .row
+                .col-sm-3.block-center-off
+                  p.control-panel
+                    button.btn.btn-info(href="#") New&nbspSubject
+                  p.control-panel
+                    input.form-control.control-search(type="text")
+                    button.btn.btn-primary
+                      span.glyphicon.glyphicon-search
+                  p.control-panel
+                    .search-panel-group
+                      .search-panel-head.student-head(id="student") 全ての学生
+                      span.glyphicon.glyphicon-chevron-down.pull-right(id="student")
+                      .search-panel-list(id="student-list")
+                        .search-panel-content(id="student-content", number="-1", name="全ての学生")
+                          |全ての学生
+                        - for(var i = 0; i < students.length; i++){
+                        .search-panel-content(id="student-content", number="#{students[i][0]}", name="#{students[i][1]}")
+                          |#{students[i][0]}&nbsp&nbsp#{students[i][1]}
+                        - }
+                  p.control-panel
+                    .search-panel-group
+                      .search-panel-head.subject-head(id="subject") 全ての課題
+                      span.glyphicon.glyphicon-chevron-down.pull-right(id="subject")
+                      .search-panel-list(id="subject-list")
+                        .search-panel-content(id="subject-content", number="-1", name="全ての課題")
+                          |全ての課題
+                        - for(var i = 0; i < subjects.length; i++){
+                        .search-panel-content(id="subject-content", number="#{subjects[i][0]}") #{subjects[i][1]}
+                        - }
+                .col-sm-9
+                  table.table.table-hover
+                    thead
+                      tr
+                      - for(var i = 0; i < tableHead.length; i++){
+                        th #{tableHead[i]}
+                      - }
+                    tbody
+                      - for(var i = 0; i < data.length; i++){
+                      tr
+                      -for(var j = 1; j < data[i].length; j++){
+                        th.submitedInList(id="#{data[i][0]}") #{data[i][j]}
+                      - }
+                      - }
+          .mastfoot
+            .inner
