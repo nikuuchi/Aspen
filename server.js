@@ -37,7 +37,7 @@ app.get('/subject/:file', post_api.editor);
 app.get('/login/github', passport.passport.authenticate('github'), function (req, res) {
 });
 
-app.get('/auth/github/callback', passport.passport.authenticate('github', { failureRedirect: '/' }), passport.login);
+app.get('/login/github/callback', passport.passport.authenticate('github', { failureRedirect: '/' }), passport.login);
 
 app.get('/logout', passport.logout);
 
