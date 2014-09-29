@@ -1,0 +1,42 @@
+doctype html
+html(lang="ja")
+  head
+    title= Aspen
+    meta(http-equiv="Content-Type" content="text/html; charset=UTF-8")
+    meta(http-equiv="X-UA-Compatible" content="IE=edge")
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+    link(rel='stylesheet', href='vendor/bootstrap/css/bootstrap.css')
+    link(rel='stylesheet', href='vendor/codemirror/codemirror.css')
+    link(rel='stylesheet', href='css/addSubject.css')
+    script(src='http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js')
+    script(src='js/index.js')
+    script(src='vendor/bootstrap/js/bootstrap.min.js')
+  body
+    .container
+      form(role="form")
+        .form-group
+          label.control-label(for="inputNumber") 課題名
+          input.form-control(type="text", placeholder="", name="name", id="name", required autofocus)
+        .form-group
+          label.control-label(for="inputName") URL
+          input.form-control(type="text", placeholder="", name="url", id="url", required)
+        .form-group
+          label.control-label(for="inputName") 提出期限
+          input.form-control(type="date", placeholder="", name="limit", id="limit", required)
+        .form-group
+          label.control-label(for="inputName") 本文
+          p
+            textarea#editor(rows="20", name="content", style="width:100%;")
+        .form-group
+          button.btn.btn-primary.pull-right(type="submit") Submit
+// Include all compiled plugins (below), or include individual files as needed
+script(src='vendor/jquery.min.js')
+script(src='vendor/jquery.tmpl.min.js')
+script(src='vendor/bootstrap/js/bootstrap.min.js')
+script(src='vendor/codemirror/codemirror.js')
+script(src='vendor/codemirror/display/placeholder.js')
+script(src='vendor/codemirror/mode/clike/clike.js')
+script(src='vendor/FileSaver.js')
+// JavaScript plugins (requires jQuery)
+script(src='js/editor.js')
+script(src='js/ua.js')
