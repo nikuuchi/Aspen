@@ -6,3 +6,4 @@ config/local.yaml
 
 npm-debug.log
 *.swp
+*.bak
