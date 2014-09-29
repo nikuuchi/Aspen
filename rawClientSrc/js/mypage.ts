@@ -1,7 +1,8 @@
 
 $(function(){
   $(".subjectInList").bind("click", function() {
-    var id = $(this).attr("id");
-    location.href = "/" + id;
+    var subjectId = $(this).attr("id");
+    var userId = $.cookie("userId");
+    location.href = "user/" + userId + "/editor/" + subjectId;
   });
 });
