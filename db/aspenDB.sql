@@ -11,7 +11,7 @@ USE `aspen` ;
 DROP TABLE IF EXISTS `aspen`.`Users` ;
 
 CREATE TABLE IF NOT EXISTS `aspen`.`Users` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
   `github_id` VARCHAR(45) NULL,
   `studentNumber` VARCHAR(45) NULL DEFAULT NULL,
@@ -30,7 +30,7 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `aspen`.`Lectures` ;
 
 CREATE TABLE IF NOT EXISTS `aspen`.`Lectures` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `name` TEXT NOT NULL,
   `startAt` DATETIME NOT NULL DEFAULT now(),
   `deleteFlag` TINYINT(1) NOT NULL DEFAULT 0,
@@ -46,7 +46,7 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `aspen`.`Subjects` ;
 
 CREATE TABLE IF NOT EXISTS `aspen`.`Subjects` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
   `url` VARCHAR(255) NULL DEFAULT NULL,
   `content` LONGTEXT NOT NULL,
@@ -100,13 +100,13 @@ DROP TABLE IF EXISTS `aspen`.`SubmitStatuses` ;
 CREATE TABLE IF NOT EXISTS `aspen`.`SubmitStatuses` (
   `UserId` INT NOT NULL,
   `SubjectId` INT NOT NULL,
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `status` INT NULL DEFAULT 0 COMMENT '0: Not yet, 1: Submitted, 2: Succeed',
   `content` LONGTEXT NULL DEFAULT NULL,
   `createdAt` DATETIME NULL DEFAULT now(),
   `updatedAt` TIMESTAMP NULL DEFAULT NULL,
   `deleteFlag` TINYINT(1) NULL DEFAULT NULL,
-  PRIMARY KEY (`UserId`, `SubjectId`, `id`),
+  PRIMARY KEY (`id`, `UserId`, `SubjectId`),
   INDEX `fk_user_has_subject_subject1_idx` (`SubjectId` ASC, `id` ASC),
   INDEX `fk_user_has_subject_user1_idx` (`UserId` ASC),
   CONSTRAINT `fk_user_has_subject_user1`
