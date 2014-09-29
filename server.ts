@@ -7,6 +7,7 @@ var favicon = require('static-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var session = require('express-session');
 
 
 var config = require('config');
@@ -25,7 +26,12 @@ app.use(favicon());
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
-app.use(cookieParser());
+app.use(cookieParser(config.cookie.secret));
+app.use(session({
+    secret: config.session.secret,
+    resave: false,
+    saveUninitialized: false
+}));
 app.use(express.static(path.join(__dirname, 'public')));
 
 //passport
@@ -36,10 +42,7 @@ app.use(passport.passport.session());
 app.use(routes);
 app.use(post_api);
 
-app.get('/login/github',
-  passport.passport.authenticate('github'),
-  function(req, res) {}
-);
+app.get('/login/github', passport.passport.authenticate('github'));
 
 app.get('/login/github/callback',
   passport.passport.authenticate('github', { failureRedirect: '/' }),

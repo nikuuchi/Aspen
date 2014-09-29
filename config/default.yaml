@@ -1,13 +1,14 @@
 cookie:
-  secret: 'REPLACE SECRET IN LOCAL.YAML'
+  secret: 'REPLACE SECRET IN DEVELOPMENT.YAML'
+session:
+  secret: 'REPLACE SECRET IN DEVELOPMENT.YAML'
 db:
   host: 'localhost'
   user: 'root'
   password: ''
   database: 'aspen'
-analytics:
-  Analytics_UA: '' #e.g., UA-********-*
-  Analytics_Domain: '' #e.g., www.example.com
 passport:
-  GITHUB_CLIENT_ID: ''
-  GITHUB_CLIENT_SECRET: ''
+  host_url: ''
+  github:
+    client_id: ''
+    client_secret: ''

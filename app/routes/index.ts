@@ -43,5 +43,9 @@ router.get('/subject', function(req, res) {
     res.render('addSubject');
 });
 
+router.get('/register', function(req, res) {
+    res.render('register');
+});
+
 
 module.exports = router;
