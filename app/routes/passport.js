@@ -19,12 +19,15 @@ exports.login = function (req, res) {
     }
 
     //Login
-    db.User.find({ where: { name: userName, github_id: userId } }).then(function (result) {
+    db.User.find({ where: { github_id: userId } }).then(function (result) {
         if (result != null) {
             //Login succeeded.
             console.log("user is found.");
             var auth = new Auth.Auth(req, res);
+            console.log(userId);
+            console.log(userName);
             auth.set(userId, userName);
+            console.log(res);
             console.log("Redirect.");
             res.redirect(Referer);
         } else {
@@ -47,6 +50,11 @@ exports.login = function (req, res) {
 };
 
 exports.logout = function (req, res) {
+    console.log('hi logout');
+    var auth = new Auth.Auth(req, res);
+    auth.clear();
+    req.logout();
+    res.redirect('/');
 };
 
 passport.serializeUser(function (user, done) {

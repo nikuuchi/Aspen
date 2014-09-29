@@ -8,8 +8,8 @@ var Auth = (function () {
     };
 
     Auth.prototype.set = function (UserId, UserName) {
-        this.res.cookie('UserId', UserId);
-        this.res.cookie('UserName', UserName);
+        this.res.cookie('UserId', UserId, { path: '/' });
+        this.res.cookie('UserName', UserName, { path: '/' });
         this.res.cookie('sessionUserId', UserId, { signed: true });
         this.res.cookie('sessionUserName', UserName, { signed: true });
         this.req.session.UserId = UserId;

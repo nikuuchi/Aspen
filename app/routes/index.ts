@@ -7,11 +7,23 @@ var db = require('../models');
 
 /* GET home page. */
 router.get('/', function(req, res) {
-    db.User.find().then(function(users) {
+    console.log(req.cookies);
+    if(req.cookies) {
+        db.User.find({where: {github_id: req.cookies.UserId}}).then(function(user) {
+            console.log(user);
+            if(user) {
+                //Login
+                res.render('list');
+            } else {
+                //Not login
+                res.render('top', { title: 'Aspen' });
+            }
+        }, function(err){
+            res.send(err);
+        });
+    } else {
         res.render('top', { title: 'Aspen' });
-    }, function(err){
-        res.send(err);
-    });
+    }
 });
 
 router.get('/subject/:file', function(req, res) {
