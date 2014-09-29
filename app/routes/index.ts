@@ -8,7 +8,7 @@ var db = require('../models');
 /* GET home page. */
 router.get('/', function(req, res) {
     db.User.find().then(function(users) {
-        res.render('index', { title: 'Aspen' });
+        res.render('top', { title: 'Aspen' });
     }, function(err){
         res.send(err);
     });
