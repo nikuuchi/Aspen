@@ -6,11 +6,11 @@ var db = require('../models');
 
 /* GET home page. */
 router.get('/', function (req, res) {
-    res.render('index', { title: 'Express' });
+    res.render('index', { title: 'Aspen' });
 });
 
 router.get('/subject/:file', function (req, res) {
-    res.send('subject:' + req.params.file);
+    res.render('editor'); //FIXME
 });
 
 router.get('/user/:userid/subject/:file', function (req, res) {
@@ -22,11 +22,11 @@ router.get('/user/:userid/editor', function (req, res) {
 });
 
 router.get('/user/:userid', function (req, res) {
-    res.send('user:' + req.params.userid);
+    res.render('mypage');
 });
 
 router.get('/list/all', function (req, res) {
-    res.send('list');
+    res.render('submitedList');
 });
 
 router.get('/subject/:file', function (req, res) {
@@ -34,7 +34,7 @@ router.get('/subject/:file', function (req, res) {
 });
 
 router.get('/subject', function (req, res) {
-    res.send('new subject');
+    res.render('addSubject');
 });
 
 module.exports = router;

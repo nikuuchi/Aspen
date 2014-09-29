@@ -31,8 +31,7 @@ app.use(passport.passport.initialize());
 app.use(passport.passport.session());
 
 app.use(routes);
-
-app.get('/subject/:file', post_api.editor);
+app.use(post_api);
 
 app.get('/login/github', passport.passport.authenticate('github'), function (req, res) {
 });
