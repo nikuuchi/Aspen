@@ -1,0 +1,107 @@
+mixin template(id)
+  script(id=id, type="text/x-jquery-tmpl")
+    block
+
+doctype html
+html(lang="ja")
+  head
+    title= "u"
+    meta(charset="utf-8")
+    meta(http-equiv="X-UA-Compatible" content="IE=edge")
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+    link(rel='stylesheet', href='css/bootstrap.min.css')
+    link(rel='stylesheet', href='css/index.css')
+    link(rel='stylesheet', href='lib/jstree/dist/themes/default/style.min.css')
+
+
+  body(style="padding: 2em")
+    input#file-open-dialog(type='file', style='display:none;', accept=".c")
+    .container(style="width: 960px;")
+      .editor-view
+        .alert.alert-danger#NotSupportedBrouserAlert(style="display: none;")
+          | Your browser is not supported. please use Internet Explorer 10 or 11, Google Chrome or Firefox.
+        .navbar.navbar-default
+          .navbar-header.pull-right
+            a.navbar-brand Aspen
+          .navbar-collapse
+            button.btn.navbar-btn.btn-default.disabled-on-running(type='button', data-toggle='dropdown', onContextmenu="return false")
+                | &nbsp;
+                span.glyphicon.glyphicon-file
+                | &nbsp;
+                | File
+                | &nbsp;
+                span.caret
+            ul.dropdown-menu(role='menu', style='right: auto;', onContextmenu="return false")
+              li
+                a#create-file-menu(href='#')
+                  span.glyphicon.glyphicon-plus
+                  | &nbsp;
+                  | New File...
+                  //span.pull-right Ctrl+N
+              li
+                a#open-file-menu(href='#')
+                  span.glyphicon.glyphicon-folder-open
+                  | &nbsp;
+                  | Open File...
+                  //span.pull-right Ctrl+O
+              li.disabled-on-files-empty
+                a#save-file-menu(href='#')
+                  span.glyphicon.glyphicon-floppy-save
+                  | &nbsp;
+                  | Save
+                  //span.pull-right Ctrl+S
+              li.disabled-on-files-empty
+                a#rename-menu(href='#')
+                  span.glyphicon.glyphicon-edit
+                  | &nbsp;
+                  | Rename...
+                  //span.pull-right Ctrl+R
+              li.divider
+              li.disabled-on-files-empty
+                a#delete-file-menu(href='#')
+                  span.glyphicon.glyphicon-remove
+                  | &nbsp;
+                  | Delete File
+                  //span.pull-right Ctrl+W
+              li.disabled-on-files-empty
+                a#delete-all-file-menu(href='#')
+                  span.glyphicon.glyphicon-remove
+                  | &nbsp;
+                  | Delete All Files
+            | &nbsp;
+            button#compile.btn.navbar-btn.btn-primary.disabled-on-files-empty.disabled-on-running(type='button', data-toggle="tooltip", title="Run&nbsp;(Ctrl-Enter)", onContextmenu="return false")
+              | &nbsp;
+              span.glyphicon.glyphicon-play
+              | &nbsp;
+              | Run
+        //+template('file-list-template')
+          li.file-tab.disabled-on-running
+            a(href='#',id='${BaseName}') ${Name}
+            //a(href='#', id='close${BaseName}')
+              span.glyphicon.glyphicon-remove
+        p
+          ul#file-name-lists.nav.nav-tabs(onContextmenu="return false")
+            li.disabled-on-running
+              a#create-file(href='#', data-toggle="tooltip", title="New&nbsp;File")
+                span.glyphicon.glyphicon-plus
+            li.pull-right.disabled-on-running
+              a#delete-file(href='#', data-toggle="tooltip", title="Delete&nbsp;File")
+                span.glyphicon.glyphicon-remove
+        include editor
+    include sidebar
+
+    +template('file-list-template')
+        li.file-tab.disabled-on-running
+          a(href='#',id='${BaseName}') ${Name}
+          //a(href='#', id='close${BaseName}')
+            span.glyphicon.glyphicon-remove
+
+    script(src='http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js')
+    script(src='lib/jquery.tmpl.min.js')
+    script(src='lib/ace/src/ace.js')
+    script(src='js/FileManager.js')
+    script(src='js/bootstrap.min.js')
+    script(src='js/ua.js')
+    script(src='js/index.js')
+    script(src='js/editor.js')
+    script(src='lib/jstree/dist/jstree.min.js')
