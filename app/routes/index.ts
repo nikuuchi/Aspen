@@ -7,7 +7,11 @@ var db = require('../models');
 
 /* GET home page. */
 router.get('/', function(req, res) {
-    res.render('index', { title: 'Aspen' });
+    db.User.find().then(function(users) {
+        res.render('index', { title: 'Aspen' });
+    }, function(err){
+        res.send(err);
+    });
 });
 
 router.get('/subject/:file', function(req, res) {

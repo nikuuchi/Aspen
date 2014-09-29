@@ -32,6 +32,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport.passport.initialize());
 app.use(passport.passport.session());
 
+//using routing
 app.use(routes);
 app.use(post_api);
 

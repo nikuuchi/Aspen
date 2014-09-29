@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
         name:          DataTypes.STRING,
         studentNumber: DataTypes.STRING,
         password:      DataTypes.STRING,
-        role_admine:   DataTypes.BOOLEAN,
+        role_admin:   DataTypes.BOOLEAN,
         createdAt: {
             type: DataTypes.DATE,
             defaultValue: DataTypes.NOW
