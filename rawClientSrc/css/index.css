@@ -1,5 +1,5 @@
 body {
-  padding-top: 80px;
+  padding-top: 30px;
   height: 100%;
   width: 100%;
 }
@@ -21,7 +21,7 @@ body {
 }
 
 .demo-editor{
-  margin-top: 50px;
+  margin-top: 5px;
   text-align: left;
   text-shadow: none;
 }
@@ -33,7 +33,7 @@ body {
 .btn-signin{
   padding-left: 20px;
   padding-right: 20px;
-  margin-top: 30px;
+  margin-top: 10px;
   font-size: 24px;
   font-weight: bold;
   color: rgb(0, 0, 0);
@@ -46,8 +46,8 @@ body {
 
 .btn-signin:hover,
 .btn-signin:focus{
-  -webkit-box-shadow: 0 0 15px rgba(0,0,0,.5);
-          box-shadow: 0 0 15px rgba(0,0,0,.5);
+  -webkit-box-shadow: 0 0 10px rgba(0,0,0,.5);
+          box-shadow: 0 0 10px rgba(0,0,0,.5);
 }
 
 .ver-center-off{
@@ -174,7 +174,7 @@ body {
 .inner {
   padding-left: 30px;
   padding-right: 30px;
-  padding-top: 30px;
+  padding-top: 0;
   padding-bottom: 30px;
 }
 
@@ -278,8 +278,8 @@ body {
     position: fixed;
     top: 0;
     background-color: rgb(255, 255, 255);
-    -webkit-box-shadow: 0 0 50px rgba(0,0,0,.5);
-            box-shadow: 0 0 50px rgba(0,0,0,.5);
+    -webkit-box-shadow: 0 0 10px rgba(0,0,0,.5);
+            box-shadow: 0 0 10px rgba(0,0,0,.5);
     z-index: 5;
   }
   .mastfoot {
@@ -307,8 +307,8 @@ body {
     position: fixed;
     top: 0;
     background-color: rgb(255, 255, 255);
-    -webkit-box-shadow: 0 0 50px rgba(0,0,0,.5);
-            box-shadow: 0 0 50px rgba(0,0,0,.5);
+    -webkit-box-shadow: 0 0 10px rgba(0,0,0,.5);
+            box-shadow: 0 0 10px rgba(0,0,0,.5);
     z-index: 5;
   }
   .mastfoot,
