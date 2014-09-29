@@ -6,10 +6,8 @@ module.exports = (sequelize, DataTypes) => {
         name:    DataTypes.STRING,
         url:     DataTypes.STRING,
         content: DataTypes.TEXT,
-        dueDate: {
-            type: DataTypes.DATE,
-            defaultValue: DataTypes.NOW
-        },
+        startAt: DataTypes.DATE,
+        endAt:   DataTypes.DATE,
         createdAt: {
             type: DataTypes.DATE,
             defaultValue: DataTypes.NOW
