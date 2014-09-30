@@ -39,7 +39,7 @@ router.get('/subject/:file', function(req, res) {
 });
 
 router.get('/editor', function(req, res) {
-    res.send('Editor: user:' + req.params.userid);
+    res.render('editorView');
 });
 
 
