@@ -7,6 +7,11 @@ var http = require('http');
 var config = require('config');
 
 router.post('/submit', function (req, res) {
+    //TODO
+});
+
+router.post('/subject/new', function (req, res) {
+    //TODO
 });
 
 router.post('/register', function (req, res) {

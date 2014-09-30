@@ -54,7 +54,8 @@ router.get('/subject/:file', function (req, res) {
 });
 
 router.get('/subject', function (req, res) {
-    res.render('addSubject');
+    //TODO Check admin role
+    res.render('subject');
 });
 
 router.get('/register', function (req, res) {
