@@ -36,8 +36,8 @@ router.post('/compile', function(req, res) {
         path:     config.compile.path,
         method:   'POST'
     };
-    //TODO post body
-    http.post(options, function(response) {
+
+    var request = http.request(options, function(response) {
         var body = '';
         response.setEncoding('utf8');
 
@@ -49,9 +49,9 @@ router.post('/compile', function(req, res) {
             var ret = JSON.parse(body);
             res.json(ret);
         });
-    }).on('error', function(e) {
-        console.log(e);
     });
+    //TODO POST
+    request.end({source: "hoge", option: "fuga", filename: "filename", userId: 0});
 });
 
 router.post('/poplar', function(req, res) {

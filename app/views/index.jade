@@ -9,7 +9,7 @@ html(lang="ja")
     link(rel='stylesheet', href='vendor/codemirror/codemirror.css')
     link(rel='stylesheet', href='css/index.css')
     link(rel='stylesheet', href='css/editor.css')
-    script(src='http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js')
+    script(src='/vendor/jquery/jquery.min.js')
     script(src='js/index.js')
     script(src='vendor/bootstrap/js/bootstrap.min.js')
     style.
@@ -32,6 +32,6 @@ html(lang="ja")
             p.lead
               a.btn.btn-signin Sign in
             .demo-editor
-              include editorParts
+              include editor
           .mastfoot
             .inner
