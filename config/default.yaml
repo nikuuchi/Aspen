@@ -9,6 +9,12 @@ db:
   database: 'aspen'
 compile:
   host: 'localhost'
+  port: 3000
+  path: '/dummy/compile'
+poplar:
+  host: 'localhost'
+  port: 3000
+  path: '/dummy/poplar'
 passport:
   host_url: ''
   github:
