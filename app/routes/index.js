@@ -11,7 +11,9 @@ router.get('/', function (req, res) {
             console.log(user);
             if (user) {
                 //Login
-                res.render('list');
+                var tableHead = ["課題名", "提出状況", "締切"];
+                var data = [[0, "function", "未提出", "14/10/11"], [1, "sort", "未提出", "14/10/04"], [2, "fib", "提出済", "14/10/04"]];
+                res.render('list', { title: 'Aspen', tableHead: tableHead, data: data });
             } else {
                 //Not login
                 res.render('top', { title: 'Aspen' });
