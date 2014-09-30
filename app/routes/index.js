@@ -46,7 +46,27 @@ router.get('/user/:userid', function (req, res) {
 });
 
 router.get('/list/all', function (req, res) {
-    res.render('submitedList');
+    //TODO DB
+    var tableHead = ["学籍番号", "氏名", "課題名", "提出状況", "締切"];
+    var data = [[0, 1464183, "田村健介", "sort", "未提出", "14/10/11"]];
+    data.push([1, 1464183, "田村健介", "fib", "未提出", "14/10/04"]);
+    data.push([2, 1464150, "須藤建", "fib", "未提出", "14/10/04"]);
+    data.push([3, 1464184, "田村侑士", "fib", "提出済", "14/10/04"]);
+    data.push([4, 1464275, "山口真弥", "fib", "未提出", "14/10/04"]);
+    data.push([5, 1464311, "本多峻", "fib", "提出済", "14/10/04"]);
+    var students = [];
+    students.push([1464183, "田村健介"]);
+    students.push([1464150, "須藤建"]);
+    students.push([1464184, "田村侑士"]);
+    students.push([1464275, "山口真弥"]);
+    students.push([1464311, "本多峻"]);
+    var subjects = [];
+    subjects.push([1, "fib"]);
+    subjects.push([2, "sort"]);
+    subjects.push([3, "if"]);
+    subjects.push([4, "Hello World"]);
+
+    res.render('all', { title: 'Aspen', tableHead: tableHead, data: data, students: students, subjects: subjects });
 });
 
 router.get('/subject/:file', function (req, res) {
