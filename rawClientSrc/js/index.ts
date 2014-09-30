@@ -30,7 +30,7 @@ module C2JS {
         constructor($editor: JQuery) {
             this.size = new Size($editor.width(), $editor.height());
             this.editor = ace.edit("editor");
-            this.editor.setTheme("ace/theme/twilight");
+            this.editor.setTheme("ace/theme/xcode");
             this.editor.getSession().setMode("ace/mode/c_cpp");
 
             this.ResetHelloWorld();
@@ -58,13 +58,15 @@ module C2JS {
         }
 
         Disable(): void {
-            this.editor.setOption("readOnly", "nocursor");
-            $(".CodeMirror-scroll").css({"background-color": "#eee"});
+            //this.editor.setOption("readOnly", "nocursor");
+            this.editor.setReadOnly(true);
+            $("#editor").css({"background-color": "#eee"});
         }
 
         Enable(): void {
-            this.editor.setOption("readOnly", false);
-            $(".CodeMirror-scroll").css({"background-color": "#fff"});
+            //this.editor.setOption("readOnly", false);
+            this.editor.setReadOnly(true);
+            $("#editor").css({"background-color": "#fff"});
         }
 
         SetErrorLine(line: number){
