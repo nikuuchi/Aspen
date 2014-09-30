@@ -1,5 +1,5 @@
-///<reference path='d.ts/jquery_plugins.d.ts'/>
-///<reference path='d.ts/ace.d.ts'/>
+///<reference path='../../typings/jquery/jquery_plugins.d.ts'/>
+///<reference path='../../typings/ace/ace.d.ts'/>
 
 var _ua;
 
