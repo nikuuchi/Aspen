@@ -11,6 +11,8 @@ router.get('/', function (req, res) {
             console.log(user);
             if (user) {
                 //Login
+                //ログインユーザの課題提出状況の提示
+                //TODO: DBからの読み出し
                 var tableHead = ["課題名", "提出状況", "締切"];
                 var data = [[0, "function", "未提出", "14/10/11"], [1, "sort", "未提出", "14/10/04"], [2, "fib", "提出済", "14/10/04"]];
                 res.render('list', { title: 'Aspen', tableHead: tableHead, data: data });
@@ -22,6 +24,7 @@ router.get('/', function (req, res) {
             res.send(err);
         });
     } else {
+        //Not login(初回アクセス?)
         res.render('top', { title: 'Aspen' });
     }
 });
