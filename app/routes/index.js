@@ -33,8 +33,8 @@ router.get('/subject/:file', function (req, res) {
     res.render('editor'); //FIXME
 });
 
-router.get('/subject/:file', function (req, res) {
-    res.send('user:' + req.params.userid + ', subject:' + req.params.file);
+router.get('/editor/:name', function (req, res) {
+    res.render('editorView'); //TODO use :name
 });
 
 router.get('/editor', function (req, res) {
