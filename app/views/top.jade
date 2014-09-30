@@ -1,37 +1,28 @@
-doctype html
-html(lang="ja")
-  head
-    title= pageTitle
-    meta(http-equiv="Content-Type" content="text/html; charset=UTF-8")
-    meta(http-equiv="X-UA-Compatible" content="IE=edge")
-    meta(name="viewport" content="width=device-width, initial-scale=1")
-    link(rel='stylesheet', href='vendor/bootstrap/css/bootstrap.css')
-    link(rel='stylesheet', href='vendor/codemirror/codemirror.css')
-    link(rel='stylesheet', href='css/index.css')
-    link(rel='stylesheet', href='css/editor.css')
-    script(src='http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js')
-    script(src='js/index.js')
-    script(src='vendor/bootstrap/js/bootstrap.min.js')
-    style.
-      .errorLine {
-        background: #f2dede !important;
-      }
-  body
-    .site-wrapper
-      .site-wrapper-inner
-        .cover-container
-          .masthead.clearfix
-            .inner
-              h3.masthead-brand
-               a(href="#") Aspen
-              ul.nav.masthead-nav
-                li
-                  a(href="/login/github") Sign in
-          .inner.cover
-            h1.cover-heading Aspen
-            p.lead
-              a(href="/login/github").btn.btn-signin Sign in
-            .demo-editor
-              include editorParts
-          .mastfoot
-            .inner
+extends layout
+
+block header
+  +css('/css/index.css')
+  include editor_css
+
+block content
+  .site-wrapper
+    .site-wrapper-inner
+      .cover-container
+        //.masthead.clearfix
+        //  .inner
+        //    h3.masthead-brand
+        //     a(href="#") Aspen
+        //    ul.nav.masthead-nav
+        //      li
+        //        a(href="/login/github") ログイン
+        .inner.cover
+          h1.cover-heading Aspen
+          p.lead
+            a(href="/login/github").btn.btn-signin ログイン
+          .demo-editor
+            include editor
+        .mastfoot
+          .inner
+
+block loadFiles
+  script(src='/js/index.js')

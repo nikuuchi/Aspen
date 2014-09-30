@@ -28,11 +28,11 @@ router.get('/subject/:file', function (req, res) {
     res.render('editor'); //FIXME
 });
 
-router.get('/user/:userid/subject/:file', function (req, res) {
+router.get('/subject/:file', function (req, res) {
     res.send('user:' + req.params.userid + ', subject:' + req.params.file);
 });
 
-router.get('/user/:userid/editor', function (req, res) {
+router.get('/editor', function (req, res) {
     res.send('Editor: user:' + req.params.userid);
 });
 

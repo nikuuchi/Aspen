@@ -1,11 +1,25 @@
+mixin js(path)
+  script(type='text/javascript', src=path)
+mixin js_async(path)
+  script(type='text/javascript', src=path, async='async')
+mixin css(path)
+  link(rel='stylesheet', href=path)
+mixin template(id)
+  script(id=id, type="text/x-jquery-tmpl")
+    block
 doctype html
-html
+html(lang='ja')
   head
-    title= title
-    link(rel='stylesheet', href='/css/style.css')
-    link(rel='stylesheet', href='/vendor/bootstrap/css/bootstrap.min.css')
-    script(src="vendor/jquery/jquery.min.js")
-    script(src="vendor/bootstrap/js/bootstrap.min.js")
+    title= pageTitle
+    meta(http-equiv='Content-Type' content='text/html; charset=UTF-8')
+    meta(http-equiv='X-UA-Compatible' content='IE=edge')
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+    +css('/vendor/bootstrap/css/bootstrap.css')
     block header
   body
+    .js-loader
+      +js('/vendor/jquery/jquery.min.js')
+      +js('/vendor/bootstrap/js/bootstrap.min.js')
+      +js('/vendor/jquery.tmpl.min.js')
+      block loadFiles
     block content
