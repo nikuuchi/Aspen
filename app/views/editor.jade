@@ -80,11 +80,17 @@ input#file-open-dialog(type='file', style='display:none;', accept=".c")
               | エラーメッセージを日本語化する(β)
       #output.panel-body
 include sidebar
++template('file-list-template')
+  li.file-tab.disabled-on-running
+    a(href='#',id='${BaseName}') ${Name}
+    //a(href='#', id='close${BaseName}')
+      span.glyphicon.glyphicon-remove
 +js('/vendor/ace/src/ace.js')
 +js('/js/FileManager.js')
 +js('/js/ua.js')
 +js('/js/index.js')
 +js('/js/editorView.js')
++js('/js/editor.js')
 +js('/vendor/jstree/dist/jstree.min.js')
 style.
   body {
