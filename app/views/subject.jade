@@ -2,6 +2,10 @@ extends layout
 
 block header
   +css('/css/addSubject.css')
+  include editor_css
+
+block loadFiles
+    +js('/js/index.js')
 
 block content
   .container

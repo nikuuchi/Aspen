@@ -57,7 +57,7 @@ block content
                     - }
                   tbody
                     - for(var i = 0; i < datas.length; i++){
-                    tr(class="#{datas[i].cl}")
+                    tr(class="#{datas[i].cl}", subjectId="#{datas[i].subject_id}", studentNumber="#{datas[i].student_number}")
                       th.submitedInList(subjectId="#{datas[i].subject_id}", studentNumber="#{datas[i].student_number}") #{datas[i].student_number}
                       th.submitedInList(subjectId="#{datas[i].subject_id}", studentNumber="#{datas[i].student_number}") #{datas[i].student_name}
                       th.submitedInList(subjectId="#{datas[i].subject_id}", studentNumber="#{datas[i].student_number}") #{datas[i].subject_name}
