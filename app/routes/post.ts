@@ -56,7 +56,7 @@ router.post('/compile', function(req, res) {
         });
     });
     //TODO POST
-    request.end({source: "hoge", option: "fuga", filename: "filename", userId: 0});
+    request.end(JSON.stringify(req.body));
 });
 
 router.post('/poplar', function(req, res) {
@@ -65,8 +65,9 @@ router.post('/poplar', function(req, res) {
 router.post('/dummy/compile', function(req, res) {
     var ret = {
         //src: "#include<stdio.h>\n\nint main() {\n\tprintf(\"hello\n\");\n}\n",
-        dest: "Module['printf']('hello');",
-        msg: ""
+        source: "Module.print('hello');",
+        msg: "",
+        error: "Warning: This message is created by mock-up server."
     };
     res.json(ret);
 });
