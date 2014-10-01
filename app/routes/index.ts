@@ -15,8 +15,11 @@ router.get('/', function(req, res) {
                 //ログインユーザの課題提出状況の提示
                 //TODO: DBからの読み出し
                 var tableHead = ["課題名", "提出状況", "締切"];
-                var data = [[0, "function", "未提出", "14/10/11"], [1, "sort", "未提出", "14/10/04"], [2, "fib", "提出済", "14/10/04"]];
-                res.render('list', { title: 'Aspen', tableHead: tableHead, data: data });
+                var datas = new Array();
+                datas.push({"id": 0, "name": "Hello World", "status": 0, "endAt": new Date(2014, 10, 21)});
+                datas.push({"id": 1, "name": "sort", "status": 1, "endAt": new Date(2014, 10, 14)});
+                datas.push({"id": 2, "name": "fib", "status": 1, "endAt": new Date(2014, 10, 14)});
+                res.render('list', { title: 'Aspen', tableHead: tableHead, datas: datas });
             } else {
                 //Not login
                 res.render('top', { title: 'Aspen' });

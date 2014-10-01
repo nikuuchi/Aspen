@@ -35,7 +35,6 @@ body {
   padding-right: 20px;
   margin-top: 10px;
   font-size: 24px;
-  font-weight: bold;
   color: rgb(0, 0, 0);
   background-color: rgb(255, 255, 255);
   text-shadow: none;
@@ -109,13 +108,6 @@ body {
  * Globals
  */
 
-/* Links */
-a,
-a:focus,
-a:hover {
-  color: #fff;
-}
-
 /* Custom default button */
 .btn-default{
   color: #333;
@@ -146,7 +138,6 @@ body {
 body {
   color: #202020;
   text-align: center;
-  text-shadow: 0 1px 3px rgba(0,0,0,.5);
 }
 
 /* Extra markup and styles for table-esque vertical and horizontal centering */
@@ -212,10 +203,11 @@ body {
   margin-left: 20px;
 }
 .masthead-nav > li > a {
+  padding-top: 15px;
+  padding-bottom: 5px;
   padding-right: 0;
   padding-left: 0;
   font-size: 16px;
-  font-weight: bold;
   color: #fff; /* IE8 proofing */
   color: rgba(0, 0, 0, 0.75);
   border-bottom: 2px solid transparent;
