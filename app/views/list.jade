@@ -27,11 +27,11 @@ block content
                       th #{tableHead[i]}
                     - }
                   tbody
-                    - for(var i = 0; i < data.length; i++){
-                    tr
-                    -for(var j = 1; j < data[i].length; j++){
-                      th.subjectInList(id="#{data[i][0]}") #{data[i][j]}
-                    - }
+                    - for(var i = 0; i < datas.length; i++){
+                      tr(class="#{datas[i].cl}")
+                        th.subjectInList(id="#{datas[i].id}") #{datas[i].name}
+                        th.subjectInList(id="#{datas[i].id}") #{datas[i].status}
+                        th.subjectInList(id="#{datas[i].id}") #{datas[i].endAt}
                     - }
         .mastfoot
           .inner

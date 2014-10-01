@@ -35,11 +35,17 @@ router.post('/register', function(req, res) {
 
 router.post('/compile', function(req, res) {
     //dest server is configured by default.yaml
+    console.log(req.body);
+    var client_body = req.body;
+    if(req.signedCookies.sessionUserId) {
+        client_body.userId = req.signedCookies.sessionUserId;
+    }
     var options = {
         hostname: config.compile.host,
         port:     config.compile.port,
         path:     config.compile.path,
-        method:   'POST'
+        method:   'POST',
+        headers: {'Content-Type': 'application/json'}
     };
 
     var request = http.request(options, function(response) {
@@ -56,17 +62,21 @@ router.post('/compile', function(req, res) {
         });
     });
     //TODO POST
-    request.end({source: "hoge", option: "fuga", filename: "filename", userId: 0});
+    request.write(JSON.stringify(client_body));
+    request.write('\n');
+    request.end();
 });
 
 router.post('/poplar', function(req, res) {
 });
 
 router.post('/dummy/compile', function(req, res) {
+    console.log(req);
     var ret = {
         //src: "#include<stdio.h>\n\nint main() {\n\tprintf(\"hello\n\");\n}\n",
-        dest: "Module['printf']('hello');",
-        msg: ""
+        source: "Module.print('hello');",
+        msg: "",
+        error: "Warning: This message is created by mock-up server."
     };
     res.json(ret);
 });
