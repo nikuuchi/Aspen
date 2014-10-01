@@ -327,10 +327,13 @@ var C2JS;
 
     function Compile(source, option, filename, isCached, Context, callback, onerror) {
         if (isCached) {
+            var pathes = location.pathname.split("/");
+            var _subjectId = pathes[pathes.length - 1];
+            var subjectId = (_subjectId == "editor") ? -1 : parseInt(_subjectId);
             $.ajax({
                 type: "POST",
                 url: "/compile",
-                data: JSON.stringify({ source: source, option: option, filename: filename }),
+                data: JSON.stringify({ source: source, option: option, filename: filename, subjectId: subjectId }),
                 dataType: 'json',
                 contentType: "application/json; charset=utf-8",
                 success: callback,
