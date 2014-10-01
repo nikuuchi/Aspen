@@ -28,37 +28,28 @@ $(function() {
 
   var ref = $('#sidebar').jstree(true);
   $('#sidebar').on("changed.jstree", function (e, data) {
-    selectedNode = ref.get_selected()[0];
+    selectedNode = fm.getSelectedNode();
     console.log(selectedNode);
     fm.getFile(selectedNode);
 
   });
 
-  $('.add-file-btn').click(function() {
-    var fname = $(".file-name-input").val();
-    if(!fname) {
-      alert("ファイル名を入力してください");
-      return false;
-    }
+  $('#add-folder-btn').click(function() {
     if(!selectedNode) {
       alert("追加するフォルダを選択してください");
       return false;
     }
-    if(fm.setFile(ref, selectedNode, fname)) $(".file-name-input").val("");
-
-  });
-
-  $('.add-folder-btn').click(function() {
-    var fname = $(".foldeer-name-input").val();
+    if(fm.getCurrentType() === "file") {
+      alert("フォルダを選択してください");
+      return false;
+    }
+    var fname = prompt("フォルダ名を入力してください","");
     if(!fname) {
       alert("フォルダ名を入力してください");
       return false;
     }
-    if(!selectedNode) {
-      alert("追加するフォルダを選択してください");
-      return false;
-    }
-    if(fm.setFolder(ref, selectedNode, fname)) $(".foldeer-name-input").val("");
+
+    fm.setFolder(selectedNode, fname);
 
   });
 

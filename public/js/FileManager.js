@@ -1,3 +1,4 @@
+///<reference path='../../typings/jstree/jstree.d.ts'/>
 var FileManager = (function () {
     function FileManager() {
         this.FTree = [
@@ -7,21 +8,25 @@ var FileManager = (function () {
     FileManager.prototype.constractor = function () {
     };
 
-    FileManager.prototype.setFolder = function (ref, sel, fname) {
-        if (!ref.create_node(sel, { text: fname })) {
+    FileManager.prototype.ref = function () {
+        return $('#sidebar').jstree(true);
+    };
+
+    FileManager.prototype.setFolder = function (sel, fname) {
+        if (!this.ref().create_node(sel, { text: fname })) {
             alert("Error");
             return false;
         }
-        ref.open_node(sel);
+        this.ref().open_node(sel);
         return true;
     };
 
-    FileManager.prototype.setFile = function (ref, sel, fname) {
-        if (!ref.create_node(sel, { text: fname, type: 'file' })) {
+    FileManager.prototype.setFile = function (selectedPos, fname) {
+        if (!this.ref().create_node(selectedPos, { text: fname, type: 'file' })) {
             alert("Error");
             return false;
         }
-        ref.open_node(sel);
+        this.ref().open_node(selectedPos);
         return true;
     };
 
@@ -29,6 +34,19 @@ var FileManager = (function () {
         if (localStorage[path])
             return localStorage[path];
         return false;
+    };
+
+    FileManager.prototype.getSelectedNode = function () {
+        var selectedNodes = this.ref().get_selected();
+        return selectedNodes[0];
+    };
+
+    FileManager.prototype.getCurrentType = function () {
+        return this.ref().get_type(this.getSelectedNode());
+    };
+
+    FileManager.prototype.getCurrentPath = function () {
+        return this.ref().get_path(this.getSelectedNode(), "/");
     };
 
     FileManager.prototype.show = function () {

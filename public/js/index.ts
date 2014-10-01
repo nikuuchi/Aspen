@@ -1,5 +1,7 @@
 ///<reference path='../../typings/jquery/jquery_plugins.d.ts'/>
 ///<reference path='../../typings/ace/ace.d.ts'/>
+///<reference path='../../typings/jstree/jstree.d.ts'/>
+/// <reference path="FileManager.ts"/>
 
 declare var CodeMirror: any;
 declare function saveAs(data :Blob, filename: String): void;
@@ -160,14 +162,18 @@ module C2JS {
     export class FileModel {
         private BaseName: string;
         private Name: string;
+        private Path: string;
+        private PathArray: string[];
 
-        constructor(Name: string) {
-            this.SetName(Name);
+        constructor(Name: string, Path: string = "") {
+            this.SetName(Name, Path);
         }
 
-        SetName(text: string): void {
+        SetName(text: string, Path: string): void {
             this.Name = text.replace(/\..*/, ".c");
             this.BaseName = this.Name.replace(/\..*/, "");
+            this.Path = Path;
+            this.PathArray = Path.split("/");
         }
 
         GetName(): string {
@@ -177,6 +183,11 @@ module C2JS {
         GetBaseName(): string {
             return this.BaseName;
         }
+
+        GetPath(): string {
+          return this.Path;
+        }
+
     }
 
     export class FileCollection {
@@ -587,7 +598,7 @@ module C2JS {
         return FormatMessage(FormatFilename(ConvertTerminalColor(text), fileName), fileName);
     }
 
-    export function CheckFileName(name: string, DB: SourceDB): string {
+    export function CheckFileName(name: string, DB: SourceDB, path: string = ""): string {
         var filename = name;
         if(filename == null) {
             return null;
@@ -605,8 +616,8 @@ module C2JS {
         if(filename.match(/.*\.c/) == null) {
             filename += '.c';
         }
-        if(DB.Exist(filename)) {
-            alert("'"+filename+"' already exists.");
+        if(DB.Exist(path + filename)) {
+            alert("'"+path+filename+"' already exists.");
             return null;
         }
         return filename;
@@ -630,6 +641,7 @@ $(function () {
     var DB:     C2JS.SourceDB = new C2JS.SourceDB();
     var Context: any = {}; //TODO refactor C2JS.Response
     var Files: C2JS.FileCollection = new C2JS.FileCollection();
+    var Tree: FileManager = new FileManager();
 
     Aspen.Editor = Editor;
     Aspen.Output = Output;
@@ -802,15 +814,27 @@ $(function () {
         Editor.Enable();
     };
 
-    var CreateFileFunction = (e: Event) => {
+    var CreateFileFunction = (e: any) => {
+        if(e.currentTarget.id !== "add-file-btn") Tree.ref().deselect_all();
         if(running) return;
-        var filename = prompt("Please enter the file name.", C2JS.CheckFileName("", DB));
-        filename = C2JS.CheckFileName(filename, DB);
+        var path: string;
+        if(!Tree.getSelectedNode()){
+          path = "";
+        } else {
+          path = Tree.getCurrentPath();
+        }
+        if(Tree.getCurrentType() == "file"){
+          alert("フォルダを選択してください");
+          return;
+        }
+        var pathMassage =path? "\"" + path + "/\"":"";
+        var filename = prompt("Please enter the file name." + pathMassage, C2JS.CheckFileName("", DB));
+        filename = C2JS.CheckFileName(filename, DB, path);
         if(filename == null) {
             return;
         }
-
-        var file = new C2JS.FileModel(filename);
+        if(typeof Tree.getSelectedNode() !== "undefined") Tree.setFile(Tree.getSelectedNode(), filename);
+        var file = new C2JS.FileModel(filename, path);
         Files.Append(file, ChangeCurrentFile);
         Files.SetCurrent(file.GetBaseName());
         OnFilesBecomeNotEmpty();
@@ -820,6 +844,7 @@ $(function () {
     (<any>$("#create-file")).tooltip({placement: "bottom", html: true});
     $("#create-file").click(CreateFileFunction);
     $("#create-file-menu").click(CreateFileFunction);
+    $('#add-file-btn').click(CreateFileFunction);
 
     var RenameFunction = (e: Event) => {
         if(Files.Empty() || running) return;
