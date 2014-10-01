@@ -56,11 +56,13 @@ block content
                       th #{tableHead[i]}
                     - }
                   tbody
-                    - for(var i = 0; i < data.length; i++){
-                    tr
-                    -for(var j = 1; j < data[i].length; j++){
-                      th.submitedInList(id="#{data[i][0]}") #{data[i][j]}
-                    - }
+                    - for(var i = 0; i < datas.length; i++){
+                    tr(class="#{datas[i].cl}")
+                      th.submitedInList(subjectId="#{datas[i].subject_id}", studentNumber="#{datas[i].student_number}") #{datas[i].student_number}
+                      th.submitedInList(subjectId="#{datas[i].subject_id}", studentNumber="#{datas[i].student_number}") #{datas[i].student_name}
+                      th.submitedInList(subjectId="#{datas[i].subject_id}", studentNumber="#{datas[i].student_number}") #{datas[i].subject_name}
+                      th.submitedInList.status-text(subjectId="#{datas[i].subject_id}", studentNumber="#{datas[i].student_number}") #{datas[i].status}
+                      th.submitedInList(subjectId="#{datas[i].subject_id}", studentNumber="#{datas[i].student_number}") #{datas[i].endAt}
                     - }
         .mastfoot
           .inner

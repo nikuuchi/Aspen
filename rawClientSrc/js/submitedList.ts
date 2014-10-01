@@ -67,5 +67,5 @@ function SearchPanelAction(id){
 }
 
 function ChangeListElements(){
-  
+
 }

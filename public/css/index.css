@@ -105,11 +105,11 @@ body {
 }
 
 .status-success > th{
-  background-color: rgba(68, 255, 0, 0.04);
+  background-color: rgba(18, 221, 0, 0.24);
 }
 
 .status-submited > th{
-  background-color: rgba(0, 255, 230, 0.04);
+  background-color: rgba(0, 204, 255, 0.14);
 }
 
 .status-notyet-danger > th{
@@ -121,15 +121,28 @@ body {
 }
 
 .status-closing-success > th{
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgb(245, 245, 245);
+  color: #ADADAD;
 }
 
 .status-closing-submited > th{
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgb(245, 245, 245);
+  color: #ADADAD;
 }
 
 .status-closing-notyet > th{
-  background-color: rgba(77, 0, 0, 0.44);
+  background-color:  rgb(245, 245, 245);
+  color: #ADADAD;
+  #FFA8A8
+}
+
+.status-closing-notyet > th.status-text{
+  color: #FFA8A8;
+}
+
+tr:hover > th {
+  background-color: transparent;
+  opacity: 0.5;
 }
 
 /*
