@@ -104,6 +104,34 @@ body {
   background-color: rgb(240, 240, 240);
 }
 
+.status-success > th{
+  background-color: rgba(68, 255, 0, 0.04);
+}
+
+.status-submited > th{
+  background-color: rgba(0, 255, 230, 0.04);
+}
+
+.status-notyet-danger > th{
+  background-color: rgba(255, 0, 0, 0.04);
+}
+
+.status-notyet-margin > th{
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.status-closing-success > th{
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.status-closing-submited > th{
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.status-closing-notyet > th{
+  background-color: rgba(77, 0, 0, 0.44);
+}
+
 /*
  * Globals
  */

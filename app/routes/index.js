@@ -18,6 +18,51 @@ router.get('/', function (req, res) {
                 datas.push({ "id": 0, "name": "Hello World", "status": 0, "endAt": new Date(2014, 10, 21) });
                 datas.push({ "id": 1, "name": "sort", "status": 1, "endAt": new Date(2014, 10, 14) });
                 datas.push({ "id": 2, "name": "fib", "status": 1, "endAt": new Date(2014, 10, 14) });
+
+                var today = new Date();
+                var oneDay = 86400000;
+                var period;
+                datas.forEach(function (data) {
+                    period = data.endAt.getTime() - today.getTime();
+                    period = period / oneDay;
+                    if (period > 0) {
+                        switch (data.status) {
+                            case 0:
+                                if (period < 7) {
+                                    data.cl = "status-notyet-danger";
+                                } else {
+                                    data.cl = "status-notyet-margin";
+                                }
+                                data.status = "未提出";
+                                break;
+                            case 1:
+                                data.cl = "status-submited";
+                                data.status = "提出済";
+                                break;
+                            case 2:
+                                data.cl = "status-success";
+                                data.status = "合格";
+                                break;
+                        }
+                    } else {
+                        switch (data.status) {
+                            case 0:
+                                data.cl = "status-closing-notyet";
+                                data.status = "未提出";
+                                break;
+                            case 1:
+                                data.cl = "status-closing-submited";
+                                data.status = "提出済";
+                                break;
+                            case 2:
+                                data.cl = "status-closing-success";
+                                data.status = "合格";
+                                break;
+                        }
+                    }
+                    data.endAt = data.endAt.getFullYear() - 2000 + "/" + data.endAt.getMonth() + "/" + data.endAt.getDate();
+                });
+
                 res.render('list', { title: 'Aspen', tableHead: tableHead, datas: datas });
             } else {
                 //Not login
