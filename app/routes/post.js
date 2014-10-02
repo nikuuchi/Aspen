@@ -11,7 +11,21 @@ router.post('/submit', function (req, res) {
 });
 
 router.post('/subject/new', function (req, res) {
-    //TODO
+    var subject_name = req.body.name;
+    var subject_endAt = req.body.limit;
+    var subject_startAt = new Date();
+    var content = req.body.content;
+    console.log(content);
+    db.Subject.create({
+        name: subject_name,
+        url: "",
+        content: content,
+        startAt: subject_startAt,
+        endAt: subject_endAt
+    }).success(function (subject) {
+        console.log(subject);
+        res.redirect('/');
+    });
 });
 
 router.post('/register', function (req, res) {
