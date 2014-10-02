@@ -1,3 +1,4 @@
+///<reference path='../../typings/jquery/jquery_plugins.d.ts'/>
 
 var studentListFlag = false;
 var subjectListFlag = false;
@@ -6,6 +7,8 @@ var targetSubjectId: number;
 var allData;
 
 $(function(){
+
+  $("#allDataTable").tablesorter();
 
   allData = $("tbody>tr");
   targetStudentNumber = -1;
