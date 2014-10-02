@@ -29,9 +29,9 @@ block content
                   tbody
                     - for(var i = 0; i < datas.length; i++){
                       tr(class="#{datas[i].cl}")
-                        th.subjectInList(id="#{datas[i].id}") #{datas[i].name}
-                        th.subjectInList(id="#{datas[i].id}") #{datas[i].status}
-                        th.subjectInList(id="#{datas[i].id}") #{datas[i].endAt}
+                        td.subjectInList(id="#{datas[i].id}") #{datas[i].name}
+                        td.subjectInList(id="#{datas[i].id}") #{datas[i].status}
+                        td.subjectInList(id="#{datas[i].id}") #{datas[i].endAt}
                     - }
         .mastfoot
           .inner
