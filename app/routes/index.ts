@@ -58,34 +58,49 @@ router.get('/list/all', function(req, res) {
     var tableHead = ["学籍番号", "氏名", "課題名", "提出状況", "締切"];
     var datas = new Array();
     datas.push({
-      "subject_id": 2, "student_number": 1464150, "student_name": "須藤建", "subject_name": "sort", "status": 0, "endAt": new Date("10/21/2014")
+      "subject_id": 3, "student_number": 1464150, "student_name": "須藤建", "subject_name": "sort", "status": 0, "endAt": new Date("10/21/2014")
       });
     datas.push({
-      "subject_id": 2, "student_number": 1464183, "student_name": "田村健介", "subject_name": "sort", "status": 0, "endAt": new Date("10/21/2014")
+      "subject_id": 3, "student_number": 1464183, "student_name": "田村健介", "subject_name": "sort", "status": 0, "endAt": new Date("10/21/2014")
       });
     datas.push({
-      "subject_id": 2, "student_number": 1464184, "student_name": "田村侑士", "subject_name": "sort", "status": 1, "endAt": new Date("10/21/2014")
+      "subject_id": 3, "student_number": 1464184, "student_name": "田村侑士", "subject_name": "sort", "status": 1, "endAt": new Date("10/21/2014")
       });
     datas.push({
-      "subject_id": 2, "student_number": 1464275, "student_name": "山口真弥", "subject_name": "sort", "status": 0, "endAt": new Date("10/21/2014")
+      "subject_id": 3, "student_number": 1464275, "student_name": "山口真弥", "subject_name": "sort", "status": 0, "endAt": new Date("10/21/2014")
       });
     datas.push({
-      "subject_id": 2, "student_number": 1464311, "student_name": "本多峻", "subject_name": "sort", "status": 2, "endAt": new Date("10/21/2014")
+      "subject_id": 3, "student_number": 1464311, "student_name": "本多峻", "subject_name": "sort", "status": 2, "endAt": new Date("10/21/2014")
       });
     datas.push({
-      "subject_id": 1, "student_number": 1464150, "student_name": "須藤建", "subject_name": "fib", "status": 1, "endAt": new Date("9/27/2014")
+      "subject_id": 2, "student_number": 1464150, "student_name": "須藤建", "subject_name": "fib", "status": 2, "endAt": new Date("10/7/2014")
       });
     datas.push({
-      "subject_id": 1, "student_number": 1464183, "student_name": "田村健介", "subject_name": "fib", "status": 0, "endAt": new Date("9/27/2014")
+      "subject_id": 2, "student_number": 1464183, "student_name": "田村健介", "subject_name": "fib", "status": 1, "endAt": new Date("10/7/2014")
       });
     datas.push({
-      "subject_id": 1, "student_number": 1464184, "student_name": "田村侑士", "subject_name": "fib", "status": 2, "endAt": new Date("9/27/2014")
+      "subject_id": 2, "student_number": 1464184, "student_name": "田村侑士", "subject_name": "fib", "status": 0, "endAt": new Date("10/7/2014")
       });
     datas.push({
-      "subject_id": 1, "student_number": 1464275, "student_name": "山口真弥", "subject_name": "fib", "status": 1, "endAt": new Date("9/27/2014")
+      "subject_id": 2, "student_number": 1464275, "student_name": "山口真弥", "subject_name": "fib", "status": 0, "endAt": new Date("10/7/2014")
       });
     datas.push({
-      "subject_id": 1, "student_number": 1464311, "student_name": "本多峻", "subject_name": "fib", "status": 0, "endAt": new Date("9/27/2014")
+      "subject_id": 2, "student_number": 1464311, "student_name": "本多峻", "subject_name": "fib", "status": 1, "endAt": new Date("10/7/2014")
+      });
+    datas.push({
+      "subject_id": 1, "student_number": 1464150, "student_name": "須藤建", "subject_name": "Hello World", "status": 1, "endAt": new Date("9/27/2014")
+      });
+    datas.push({
+      "subject_id": 1, "student_number": 1464183, "student_name": "田村健介", "subject_name": "Hello World", "status": 0, "endAt": new Date("9/27/2014")
+      });
+    datas.push({
+      "subject_id": 1, "student_number": 1464184, "student_name": "田村侑士", "subject_name": "Hello World", "status": 2, "endAt": new Date("9/27/2014")
+      });
+    datas.push({
+      "subject_id": 1, "student_number": 1464275, "student_name": "山口真弥", "subject_name": "Hello World", "status": 1, "endAt": new Date("9/27/2014")
+      });
+    datas.push({
+      "subject_id": 1, "student_number": 1464311, "student_name": "本多峻", "subject_name": "Hello World", "status": 0, "endAt": new Date("9/27/2014")
       });
     var students = [];
     students.push([1464183, "田村健介"]);
@@ -94,10 +109,10 @@ router.get('/list/all', function(req, res) {
     students.push([1464275, "山口真弥"]);
     students.push([1464311, "本多峻"]);
     var subjects = [];
-    subjects.push([1, "fib"]);
-    subjects.push([2, "sort"]);
-    subjects.push([3, "if"]);
-    subjects.push([4, "Hello World"]);
+    subjects.push([1, "Hello World"]);
+    subjects.push([2, "fib"]);
+    subjects.push([3, "sort"]);
+    subjects.push([4, "if"]);
 
     datas = ConvertDataForView(datas);
 
@@ -163,7 +178,7 @@ function ConvertDataForView(datas){
           break;
       }
     }
-    data.endAt = (data.endAt.getFullYear() - 2000) + "/" + (+data.endAt.getMonth() + 1) + "/" + data.endAt.getDate();
+    data.endAt =  (+data.endAt.getFullYear() - 2000) + "/" + ((+data.endAt.getMonth() < 9)? "0" : "") + (+data.endAt.getMonth() + 1) + "/" + ((+data.endAt.getDate() < 10)? "0" : "") + data.endAt.getDate();
   });
   return datas;
 }
