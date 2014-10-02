@@ -173,6 +173,7 @@ function ConvertDataForView(datas) {
                     break;
             }
         }
+        data.endAtTime = data.endAt.getTime();
         data.endAt = (+data.endAt.getFullYear() - 2000) + "/" + ((+data.endAt.getMonth() < 9) ? "0" : "") + (+data.endAt.getMonth() + 1) + "/" + ((+data.endAt.getDate() < 10) ? "0" : "") + data.endAt.getDate();
     });
     return datas;

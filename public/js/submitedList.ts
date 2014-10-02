@@ -15,8 +15,9 @@ $(function(){
   targetSubjectId = -1;
 
   $(".submitedInList").bind("click", function() {
-    var id = $(this).attr("id");
-    location.href = "/" + id;
+    var subjectId = $(this).attr("subjectId");
+    var studentNumber = $(this).attr("studentNumber");
+    location.href = "/" + subjectId;
   });
 
   $(".search-panel-group > span").bind("click", function(){
