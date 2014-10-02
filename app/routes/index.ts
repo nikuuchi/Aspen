@@ -142,7 +142,6 @@ function ConvertDataForView(datas){
   datas.forEach((data) => {
     period = data.endAt.getTime() - today.getTime();
     period = period / oneDay;
-    console.log(data.endAt);
     if(data.endAt.getTime() > today.getTime()){
       switch(data.status){
         case 0:
