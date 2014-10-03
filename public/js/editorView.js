@@ -7,12 +7,11 @@
 var selectedNode;
 
 $(function() {
-  var fm = new FileManager();
 
   $('#sidebar').jstree({
   'core': {
     'check_callback' : true,
-    "data": fm.FTree
+    "data": Aspen.Files.Tree.FTree
   },
   "types" : {
     "default" : {
@@ -29,7 +28,8 @@ $(function() {
   var ref = $('#sidebar').jstree(true);
   $('#sidebar').on("changed.jstree", function (e, data) {
     selectedNode = fm.getSelectedNode();
-    console.log(selectedNode);
+    console.log(fm.getCurrentPath());
+
     fm.getFile(selectedNode);
 
   });

@@ -1,9 +1,9 @@
 ///<reference path='../../typings/jstree/jstree.d.ts'/>
+/// <reference path="index.ts"/>
 var FileManager = (function () {
     function FileManager() {
-        this.FTree = [
-            { "text": "root", "children": [{ "text": "program.c", "type": "file" }] }
-        ];
+        this.FTree = [];
+        this.FIndex = [];
     }
     FileManager.prototype.constractor = function () {
     };
@@ -30,10 +30,8 @@ var FileManager = (function () {
         return true;
     };
 
-    FileManager.prototype.getFile = function (path) {
-        if (localStorage[path])
-            return localStorage[path];
-        return false;
+    FileManager.prototype.getFile = function (obj) {
+        var path = this.getCurrentPath("_");
     };
 
     FileManager.prototype.getSelectedNode = function () {
@@ -45,8 +43,9 @@ var FileManager = (function () {
         return this.ref().get_type(this.getSelectedNode());
     };
 
-    FileManager.prototype.getCurrentPath = function () {
-        return this.ref().get_path(this.getSelectedNode(), "/");
+    FileManager.prototype.getCurrentPath = function (delim) {
+        if (typeof delim === "undefined") { delim = "/"; }
+        return this.ref().get_path(this.getSelectedNode(), delim);
     };
 
     FileManager.prototype.show = function () {
