@@ -21,6 +21,11 @@ module.exports = function (sequelize, DataTypes) {
                 User.hasMany(models.SubmitStatus);
                 User.hasMany(models.Lecture);
             },
+            /** User.login
+            * cond: ユーザの検索条件
+            * successCallback: ログインしていた場合
+            * failureCallback: ログインしていない、もしくは何らかのエラーで失敗した場合
+            */
             login: function (cond, successCallback, failureCallback) {
                 User.find({ where: cond }).then(function (user) {
                     if (user) {

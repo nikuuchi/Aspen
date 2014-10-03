@@ -21,20 +21,35 @@ module.exports = (sequelize, DataTypes) => {
             associate: (models) => {
                 Subject.hasMany(models.SubmitStatus);
             },
-            /** Subject.getStatuses: ユーザごとの提出状況を検索する
+            /** Subject.getStatuses: 全ユーザの提出状況を検索する
               * Seq: Sequelize
               * SubmitStatus: テーブル
               * successCallback: 成功した場合
               * failureCallback: 何らかの原因で失敗した場合
               */
-            getStatuses: (Seq, SubmitStatus, userId, successCallback, failureCallback) => {
+            getStatuses: (Seq, SubmitStatus, successCallback, failureCallback) => {
+                Subject.getStatusesByUser(Seq, SubmitStatus, null, successCallback, failureCallback);
+            },
+            /** Subject.getStatusesByUser: 各ユーザの提出状況を検索する
+              * Seq: Sequelize
+              * SubmitStatus: テーブル
+              * successCallback: 成功した場合
+              * failureCallback: 何らかの原因で失敗した場合
+              */
+            getStatusesByUser: (Seq, SubmitStatus, userId, successCallback, failureCallback) => {
                 var lectureId = { LectureId: 1 /* Default */};
                 var eqUserId = {'SubmitStatuses.UserId': userId};
                 var isNullUserId = {'SubmitStatuses.UserId': null};
+                var where;
+                if(userId) {
+                    where = Seq.and(lectureId, Seq.or(eqUserId, isNullUserId));
+                } else {
+                    where = Seq.and(lectureId);
+                }
                 //left outer join
                 Subject.findAll({
                     include: [SubmitStatus],
-                    where: Seq.and(lectureId, Seq.or(eqUserId, isNullUserId))
+                    where: where
                 }).then(successCallback, failureCallback);
             }
         }
