@@ -1,6 +1,15 @@
 ///<reference path="../../typings/express/express.d.ts" />
 ///<reference path="../../typings/node/node.d.ts" />
 
+/**
+ * Subject
+ * @class Subject
+ * @constructor
+ * @param {String} name 課題名
+ * @param {String} content 内容
+ * @param {Date} endAt 終了期限
+ *
+ */
 module.exports = (sequelize, DataTypes) => {
     var Subject = sequelize.define('Subject', {
         name:    DataTypes.STRING,
@@ -21,21 +30,25 @@ module.exports = (sequelize, DataTypes) => {
             associate: (models) => {
                 Subject.hasMany(models.SubmitStatus);
             },
-            /** Subject.getStatuses: 全ユーザの提出状況を検索する
-              * Seq: Sequelize
-              * SubmitStatus: テーブル
-              * successCallback: 成功した場合
-              * failureCallback: 何らかの原因で失敗した場合
-              */
+            /**
+             * 全ユーザの提出状況を検索する
+             * @method getStatuses
+             * @param {Object} Seq Sequelize
+             * @param {Object} SubmitStatus テーブル
+             * @param {Function} successCallback 成功した場合
+             * @param {Function} failureCallback 何らかの原因で失敗した場合
+             */
             getStatuses: (Seq, SubmitStatus, successCallback, failureCallback) => {
                 Subject.getStatusesByUser(Seq, SubmitStatus, null, successCallback, failureCallback);
             },
-            /** Subject.getStatusesEachUser: 各ユーザの提出状況を検索する
-              * Seq: Sequelize
-              * SubmitStatus: テーブル
-              * successCallback: 成功した場合
-              * failureCallback: 何らかの原因で失敗した場合
-              */
+            /**
+             * 各ユーザの提出状況を検索する
+             * @method getStatusesEachUser
+             * @param {Object} Seq Sequelize
+             * @param {Object} SubmitStatus テーブル
+             * @param {Function} successCallback 成功した場合
+             * @param {Function} failureCallback 何らかの原因で失敗した場合
+             */
             getStatusesEachUser: (Seq, SubmitStatus, userId, successCallback, failureCallback) => {
                 var lectureId = { LectureId: 1 /* Default */};
                 var eqUserId = {'SubmitStatuses.UserId': userId};
