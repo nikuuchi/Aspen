@@ -18,4 +18,12 @@ export class Auth {
         delete this.req.session.userId;
         delete this.req.session.userName;
     }
+
+}
+
+export function isLogin(req) {
+    if(req.signedCookies) {
+        return req.signedCookies.sessionUserId != null;
+    }
+    return false;
 }

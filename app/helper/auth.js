@@ -23,3 +23,11 @@ var Auth = (function () {
     return Auth;
 })();
 exports.Auth = Auth;
+
+function isLogin(req) {
+    if (req.signedCookies) {
+        return req.signedCookies.sessionUserId != null;
+    }
+    return false;
+}
+exports.isLogin = isLogin;

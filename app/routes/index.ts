@@ -4,36 +4,34 @@
 var express = require('express');
 var router = express.Router();
 var db = require('../models');
+var auth = require('../helper/auth');
 
 var tableHead = ["課題名", "提出状況", "締切"];
 /* GET home page. */
 router.get('/', function(req, res) {
-    if(req.signedCookies) {
-        db.User.login(
-            {github_id: req.signedCookies.sessionUserId},
-            function(user) {
-              var submits = [];
-              var Seq = (<any>db).Sequelize;
-              db.Subject.getStatuses(Seq, db.SubmitStatus, user.id,
-                  function(subjects) {
-                      subjects.forEach((subject) => {
-                          submits.push(createSubmitView(subject));
-                      });
-                      res.render('list', { tableHead: tableHead, submits: submits });
-                  }, function() {
-                      //TODO Error
-                      res.render('top');
-                  }
-              );
-            },
-            function() {
-                res.render('top');
-            }
-        );
-    } else {
-        //Not login(初回アクセス?)
+    if(!auth.isLogin(req)) {
         res.render('top');
+        return;
     }
+    var failureCallback = () => res.render('top');
+
+    db.User.login(
+        {github_id: req.signedCookies.sessionUserId},
+        function(user) {
+            var submits = [];
+            var Seq = (<any>db).Sequelize;
+            db.Subject.getStatuses(Seq, db.SubmitStatus, user.id,
+                function(subjects) {
+                    subjects.forEach((subject) => {
+                        submits.push(createSubmitView(subject));
+                    });
+                    res.render('list', { tableHead: tableHead, submits: submits });
+                },
+                failureCallback
+            );
+        },
+        failureCallback
+    );
 });
 
 router.get('/subject/:file', function(req, res) {
