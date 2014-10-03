@@ -104,32 +104,51 @@ body {
   background-color: rgb(240, 240, 240);
 }
 
-.status-success > th{
-  background-color: rgba(68, 255, 0, 0.04);
+.status-success > td{
+  background-color: rgba(18, 221, 0, 0.24);
 }
 
-.status-submited > th{
-  background-color: rgba(0, 255, 230, 0.04);
+.status-submited > td{
+  background-color: rgba(0, 204, 255, 0.14);
 }
 
-.status-notyet-danger > th{
-  background-color: rgba(255, 0, 0, 0.04);
+.status-notyet-danger > td{
+  background-color: rgb(255, 221, 221);
 }
 
-.status-notyet-margin > th{
+.status-notyet-margin > td{
   background-color: rgba(255, 255, 255, 0.05);
 }
 
-.status-closing-success > th{
-  background-color: rgba(0, 0, 0, 0.2);
+.status-closing-success > td{
+  background-color: rgb(245, 245, 245);
+  color: #ADADAD;
 }
 
-.status-closing-submited > th{
-  background-color: rgba(0, 0, 0, 0.2);
+.status-closing-submited > td{
+  background-color: rgb(245, 245, 245);
+  color: #ADADAD;
 }
 
-.status-closing-notyet > th{
-  background-color: rgba(77, 0, 0, 0.44);
+.status-closing-notyet > td{
+  background-color:  rgb(245, 245, 245);
+  color: #ADADAD;
+  #FFA8A8
+}
+
+.status-closing-notyet > td.status-text{
+  color: #FFA8A8;
+}
+
+th{
+  text-align: center;
+}
+
+tr:hover > td {
+  background-color: transparent;
+  opacity: 0.8;
+  -webkit-filter: brightness(90%);
+          filter: brightness(90%);
 }
 
 /*

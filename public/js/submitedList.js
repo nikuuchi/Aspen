@@ -1,10 +1,21 @@
+///<reference path='../../typings/jquery/jquery_plugins.d.ts'/>
 var studentListFlag = false;
 var subjectListFlag = false;
+var targetStudentNumber;
+var targetSubjectId;
+var allData;
 
 $(function () {
+    $("#allDataTable").tablesorter();
+
+    allData = $("tbody>tr");
+    targetStudentNumber = -1;
+    targetSubjectId = -1;
+
     $(".submitedInList").bind("click", function () {
-        var id = $(this).attr("id");
-        location.href = "/" + id;
+        var subjectId = $(this).attr("subjectId");
+        var studentNumber = $(this).attr("studentNumber");
+        location.href = "/" + subjectId;
     });
 
     $(".search-panel-group > span").bind("click", function () {
@@ -14,14 +25,28 @@ $(function () {
 
     $(".search-panel-content").bind("click", function () {
         var id = $(this).attr("id");
+
         switch (id) {
             case "student-content":
                 $(".student-head").text($(this).text());
+                targetStudentNumber = Number($(this).attr("number"));
                 break;
             case "subject-content":
                 $(".subject-head").text($(this).text());
+                targetSubjectId = Number($(this).attr("number"));
                 break;
         }
+
+        for (var i = 0; i < allData.length; i++) {
+            $(allData[i]).css("display", "");
+            if (Number($(allData[i]).attr("studentNumber")) != targetStudentNumber && targetStudentNumber > -1) {
+                $(allData[i]).css("display", "none");
+            }
+            if (Number($(allData[i]).attr("subjectId")) != targetSubjectId && targetSubjectId > -1) {
+                $(allData[i]).css("display", "none");
+            }
+        }
+
         console.log(id);
         var splitId = id.split("-");
         id = splitId[0];

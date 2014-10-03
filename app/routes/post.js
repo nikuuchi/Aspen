@@ -11,7 +11,21 @@ router.post('/submit', function (req, res) {
 });
 
 router.post('/subject/new', function (req, res) {
-    //TODO
+    var subject_name = req.body.name;
+    var subject_endAt = req.body.limit;
+    var subject_startAt = new Date();
+    var content = req.body.content;
+    console.log(content);
+    db.Subject.create({
+        name: subject_name,
+        url: "",
+        content: content,
+        startAt: subject_startAt,
+        endAt: subject_endAt
+    }).success(function (subject) {
+        console.log(subject);
+        res.redirect('/');
+    });
 });
 
 router.post('/register', function (req, res) {
@@ -34,7 +48,6 @@ router.post('/register', function (req, res) {
 
 router.post('/compile', function (req, res) {
     //dest server is configured by default.yaml
-    console.log(req.body);
     var client_body = req.body;
     if (req.signedCookies.sessionUserId) {
         client_body.userId = req.signedCookies.sessionUserId;
@@ -75,7 +88,7 @@ router.post('/dummy/compile', function (req, res) {
     var ret = {
         //src: "#include<stdio.h>\n\nint main() {\n\tprintf(\"hello\n\");\n}\n",
         source: "Module.print('hello');",
-        msg: "",
+        message: "",
         error: "Warning: This message is created by mock-up server."
     };
     res.json(ret);

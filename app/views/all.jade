@@ -10,6 +10,7 @@ block header
 
 block loadFiles
   +js('/js/submitedList.js')
+  +js('../vendor/jquery/jquery.tablesorter.js')
 
 block content
   .site-wrapper
@@ -49,18 +50,20 @@ block content
                       .search-panel-content(id="subject-content", number="#{subjects[i][0]}") #{subjects[i][1]}
                       - }
               .col-sm-9
-                table.table.table-hover
+                table.table.table-hover(id="allDataTable")
                   thead
                     tr
                     - for(var i = 0; i < tableHead.length; i++){
                       th #{tableHead[i]}
                     - }
                   tbody
-                    - for(var i = 0; i < data.length; i++){
-                    tr
-                    -for(var j = 1; j < data[i].length; j++){
-                      th.submitedInList(id="#{data[i][0]}") #{data[i][j]}
-                    - }
+                    - for(var i = 0; i < datas.length; i++){
+                    tr(class="#{datas[i].cl}", subjectId="#{datas[i].subject_id}", studentNumber="#{datas[i].student_number}")
+                      td.submitedInList(subjectId="#{datas[i].subject_id}", studentNumber="#{datas[i].student_number}") #{datas[i].student_number}
+                      td.submitedInList(subjectId="#{datas[i].subject_id}", studentNumber="#{datas[i].student_number}") #{datas[i].student_name}
+                      td.submitedInList(subjectId="#{datas[i].subject_id}", studentNumber="#{datas[i].student_number}") #{datas[i].subject_name}
+                      td.submitedInList.status-text(subjectId="#{datas[i].subject_id}", studentNumber="#{datas[i].student_number}") #{datas[i].status}
+                      td.submitedInList(subjectId="#{datas[i].subject_id}", studentNumber="#{datas[i].student_number}") #{datas[i].endAt}
                     - }
         .mastfoot
           .inner

@@ -16,53 +16,11 @@ router.get('/', function(req, res) {
                 //TODO: DBからの読み出し
                 var tableHead = ["課題名", "提出状況", "締切"];
                 var datas = new Array();
-                datas.push({"id": 0, "name": "Hello World", "status": 0, "endAt": new Date(2014, 10, 21)});
-                datas.push({"id": 1, "name": "sort", "status": 1, "endAt": new Date(2014, 10, 14)});
-                datas.push({"id": 2, "name": "fib", "status": 1, "endAt": new Date(2014, 10, 14)});
+                datas.push({"id": 0, "name": "Hello World", "status": 0, "endAt": new Date("10/21/2014")});
+                datas.push({"id": 1, "name": "sort", "status": 1, "endAt": new Date("10/14/2014")});
+                datas.push({"id": 2, "name": "fib", "status": 1, "endAt": new Date("10/14/2014")});
 
-                var today = new Date();
-                var oneDay = 86400000;
-                var period;
-                datas.forEach((data) => {
-                  period = data.endAt.getTime() - today.getTime();
-                  period = period / oneDay;
-                  if(period > 0){
-                    switch(data.status){
-                      case 0:
-                        if(period < 7){
-                          data.cl = "status-notyet-danger";
-                        } else {
-                          data.cl = "status-notyet-margin";
-                        }
-                        data.status = "未提出";
-                        break;
-                      case 1:
-                        data.cl = "status-submited";
-                        data.status = "提出済";
-                        break;
-                      case 2:
-                        data.cl = "status-success";
-                        data.status = "合格";
-                        break;
-                    }
-                  } else {
-                    switch(data.status){
-                      case 0:
-                        data.cl = "status-closing-notyet";
-                        data.status = "未提出";
-                        break;
-                      case 1:
-                        data.cl = "status-closing-submited";
-                        data.status = "提出済";
-                        break;
-                      case 2:
-                        data.cl = "status-closing-success";
-                        data.status = "合格";
-                        break;
-                    }
-                  }
-                  data.endAt = data.endAt.getFullYear() - 2000 + "/" + data.endAt.getMonth() + "/" + data.endAt.getDate();
-                });
+                datas = ConvertDataForView(datas);
 
                 res.render('list', { title: 'Aspen', tableHead: tableHead, datas: datas });
             } else {
@@ -98,12 +56,52 @@ router.get('/user/:userid', function(req, res) {
 router.get('/list/all', function(req, res) {
     //TODO DB
     var tableHead = ["学籍番号", "氏名", "課題名", "提出状況", "締切"];
-    var data = [[0, 1464183, "田村健介", "sort", "未提出", "14/10/11"]];
-    data.push([1, 1464183, "田村健介", "fib", "未提出", "14/10/04"]);
-    data.push([2, 1464150, "須藤建", "fib", "未提出", "14/10/04"]);
-    data.push([3, 1464184, "田村侑士", "fib", "提出済", "14/10/04"]);
-    data.push([4, 1464275, "山口真弥", "fib", "未提出", "14/10/04"]);
-    data.push([5, 1464311, "本多峻", "fib", "提出済", "14/10/04"]);
+    var datas = new Array();
+    datas.push({
+      "subject_id": 3, "student_number": 1464150, "student_name": "須藤建", "subject_name": "sort", "status": 0, "endAt": new Date("10/21/2014")
+      });
+    datas.push({
+      "subject_id": 3, "student_number": 1464183, "student_name": "田村健介", "subject_name": "sort", "status": 0, "endAt": new Date("10/21/2014")
+      });
+    datas.push({
+      "subject_id": 3, "student_number": 1464184, "student_name": "田村侑士", "subject_name": "sort", "status": 1, "endAt": new Date("10/21/2014")
+      });
+    datas.push({
+      "subject_id": 3, "student_number": 1464275, "student_name": "山口真弥", "subject_name": "sort", "status": 0, "endAt": new Date("10/21/2014")
+      });
+    datas.push({
+      "subject_id": 3, "student_number": 1464311, "student_name": "本多峻", "subject_name": "sort", "status": 2, "endAt": new Date("10/21/2014")
+      });
+    datas.push({
+      "subject_id": 2, "student_number": 1464150, "student_name": "須藤建", "subject_name": "fib", "status": 2, "endAt": new Date("10/7/2014")
+      });
+    datas.push({
+      "subject_id": 2, "student_number": 1464183, "student_name": "田村健介", "subject_name": "fib", "status": 1, "endAt": new Date("10/7/2014")
+      });
+    datas.push({
+      "subject_id": 2, "student_number": 1464184, "student_name": "田村侑士", "subject_name": "fib", "status": 0, "endAt": new Date("10/7/2014")
+      });
+    datas.push({
+      "subject_id": 2, "student_number": 1464275, "student_name": "山口真弥", "subject_name": "fib", "status": 0, "endAt": new Date("10/7/2014")
+      });
+    datas.push({
+      "subject_id": 2, "student_number": 1464311, "student_name": "本多峻", "subject_name": "fib", "status": 1, "endAt": new Date("10/7/2014")
+      });
+    datas.push({
+      "subject_id": 1, "student_number": 1464150, "student_name": "須藤建", "subject_name": "Hello World", "status": 1, "endAt": new Date("9/27/2014")
+      });
+    datas.push({
+      "subject_id": 1, "student_number": 1464183, "student_name": "田村健介", "subject_name": "Hello World", "status": 0, "endAt": new Date("9/27/2014")
+      });
+    datas.push({
+      "subject_id": 1, "student_number": 1464184, "student_name": "田村侑士", "subject_name": "Hello World", "status": 2, "endAt": new Date("9/27/2014")
+      });
+    datas.push({
+      "subject_id": 1, "student_number": 1464275, "student_name": "山口真弥", "subject_name": "Hello World", "status": 1, "endAt": new Date("9/27/2014")
+      });
+    datas.push({
+      "subject_id": 1, "student_number": 1464311, "student_name": "本多峻", "subject_name": "Hello World", "status": 0, "endAt": new Date("9/27/2014")
+      });
     var students = [];
     students.push([1464183, "田村健介"]);
     students.push([1464150, "須藤建"]);
@@ -111,12 +109,14 @@ router.get('/list/all', function(req, res) {
     students.push([1464275, "山口真弥"]);
     students.push([1464311, "本多峻"]);
     var subjects = [];
-    subjects.push([1, "fib"]);
-    subjects.push([2, "sort"]);
-    subjects.push([3, "if"]);
-    subjects.push([4, "Hello World"]);
+    subjects.push([1, "Hello World"]);
+    subjects.push([2, "fib"]);
+    subjects.push([3, "sort"]);
+    subjects.push([4, "if"]);
 
-    res.render('all', {title: 'Aspen', tableHead: tableHead, data: data, students: students, subjects: subjects});
+    datas = ConvertDataForView(datas);
+
+    res.render('all', {title: 'Aspen', tableHead: tableHead, datas: datas, students: students, subjects: subjects});
 });
 
 router.get('/subject/:file', function(req, res) {
@@ -132,5 +132,55 @@ router.get('/register', function(req, res) {
     res.render('register');
 });
 
+
+
+function ConvertDataForView(datas){
+  var today = new Date();
+  var oneDay = 86400000;
+  var period;
+
+  datas.forEach((data) => {
+    period = data.endAt.getTime() - today.getTime();
+    period = period / oneDay;
+    if(data.endAt.getTime() > today.getTime()){
+      switch(data.status){
+        case 0:
+          if(period < 7){
+            data.cl = "status-notyet-danger";
+          } else {
+            data.cl = "status-notyet-margin";
+          }
+          data.status = "未提出";
+          break;
+        case 1:
+          data.cl = "status-submited";
+          data.status = "提出済";
+          break;
+        case 2:
+          data.cl = "status-success";
+          data.status = "合格";
+          break;
+      }
+    } else {
+      switch(data.status){
+        case 0:
+          data.cl = "status-closing-notyet";
+          data.status = "未提出";
+          break;
+        case 1:
+          data.cl = "status-closing-submited";
+          data.status = "提出済";
+          break;
+        case 2:
+          data.cl = "status-closing-success";
+          data.status = "合格";
+          break;
+      }
+    }
+    data.endAtTime = data.endAt.getTime();
+    data.endAt =  (+data.endAt.getFullYear() - 2000) + "/" + ((+data.endAt.getMonth() < 9)? "0" : "") + (+data.endAt.getMonth() + 1) + "/" + ((+data.endAt.getDate() < 10)? "0" : "") + data.endAt.getDate();
+  });
+  return datas;
+}
 
 module.exports = router;

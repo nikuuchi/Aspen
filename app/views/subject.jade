@@ -2,6 +2,12 @@ extends layout
 
 block header
   +css('/css/addSubject.css')
+  include editor_css
+
+block loadFiles
+    +js('/vendor/ace/ace.js')
+    +js('/js/index.js')
+    //+js('/js/subject_submit.js')
 
 block content
   .container
@@ -10,15 +16,15 @@ block content
       .form-group
         label.control-label(for="inputNumber") 課題名
         input.form-control(type="text", placeholder="", name="name", id="name", required autofocus)
-      .form-group
-        label.control-label(for="inputName") URL
-        input.form-control(type="text", placeholder="", name="url", id="url", required)
+      //.form-group
+      //  label.control-label(for="inputName") URL
+      //  input.form-control(type="text", placeholder="", name="url", id="url", required)
       .form-group
         label.control-label(for="inputName") 提出期限
         input.form-control(type="date", placeholder="", name="limit", id="limit", required)
       .form-group
         label.control-label(for="inputName") 本文
         p
-          textarea#editor(rows="20", name="content", style="width:100%;")
+          pre#editor(rows="20", name="content", style="width:100%;")
       .form-group
         button.btn.btn-primary.pull-right(type="submit") 作成
