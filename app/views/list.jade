@@ -33,7 +33,7 @@ block content
                     - }
                   tbody
                     - for(var i = 0; i < submits.length; i++){
-                      tr(class="#{submits[i].cl}", id="#{submits[i].id}")
+                      tr(class="#{submits[i].cl}", id="#{submits[i].id}", style="cursor: pointer;")
                         td.subjectInList #{submits[i].name}
                         td.subjectInList #{submits[i].status}
                         td.subjectInList #{submits[i].endAt}

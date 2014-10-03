@@ -30,6 +30,7 @@ router.get('/', function(req, res) {
             res.render('list', { tableHead: tableHead, submits: submits });
         })
         .catch(function(err) {
+            console.log(err);
             res.render('top');
         });
 });
@@ -138,7 +139,6 @@ function createSubmitView(subject) {
     var remainingDays = ((<any>subject.endAt) - (<any>today)) / oneDay;
     var status = 0;
     if(subject.SubmitStatuses[0]) {
-        console.log(subject.SubmitStatuses[0].User.name);
         status = subject.SubmitStatuses[0].status? subject.SubmitStatuses[0].status : 0;
     }
     return {
