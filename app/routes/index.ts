@@ -58,12 +58,6 @@ router.get('/user/:userid', function(req, res) {
 router.get('/list/all', function(req, res) {
     //TODO DB
     var tableHead = ["学籍番号", "氏名", "課題名", "提出状況", "締切"];
-//"subject_id": 3, "student_number": 1464150, "student_name": "須藤建", "subject_name": "sort", "status": 0, "endAt": new Date("10/21/2014")
-
-//    students.push([1464183, "田村健介"]);
-//    subjects.push([1, "Hello World"]);
-
-
     var lectureId = 1; //TODO Lecture
     Promise.all([
         db.User.getStudentList(lectureId),
@@ -71,13 +65,15 @@ router.get('/list/all', function(req, res) {
         db.Subject.getStatuses(db)
     ]).then(function(values) {
         var students = values[0].map((student) => [student.studentNumber, student.name]);
-        console.log(students);
         var subjects = values[1].map((subject) => [subject.id, subject.name]);
-        console.log(subjects);
         var submits  = values[2].map((subject) => createSubmitView(subject));
-        console.log(submits);
 
-        res.render('all', {tableHead: tableHead, submits: submits, students: students, subjects: subjects});
+        res.render('all', {
+            tableHead: tableHead,
+            submits: submits,
+            students: students,
+            subjects: subjects
+        });
     });
 });
 
