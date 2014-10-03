@@ -5,7 +5,13 @@ input#file-open-dialog(type='file', style='display:none;', accept=".c")
       | Your browser is not supported. please use Internet Explorer 10 or 11, Google Chrome or Firefox.
     .navbar.navbar-default
       .navbar-header.pull-right
-        a.navbar-brand Aspen
+        a.navbar-brand(style="display:inline;") Aspen
+      .navbar-header.pull-right
+        button#submit-file.btn.navbar-btn.btn-success.disabled-on-files-empty.disabled-on-running(type='button', data-toggle="tooltip", title="Submit", onContextmenu="return false")
+          | &nbsp;
+          span.glyphicon.glyphicon-send
+          | &nbsp;
+          | 送信
       .navbar-collapse
         button.btn.navbar-btn.btn-default.disabled-on-running(type='button', data-toggle='dropdown', onContextmenu="return false")
             | &nbsp;
@@ -57,6 +63,7 @@ input#file-open-dialog(type='file', style='display:none;', accept=".c")
           span.glyphicon.glyphicon-play
           | &nbsp;
           | 実行
+
     +template('file-list-template')
       li.file-tab.disabled-on-running
         a(href='#',id='${BaseName}') ${Name}
