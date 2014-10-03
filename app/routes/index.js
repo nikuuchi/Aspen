@@ -12,21 +12,22 @@ router.get('/', function (req, res) {
             if (user) {
                 //Login
                 //ログインユーザの課題提出状況の提示
-                //TODO: DBからの読み出し
                 var tableHead = ["課題名", "提出状況", "締切"];
-                var datas = new Array();
-                db.User.findAll({ where: { id: user.id }, include: { model: db.Subject, required: true } }).then(function (subjects) {
+                var submits = [];
+                var Seq = db.Sequelize;
+
+                //left outer join
+                db.Subject.findAll({
+                    include: [db.SubmitStatus],
+                    where: Seq.and({ LectureId: 1 /*Default */  }, Seq.or({ 'SubmitStatuses.UserId': user.id }, { 'SubmitStatuses.UserId': null }))
+                }).then(function (subjects) {
                     console.log(subjects);
-                    subjects.forEach(function (subject) {
-                        datas.push({
-                            "id": subject.SubjectId,
-                            "name": subject.name,
-                            "status": subject.status,
-                            "endAt": subject.endAt
+                    if (subjects) {
+                        subjects.forEach(function (subject) {
+                            submits.push(createSubmitView(subject));
                         });
-                    });
-                    datas = convertSubmitsForView(datas);
-                    res.render('list', { title: 'Aspen', tableHead: tableHead, datas: datas });
+                    }
+                    res.render('list', { title: 'Aspen', tableHead: tableHead, submits: submits });
                 });
             } else {
                 //Not login
@@ -122,8 +123,7 @@ router.get('/list/all', function (req, res) {
     subjects.push([3, "sort"]);
     subjects.push([4, "if"]);
 
-    submits = convertSubmitsForView(submits);
-
+    //submits = convertSubmitsForView(submits);
     res.render('all', { title: 'Aspen', tableHead: tableHead, submits: submits, students: students, subjects: subjects });
 });
 
@@ -137,53 +137,40 @@ router.get('/register', function (req, res) {
     res.render('register');
 });
 
-function convertSubmitsForView(submits) {
-    var today = new Date();
-    var oneDay = 86400000;
-    var period;
+function formatEndAt(endAt) {
+    return (+endAt.getFullYear() - 2000) + "/" + ((+endAt.getMonth() < 9) ? "0" : "") + (+endAt.getMonth() + 1) + "/" + ((+endAt.getDate() < 10) ? "0" : "") + endAt.getDate();
+}
 
-    submits.forEach(function (submit) {
-        period = submit.endAt.getTime() - today.getTime();
-        period = period / oneDay;
-        if (submit.endAt.getTime() > today.getTime()) {
-            switch (submit.status) {
-                case 0:
-                    if (period < 7) {
-                        submit.cl = "status-notyet-danger";
-                    } else {
-                        submit.cl = "status-notyet-margin";
-                    }
-                    submit.status = "未提出";
-                    break;
-                case 1:
-                    submit.cl = "status-submited";
-                    submit.status = "提出済";
-                    break;
-                case 2:
-                    submit.cl = "status-success";
-                    submit.status = "合格";
-                    break;
-            }
-        } else {
-            switch (submit.status) {
-                case 0:
-                    submit.cl = "status-closing-notyet";
-                    submit.status = "未提出";
-                    break;
-                case 1:
-                    submit.cl = "status-closing-submited";
-                    submit.status = "提出済";
-                    break;
-                case 2:
-                    submit.cl = "status-closing-success";
-                    submit.status = "合格";
-                    break;
-            }
+var statusClasses = ["status-notyet-margin", "status-submitted", "status-success"];
+var statusClosingClasses = ["status-closing-notyet", "status-closing-submitted", "status-closing-success"];
+
+function chooseClass(status, remainingDays) {
+    if (remainingDays > 0) {
+        if (remainingDays < 7 && status == 0) {
+            return "status-notyet-danger";
         }
-        submit.endAtTime = submit.endAt.getTime();
-        submit.endAt = (+submit.endAt.getFullYear() - 2000) + "/" + ((+submit.endAt.getMonth() < 9) ? "0" : "") + (+submit.endAt.getMonth() + 1) + "/" + ((+submit.endAt.getDate() < 10) ? "0" : "") + submit.endAt.getDate();
-    });
-    return submits;
+        return statusClasses[status];
+    } else {
+        return statusClosingClasses[status];
+    }
+}
+
+var statusArray = ["未提出", "提出済", "合格"];
+var oneDay = 86400000;
+
+function createSubmitView(subject) {
+    var today = new Date();
+    var remainingDays = (subject.endAt - today) / oneDay;
+    console.log(remainingDays);
+    var status = subject.SubmitStatuses.status ? subject.SubmitStatuses.status : 0;
+    return {
+        id: subject.id,
+        name: subject.name,
+        status: statusArray[status],
+        endAt: formatEndAt(subject.endAt),
+        endAtTime: subject.endAt.getTime(),
+        cl: chooseClass(status, remainingDays)
+    };
 }
 
 module.exports = router;

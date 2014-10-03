@@ -4,7 +4,7 @@ $(function(){
   $('#myDataTable').tablesorter();
   
   $(".subjectInList").bind("click", function() {
-    var subjectId = $(this).attr("id");
+    var subjectId = $(this).parent().attr("id");
     location.href = "/editor/" + subjectId;
   });
 });

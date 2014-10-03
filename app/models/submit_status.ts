@@ -17,6 +17,12 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: false
         }
     }, {
+        classMethods: {
+            associate: (models) => {
+                SubmitStatus.belongsTo(models.Subject, {foreignKey: 'SubjectId'});
+                SubmitStatus.belongsTo(models.User, {foreignKet: 'UserId'});
+            }
+        }
     });
     return SubmitStatus;
 };

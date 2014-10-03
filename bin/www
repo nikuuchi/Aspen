@@ -6,7 +6,7 @@ var db = require('../app/models');
 app.set('port', process.env.PORT || 3000);
 
 
-//db.sequelize.sync().complete(function(err) {
+//db.sequelize.sync({ force: true}).complete(function(err) {
 //    if(err) {
 //        throw err[0];
 //    } else {

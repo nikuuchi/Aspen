@@ -15,6 +15,13 @@ module.exports = function (sequelize, DataTypes) {
             type: DataTypes.BOOLEAN,
             defaultValue: false
         }
-    }, {});
+    }, {
+        classMethods: {
+            associate: function (models) {
+                SubmitStatus.belongsTo(models.Subject, { foreignKey: 'SubjectId' });
+                SubmitStatus.belongsTo(models.User, { foreignKet: 'UserId' });
+            }
+        }
+    });
     return SubmitStatus;
 };

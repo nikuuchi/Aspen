@@ -21,12 +21,14 @@ router.post('/subject/new', function(req, res) {
         name: subject_name,
         url: "",
         content: content,
-        lectureId: 1, //Default Value
+        LectureId: 1, //Default Value
         startAt: subject_startAt,
         endAt: subject_endAt
     }).then(function(subject){
         console.log(subject);
         res.redirect('/');
+    }, function(err){
+        res.redirect('/subject');
     });
 });
 

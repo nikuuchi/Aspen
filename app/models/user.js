@@ -18,7 +18,7 @@ module.exports = function (sequelize, DataTypes) {
     }, {
         classMethods: {
             associate: function (models) {
-                User.hasMany(models.Subject, { through: models.SubmitStatus });
+                User.hasMany(models.SubmitStatus);
                 User.hasMany(models.Lecture);
             }
         }

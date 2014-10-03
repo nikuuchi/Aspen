@@ -6,7 +6,6 @@ module.exports = (sequelize, DataTypes) => {
         name:    DataTypes.STRING,
         url:     DataTypes.STRING,
         content: DataTypes.TEXT,
-        lectureId: DataTypes.INTEGER,
         startAt: DataTypes.DATE,
         endAt:   DataTypes.DATE,
         createdAt: {
@@ -20,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
     }, {
         classMethods: {
             associate: (models) => {
-                Subject.hasMany(models.User, { through: models.SubmitStatus });
+                Subject.hasMany(models.SubmitStatus);
             }
         }
     });

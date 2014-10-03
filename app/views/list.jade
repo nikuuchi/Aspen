@@ -33,10 +33,10 @@ block content
                     - }
                   tbody
                     - for(var i = 0; i < submits.length; i++){
-                      tr(class="#{submits[i].cl}")
-                        td.subjectInList(id="#{submits[i].id}") #{submits[i].name}
-                        td.subjectInList(id="#{submits[i].id}") #{submits[i].status}
-                        td.subjectInList(id="#{submits[i].id}") #{submits[i].endAt}
+                      tr(class="#{submits[i].cl}", id="#{submits[i].id}")
+                        td.subjectInList #{submits[i].name}
+                        td.subjectInList #{submits[i].status}
+                        td.subjectInList #{submits[i].endAt}
                     - }
         .mastfoot
           .inner
