@@ -2,12 +2,12 @@
 /// <reference path="index.ts"/>
 var FileManager = (function () {
     function FileManager() {
-        this.FTree = [];
-        this.FIndex = [];
+        this.FTree = [
+            { "text": "default", "id": "default", "children": [] }
+        ];
+        this.FIndex = [[]];
+        this.FIndex["default"] = 0;
     }
-    FileManager.prototype.constractor = function () {
-    };
-
     FileManager.prototype.ref = function () {
         return $('#sidebar').jstree(true);
     };
@@ -32,6 +32,10 @@ var FileManager = (function () {
 
     FileManager.prototype.getFile = function (obj) {
         var path = this.getCurrentPath("_");
+    };
+
+    FileManager.prototype.getDefaultNode = function () {
+        return "default";
     };
 
     FileManager.prototype.getSelectedNode = function () {

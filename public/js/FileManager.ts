@@ -3,10 +3,12 @@
 
 class FileManager {
   FTree:any = [
-    //{"text":"default", "children":[{"text":"program.c","type":"file"}]}
+    {"text":"default", "id":"default", "children":[]}
   ];
-  FIndex:any = [];
-  constractor() {
+  FIndex:any = [[]];
+  constructor() {
+    this.FIndex["default"] = 0;
+
   }
 
 
@@ -35,6 +37,10 @@ class FileManager {
   getFile(obj: any) {
     var path = this.getCurrentPath("_");
 
+  }
+
+  getDefaultNode() {
+    return "default";
   }
 
   getSelectedNode() : string {
