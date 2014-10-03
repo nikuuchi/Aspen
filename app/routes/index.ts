@@ -11,18 +11,32 @@ router.get('/', function(req, res) {
         db.User.find({where: {github_id: req.signedCookies.sessionUserId}}).then(function(user) {
             console.log(user);
             if(user) {
-                //Login
-                //ログインユーザの課題提出状況の提示
-                //TODO: DBからの読み出し
-                var tableHead = ["課題名", "提出状況", "締切"];
-                var datas = new Array();
-                datas.push({"id": 0, "name": "Hello World", "status": 0, "endAt": new Date("10/21/2014")});
-                datas.push({"id": 1, "name": "sort", "status": 1, "endAt": new Date("10/14/2014")});
-                datas.push({"id": 2, "name": "fib", "status": 1, "endAt": new Date("10/14/2014")});
-
-                datas = ConvertDataForView(datas);
-
-                res.render('list', { title: 'Aspen', tableHead: tableHead, datas: datas });
+              //Login
+              //ログインユーザの課題提出状況の提示
+              //TODO: DBからの読み出し
+              var tableHead = ["課題名", "提出状況", "締切"];
+              var datas = new Array();
+                //db.User.findAll({include: [{model: db.Subject, where: {id: user.id}}]}).then(function(subjects){
+                //  console.log(subjects);
+                //  subjects.forEach((subject) => {
+                //    datas.push({
+                //      "id": subject.SubjectId,
+                //      "name": subject.name,
+                //      "status": subject.status,
+                //      "endAt": subject.endAt
+                //    });
+                //  });
+                //
+                //
+                //
+                //  datas = ConvertDataForView(datas);
+                //  res.render('list', { title: 'Aspen', tableHead: tableHead, datas: datas });
+                //});
+              datas.push({"id": 0, "name": "Hello World", "status": 0, "endAt": new Date("10/21/2014")});
+              datas.push({"id": 1, "name": "sort", "status": 1, "endAt": new Date("10/14/2014")});
+              datas.push({"id": 2, "name": "fib", "status": 1, "endAt": new Date("10/14/2014")});
+              datas = ConvertDataForView(datas);
+              res.render('list', { title: 'Aspen', tableHead: tableHead, datas: datas });
             } else {
                 //Not login
                 res.render('top', { title: 'Aspen' });

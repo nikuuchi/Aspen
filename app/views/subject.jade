@@ -1,6 +1,7 @@
 extends layout
 
 block header
+  +css('/css/index.css')
   +css('/css/addSubject.css')
   include editor_css
 
@@ -9,6 +10,7 @@ block loadFiles
     +js('/js/subject_submit.js')
 
 block content
+  include topbar
   .container
     h1 課題製作画面
     form(role="form", action="/subject/new", method="POST", id="subject_form")
