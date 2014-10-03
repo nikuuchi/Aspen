@@ -32,29 +32,19 @@ module.exports = function (sequelize, DataTypes) {
             * ログイン状態の確認
             * @method login
             * @param {Object} cond ユーザの検索条件
-            * @param {Function} successCallback ログインしていた場合
-            * @param {Function} failureCallback ログインしていない、もしくは何らかのエラーで失敗した場合
             *
             */
-            login: function (cond, successCallback, failureCallback) {
-                User.find({ where: cond }).then(function (user) {
-                    if (user) {
-                        successCallback(user);
-                    } else {
-                        failureCallback();
-                    }
-                }, failureCallback);
+            login: function (cond) {
+                return User.find({ where: cond });
             },
             /**
             * 学生リストを取得する
             * 講義ごとの学生リストはまだ取得できない
             * @method getStudentList
             * @param {Number} lectureId 講義番号
-            * @param {Function} callback リストの操作
-            * @param {Function} failureCallback 失敗時
             */
-            getStudentList: function (lectureId, callback, failureCallback) {
-                User.findAll({ where: { role_admin: false } }).then(callback, failureCallback);
+            getStudentList: function (lectureId) {
+                return User.findAll({ where: { role_admin: false } });
             }
         }
     });

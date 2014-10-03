@@ -34,21 +34,17 @@ module.exports = function (sequelize, DataTypes) {
             * @method getStatuses
             * @param {Object} Seq Sequelize
             * @param {Object} SubmitStatus テーブル
-            * @param {Function} successCallback 成功した場合
-            * @param {Function} failureCallback 何らかの原因で失敗した場合
             */
-            getStatuses: function (Seq, SubmitStatus, successCallback, failureCallback) {
-                Subject.getStatusesByUser(Seq, SubmitStatus, null, successCallback, failureCallback);
+            getStatuses: function (Seq, SubmitStatus) {
+                return Subject.getStatusesByUser(Seq, SubmitStatus, null);
             },
             /**
             * 各ユーザの提出状況を検索する
             * @method getStatusesEachUser
             * @param {Object} Seq Sequelize
             * @param {Object} SubmitStatus テーブル
-            * @param {Function} successCallback 成功した場合
-            * @param {Function} failureCallback 何らかの原因で失敗した場合
             */
-            getStatusesEachUser: function (Seq, SubmitStatus, userId, successCallback, failureCallback) {
+            getStatusesEachUser: function (Seq, SubmitStatus, userId) {
                 var lectureId = { LectureId: 1 /* Default */  };
                 var eqUserId = { 'SubmitStatuses.UserId': userId };
                 var isNullUserId = { 'SubmitStatuses.UserId': null };
@@ -60,10 +56,10 @@ module.exports = function (sequelize, DataTypes) {
                 }
 
                 //left outer join
-                Subject.findAll({
+                return Subject.findAll({
                     include: [SubmitStatus],
                     where: where
-                }).then(successCallback, failureCallback);
+                });
             }
         }
     });

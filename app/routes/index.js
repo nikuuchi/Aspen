@@ -4,6 +4,7 @@ var express = require('express');
 var router = express.Router();
 var db = require('../models');
 var auth = require('../helper/auth');
+var Promise = require('bluebird');
 
 var tableHead = ["課題名", "提出状況", "締切"];
 
@@ -17,16 +18,20 @@ router.get('/', function (req, res) {
         return res.render('top');
     };
 
-    db.User.login({ github_id: req.signedCookies.sessionUserId }, function (user) {
-        var Seq = db.Sequelize;
-        db.Subject.getStatusesEachUser(Seq, db.SubmitStatus, user.id, function (subjects) {
-            var submits = [];
-            subjects.forEach(function (subject) {
-                submits.push(createSubmitView(subject));
-            });
-            res.render('list', { tableHead: tableHead, submits: submits });
-        }, failureCallback);
-    }, failureCallback);
+    db.User.login({ github_id: req.signedCookies.sessionUserId }).then(function (user) {
+        if (user == null) {
+            throw 'no login';
+        }
+        return db.Subject.getStatusesEachUser(db.Sequelize, db.SubmitStatus, user.id);
+    }).then(function (subjects) {
+        var submits = [];
+        subjects.forEach(function (subject) {
+            submits.push(createSubmitView(subject));
+        });
+        res.render('list', { tableHead: tableHead, submits: submits });
+    }).catch(function (err) {
+        res.render('top');
+    });
 });
 
 router.get('/subject/:file', function (req, res) {
