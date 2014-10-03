@@ -19,7 +19,7 @@ router.get('/', function (req, res) {
 
     db.User.login({ github_id: req.signedCookies.sessionUserId }, function (user) {
         var Seq = db.Sequelize;
-        db.Subject.getStatusesByUser(Seq, db.SubmitStatus, user.id, function (subjects) {
+        db.Subject.getStatusesEachUser(Seq, db.SubmitStatus, user.id, function (subjects) {
             var submits = [];
             subjects.forEach(function (subject) {
                 submits.push(createSubmitView(subject));
