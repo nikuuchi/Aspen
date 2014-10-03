@@ -4,8 +4,8 @@ block header
   +css('/css/index.css')
   +css('/css/editor.css')
   style.
-    body {
-      padding-top: 4em;
+    .site-wrapper {
+      padding-top: 3em;
     }
 
 block loadFiles
@@ -22,7 +22,7 @@ block content
             .row
               .col-sm-3.block-center-off
                 p.control-panel
-                  a.btn.btn-success(href="/subject/new") 新規課題の作成
+                  a.btn.btn-success(href="/subject") 新規課題の作成
                 p.control-panel
                   input.form-control.control-search(type="text")
                   | &nbsp;

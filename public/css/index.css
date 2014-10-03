@@ -305,6 +305,15 @@ body {
   color: rgba(255,255,255,.5);
 }
 
+.masthead {
+  width: 100%;
+  position: fixed;
+  top: 0;
+  background-color: rgb(255, 255, 255);
+  -webkit-box-shadow: 0 0 8px rgba(0,0,0,.4);
+          box-shadow: 0 0 8px rgba(0,0,0,.4);
+  z-index: 5;
+}
 
 /*
  * Affix and center
@@ -312,14 +321,8 @@ body {
 
 @media (min-width: 768px) {
   /* Pull out the header and footer */
-  .masthead {
-    width: 100%;
-    position: fixed;
-    top: 0;
-    background-color: rgb(255, 255, 255);
-    -webkit-box-shadow: 0 0 10px rgba(0,0,0,.5);
-            box-shadow: 0 0 10px rgba(0,0,0,.5);
-    z-index: 5;
+  .masthead{
+
   }
   .mastfoot {
     position: fixed;
@@ -342,13 +345,7 @@ body {
 
 @media (min-width: 992px) {
   .masthead{
-    width: 100%;
-    position: fixed;
-    top: 0;
-    background-color: rgb(255, 255, 255);
-    -webkit-box-shadow: 0 0 10px rgba(0,0,0,.5);
-            box-shadow: 0 0 10px rgba(0,0,0,.5);
-    z-index: 5;
+
   }
   .mastfoot,
   .cover-container {
