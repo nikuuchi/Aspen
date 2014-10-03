@@ -311,9 +311,10 @@ module C2JS {
             localStorage.removeItem(BaseName + '.c');
         }
 
-        Rename(oldBaseName: string, newname: string, contents: string, Callback: any, DB: SourceDB): void {
-            this.Remove(oldBaseName);
-            var file = new FileModel(oldBaseName);
+        Rename(oldBaseName: string, newname: string, contents: string, Callback: any, DB: SourceDB, path: string): void {
+            if(path === "") path = "default";
+            this.Remove(path + "_" + oldBaseName);
+            var file = new FileModel(newname, path.split("_").join("/"));
             this.Append(file, Callback);
             this.SetCurrent(file.GetBaseName());
             DB.Save(file.GetName(), contents);
@@ -911,14 +912,15 @@ $(function () {
         if(Files.Empty() || running) return;
         DB.Save(Files.GetCurrent().GetName(), Editor.GetValue());
         var oldfilebasename = Files.GetCurrent().GetNoPathName().split(".")[0];
+        var oldfilepath = Files.GetCurrent().GetPathArray().join("_");
         var oldfilecontents = Editor.GetValue();
 
         var filename = prompt("Rename: Please enter the file name.", oldfilebasename);
-        filename = C2JS.CheckFileName(filename, DB);
+        filename = C2JS.CheckFileName(filename, DB, oldfilepath);
         if(filename == null) {
             return;
         }
-        Files.Rename(oldfilebasename, filename, oldfilecontents, ChangeCurrentFile, DB);
+        Files.Rename(oldfilebasename, filename, oldfilecontents, ChangeCurrentFile, DB, oldfilepath);
         Editor.SetValue(oldfilecontents);
         DB.Save(Files.GetCurrent().GetName(), Editor.GetValue());
     };
