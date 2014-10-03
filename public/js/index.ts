@@ -313,7 +313,7 @@ module C2JS {
 
         Rename(oldBaseName: string, newname: string, contents: string, Callback: any, DB: SourceDB): void {
             this.Remove(oldBaseName);
-            var file = new FileModel(newname);
+            var file = new FileModel(oldBaseName);
             this.Append(file, Callback);
             this.SetCurrent(file.GetBaseName());
             DB.Save(file.GetName(), contents);
@@ -650,8 +650,13 @@ module C2JS {
         return FormatMessage(FormatFilename(ConvertTerminalColor(text), fileName), fileName);
     }
 
-    export function CheckFileName(name: string, DB: SourceDB, path: string = ""): string {
+    export function CheckFileName(name: string, DB: SourceDB, path: string = "default"): string {
         var filename = name;
+        if(path == "") {
+          path = "default";
+        } else {
+          path = path.split("/").join("_");
+        }
         if(filename == null) {
             return null;
         }
@@ -668,8 +673,8 @@ module C2JS {
         if(filename.match(/.*\.c/) == null) {
             filename += '.c';
         }
-        if(DB.Exist(path + filename)) {
-            alert("'"+path+filename+"' already exists.");
+        if(DB.Exist(path + "_" + filename)) {
+            alert("'"+filename+"' already exists.");
             return null;
         }
         return filename;
@@ -868,15 +873,14 @@ $(function () {
     };
 
     var CreateFileFunction = (e: any) => {
-        if(e.currentTarget.id !== "add-file-btn") Files.Tree.ref().deselect_all();
         if(running) return;
         var path: string;
-        if(!Files.Tree.getSelectedNode()){
+        if(e.currentTarget.id === "create-file") {
           path = "";
         } else {
           path = Files.Tree.getCurrentPath();
         }
-        if(Files.Tree.getCurrentType() == "file"){
+        if(path !== "" && Files.Tree.getCurrentType() == "file"){
           alert("フォルダを選択してください");
           return;
         }
@@ -886,7 +890,11 @@ $(function () {
         if(filename == null) {
             return;
         }
-        if(typeof Files.Tree.getSelectedNode() !== "undefined") Files.Tree.setFile(Files.Tree.getSelectedNode(), filename);
+        if(path !== "") {
+          Files.Tree.setFile(Files.Tree.getSelectedNode(), filename);
+        } else {
+          Files.Tree.setFile(Files.Tree.getDefaultNode(), filename);
+        }
         var file = new C2JS.FileModel(filename, path);
         Files.Append(file, ChangeCurrentFile);
         Files.SetCurrent(file.GetBaseName());
@@ -902,10 +910,10 @@ $(function () {
     var RenameFunction = (e: Event) => {
         if(Files.Empty() || running) return;
         DB.Save(Files.GetCurrent().GetName(), Editor.GetValue());
-        var oldfilebasename = Files.GetCurrent().GetBaseName();
+        var oldfilebasename = Files.GetCurrent().GetNoPathName().split(".")[0];
         var oldfilecontents = Editor.GetValue();
 
-        var filename = prompt("Rename: Please enter the file name.", oldfilebasename+".c");
+        var filename = prompt("Rename: Please enter the file name.", oldfilebasename);
         filename = C2JS.CheckFileName(filename, DB);
         if(filename == null) {
             return;

@@ -27,10 +27,10 @@ $(function() {
 
   var ref = $('#sidebar').jstree(true);
   $('#sidebar').on("changed.jstree", function (e, data) {
-    selectedNode = fm.getSelectedNode();
-    console.log(fm.getCurrentPath());
+    selectedNode = Aspen.Files.Tree.getSelectedNode();
+    console.log(Aspen.Files.Tree.getCurrentPath());
 
-    fm.getFile(selectedNode);
+    Aspen.Files.Tree.getFile(selectedNode);
 
   });
 
@@ -39,7 +39,7 @@ $(function() {
       alert("追加するフォルダを選択してください");
       return false;
     }
-    if(fm.getCurrentType() === "file") {
+    if(Aspen.Files.Tree.getCurrentType() === "file") {
       alert("フォルダを選択してください");
       return false;
     }
@@ -49,7 +49,7 @@ $(function() {
       return false;
     }
 
-    fm.setFolder(selectedNode, fname);
+    Aspen.Files.Tree.setFolder(selectedNode, fname);
 
   });
 
