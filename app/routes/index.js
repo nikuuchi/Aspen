@@ -69,7 +69,7 @@ router.get('/list/all', function (req, res) {
             return [subject.id, subject.name];
         });
         var submits = values[2].map(function (subject) {
-            return createSubmitView(subject);
+            return createAllSubmitView(subject);
         });
 
         res.render('all', {
@@ -112,11 +112,36 @@ function chooseClass(status, remainingDays) {
 var statusArray = ["未提出", "提出済", "合格"];
 var oneDay = 86400000;
 
+function createAllSubmitView(subject) {
+    var today = new Date();
+    var remainingDays = (subject.endAt - today) / oneDay;
+    var status = 0;
+    var student_name = '';
+    var student_number = '';
+    console.log(subject);
+    if (subject.SubmitStatuses[0]) {
+        student_name = subject.SubmitStatuses[0].User.name;
+        student_number = subject.SubmitStatuses[0].User.studentNumber;
+        status = subject.SubmitStatuses[0].status ? subject.SubmitStatuses[0].status : 0;
+    }
+    return {
+        id: subject.id,
+        student_name: student_name,
+        student_number: student_number,
+        subject_name: subject.name,
+        status: statusArray[status],
+        endAt: formatEndAt(subject.endAt),
+        endAtTime: subject.endAt.getTime(),
+        cl: chooseClass(status, remainingDays)
+    };
+}
+
 function createSubmitView(subject) {
     var today = new Date();
     var remainingDays = (subject.endAt - today) / oneDay;
     var status = 0;
     if (subject.SubmitStatuses[0]) {
+        console.log(subject.SubmitStatuses[0].User.name);
         status = subject.SubmitStatuses[0].status ? subject.SubmitStatuses[0].status : 0;
     }
     return {

@@ -66,7 +66,7 @@ router.get('/list/all', function(req, res) {
     ]).then(function(values) {
         var students = values[0].map((student) => [student.studentNumber, student.name]);
         var subjects = values[1].map((subject) => [subject.id, subject.name]);
-        var submits  = values[2].map((subject) => createSubmitView(subject));
+        var submits  = values[2].map((subject) => createAllSubmitView(subject));
 
         res.render('all', {
             tableHead: tableHead,
@@ -109,11 +109,36 @@ function chooseClass(status, remainingDays) {
 var statusArray = ["未提出", "提出済", "合格"];
 var oneDay = 86400000;
 
+function createAllSubmitView(subject) {
+    var today = new Date();
+    var remainingDays = ((<any>subject.endAt) - (<any>today)) / oneDay;
+    var status = 0;
+    var student_name = '';
+    var student_number = '';
+    console.log(subject);
+    if(subject.SubmitStatuses[0]) {
+        student_name = subject.SubmitStatuses[0].User.name;
+        student_number = subject.SubmitStatuses[0].User.studentNumber;
+        status = subject.SubmitStatuses[0].status? subject.SubmitStatuses[0].status : 0;
+    }
+    return {
+        id: subject.id,
+        student_name: student_name,
+        student_number: student_number,
+        subject_name: subject.name,
+        status: statusArray[status],
+        endAt: formatEndAt(subject.endAt),
+        endAtTime: subject.endAt.getTime(),
+        cl: chooseClass(status, remainingDays),
+    }
+}
+
 function createSubmitView(subject) {
     var today = new Date();
     var remainingDays = ((<any>subject.endAt) - (<any>today)) / oneDay;
     var status = 0;
     if(subject.SubmitStatuses[0]) {
+        console.log(subject.SubmitStatuses[0].User.name);
         status = subject.SubmitStatuses[0].status? subject.SubmitStatuses[0].status : 0;
     }
     return {
