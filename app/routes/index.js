@@ -15,28 +15,19 @@ router.get('/', function (req, res) {
                 //TODO: DBからの読み出し
                 var tableHead = ["課題名", "提出状況", "締切"];
                 var datas = new Array();
-
-                //db.User.findAll({include: [{model: db.Subject, where: {id: user.id}}]}).then(function(subjects){
-                //  console.log(subjects);
-                //  subjects.forEach((subject) => {
-                //    datas.push({
-                //      "id": subject.SubjectId,
-                //      "name": subject.name,
-                //      "status": subject.status,
-                //      "endAt": subject.endAt
-                //    });
-                //  });
-                //
-                //
-                //
-                //  datas = ConvertDataForView(datas);
-                //  res.render('list', { title: 'Aspen', tableHead: tableHead, datas: datas });
-                //});
-                datas.push({ "id": 0, "name": "Hello World", "status": 0, "endAt": new Date("10/21/2014") });
-                datas.push({ "id": 1, "name": "sort", "status": 1, "endAt": new Date("10/14/2014") });
-                datas.push({ "id": 2, "name": "fib", "status": 1, "endAt": new Date("10/14/2014") });
-                datas = ConvertDataForView(datas);
-                res.render('list', { title: 'Aspen', tableHead: tableHead, datas: datas });
+                db.User.findAll({ where: { id: user.id }, include: { model: db.Subject, required: true } }).then(function (subjects) {
+                    console.log(subjects);
+                    subjects.forEach(function (subject) {
+                        datas.push({
+                            "id": subject.SubjectId,
+                            "name": subject.name,
+                            "status": subject.status,
+                            "endAt": subject.endAt
+                        });
+                    });
+                    datas = convertSubmitsForView(datas);
+                    res.render('list', { title: 'Aspen', tableHead: tableHead, datas: datas });
+                });
             } else {
                 //Not login
                 res.render('top', { title: 'Aspen' });
@@ -51,10 +42,13 @@ router.get('/', function (req, res) {
 });
 
 router.get('/subject/:file', function (req, res) {
-    res.render('editor'); //FIXME
+    //TODO アクセス制限
+    //作成した課題自体の編集を行う
+    res.render('subject'); //FIXME
 });
 
 router.get('/editor/:name', function (req, res) {
+    //TODO アクセス制限
     res.render('editorView'); //TODO use :name
 });
 
@@ -63,56 +57,57 @@ router.get('/editor', function (req, res) {
 });
 
 router.get('/user/:userid', function (req, res) {
-    res.render('mypage');
+    //TODO アクセス制限
+    res.render('list');
 });
 
 router.get('/list/all', function (req, res) {
     //TODO DB
     var tableHead = ["学籍番号", "氏名", "課題名", "提出状況", "締切"];
-    var datas = new Array();
-    datas.push({
+    var submits = new Array();
+    submits.push({
         "subject_id": 3, "student_number": 1464150, "student_name": "須藤建", "subject_name": "sort", "status": 0, "endAt": new Date("10/21/2014")
     });
-    datas.push({
+    submits.push({
         "subject_id": 3, "student_number": 1464183, "student_name": "田村健介", "subject_name": "sort", "status": 0, "endAt": new Date("10/21/2014")
     });
-    datas.push({
+    submits.push({
         "subject_id": 3, "student_number": 1464184, "student_name": "田村侑士", "subject_name": "sort", "status": 1, "endAt": new Date("10/21/2014")
     });
-    datas.push({
+    submits.push({
         "subject_id": 3, "student_number": 1464275, "student_name": "山口真弥", "subject_name": "sort", "status": 0, "endAt": new Date("10/21/2014")
     });
-    datas.push({
+    submits.push({
         "subject_id": 3, "student_number": 1464311, "student_name": "本多峻", "subject_name": "sort", "status": 2, "endAt": new Date("10/21/2014")
     });
-    datas.push({
+    submits.push({
         "subject_id": 2, "student_number": 1464150, "student_name": "須藤建", "subject_name": "fib", "status": 2, "endAt": new Date("10/7/2014")
     });
-    datas.push({
+    submits.push({
         "subject_id": 2, "student_number": 1464183, "student_name": "田村健介", "subject_name": "fib", "status": 1, "endAt": new Date("10/7/2014")
     });
-    datas.push({
+    submits.push({
         "subject_id": 2, "student_number": 1464184, "student_name": "田村侑士", "subject_name": "fib", "status": 0, "endAt": new Date("10/7/2014")
     });
-    datas.push({
+    submits.push({
         "subject_id": 2, "student_number": 1464275, "student_name": "山口真弥", "subject_name": "fib", "status": 0, "endAt": new Date("10/7/2014")
     });
-    datas.push({
+    submits.push({
         "subject_id": 2, "student_number": 1464311, "student_name": "本多峻", "subject_name": "fib", "status": 1, "endAt": new Date("10/7/2014")
     });
-    datas.push({
+    submits.push({
         "subject_id": 1, "student_number": 1464150, "student_name": "須藤建", "subject_name": "Hello World", "status": 1, "endAt": new Date("9/27/2014")
     });
-    datas.push({
+    submits.push({
         "subject_id": 1, "student_number": 1464183, "student_name": "田村健介", "subject_name": "Hello World", "status": 0, "endAt": new Date("9/27/2014")
     });
-    datas.push({
+    submits.push({
         "subject_id": 1, "student_number": 1464184, "student_name": "田村侑士", "subject_name": "Hello World", "status": 2, "endAt": new Date("9/27/2014")
     });
-    datas.push({
+    submits.push({
         "subject_id": 1, "student_number": 1464275, "student_name": "山口真弥", "subject_name": "Hello World", "status": 1, "endAt": new Date("9/27/2014")
     });
-    datas.push({
+    submits.push({
         "subject_id": 1, "student_number": 1464311, "student_name": "本多峻", "subject_name": "Hello World", "status": 0, "endAt": new Date("9/27/2014")
     });
     var students = [];
@@ -127,13 +122,9 @@ router.get('/list/all', function (req, res) {
     subjects.push([3, "sort"]);
     subjects.push([4, "if"]);
 
-    datas = ConvertDataForView(datas);
+    submits = convertSubmitsForView(submits);
 
-    res.render('all', { title: 'Aspen', tableHead: tableHead, datas: datas, students: students, subjects: subjects });
-});
-
-router.get('/subject/:file', function (req, res) {
-    res.send('file: ' + req.params.file);
+    res.render('all', { title: 'Aspen', tableHead: tableHead, submits: submits, students: students, subjects: subjects });
 });
 
 router.get('/subject', function (req, res) {
@@ -142,56 +133,57 @@ router.get('/subject', function (req, res) {
 });
 
 router.get('/register', function (req, res) {
+    //TODO アクセス制限
     res.render('register');
 });
 
-function ConvertDataForView(datas) {
+function convertSubmitsForView(submits) {
     var today = new Date();
     var oneDay = 86400000;
     var period;
 
-    datas.forEach(function (data) {
-        period = data.endAt.getTime() - today.getTime();
+    submits.forEach(function (submit) {
+        period = submit.endAt.getTime() - today.getTime();
         period = period / oneDay;
-        if (data.endAt.getTime() > today.getTime()) {
-            switch (data.status) {
+        if (submit.endAt.getTime() > today.getTime()) {
+            switch (submit.status) {
                 case 0:
                     if (period < 7) {
-                        data.cl = "status-notyet-danger";
+                        submit.cl = "status-notyet-danger";
                     } else {
-                        data.cl = "status-notyet-margin";
+                        submit.cl = "status-notyet-margin";
                     }
-                    data.status = "未提出";
+                    submit.status = "未提出";
                     break;
                 case 1:
-                    data.cl = "status-submited";
-                    data.status = "提出済";
+                    submit.cl = "status-submited";
+                    submit.status = "提出済";
                     break;
                 case 2:
-                    data.cl = "status-success";
-                    data.status = "合格";
+                    submit.cl = "status-success";
+                    submit.status = "合格";
                     break;
             }
         } else {
-            switch (data.status) {
+            switch (submit.status) {
                 case 0:
-                    data.cl = "status-closing-notyet";
-                    data.status = "未提出";
+                    submit.cl = "status-closing-notyet";
+                    submit.status = "未提出";
                     break;
                 case 1:
-                    data.cl = "status-closing-submited";
-                    data.status = "提出済";
+                    submit.cl = "status-closing-submited";
+                    submit.status = "提出済";
                     break;
                 case 2:
-                    data.cl = "status-closing-success";
-                    data.status = "合格";
+                    submit.cl = "status-closing-success";
+                    submit.status = "合格";
                     break;
             }
         }
-        data.endAtTime = data.endAt.getTime();
-        data.endAt = (+data.endAt.getFullYear() - 2000) + "/" + ((+data.endAt.getMonth() < 9) ? "0" : "") + (+data.endAt.getMonth() + 1) + "/" + ((+data.endAt.getDate() < 10) ? "0" : "") + data.endAt.getDate();
+        submit.endAtTime = submit.endAt.getTime();
+        submit.endAt = (+submit.endAt.getFullYear() - 2000) + "/" + ((+submit.endAt.getMonth() < 9) ? "0" : "") + (+submit.endAt.getMonth() + 1) + "/" + ((+submit.endAt.getDate() < 10) ? "0" : "") + submit.endAt.getDate();
     });
-    return datas;
+    return submits;
 }
 
 module.exports = router;

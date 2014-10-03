@@ -16,7 +16,7 @@ router.get('/', function(req, res) {
               //TODO: DBからの読み出し
               var tableHead = ["課題名", "提出状況", "締切"];
               var datas = new Array();
-                db.User.findAll({include: [{model: db.Subject, where: {id: user.id}}]}).then(function(subjects){
+                db.User.findAll({where: {id: user.id}, include: {model: db.Subject, required: true}}).then(function(subjects){
                   console.log(subjects);
                   subjects.forEach((subject) => {
                     datas.push({

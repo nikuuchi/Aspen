@@ -5,18 +5,24 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL';
 ALTER TABLE `aspen`.`Subjects` 
 DROP FOREIGN KEY `fk_subject_lecture`;
 
+ALTER TABLE `aspen`.`Lectures` 
+CHANGE COLUMN `createdAt` `createdAt` DATETIME NOT NULL DEFAULT now() ;
+
 ALTER TABLE `aspen`.`Subjects` 
 DROP COLUMN `lecture_id`,
 CHANGE COLUMN `endAt` `endAt` DATETIME NULL DEFAULT NULL ,
-ADD COLUMN `lectureId` INT(11) NOT NULL AFTER `content`,
+ADD COLUMN `LectureId` INT(11) NOT NULL AFTER `content`,
 DROP PRIMARY KEY,
-ADD PRIMARY KEY (`id`, `lectureId`),
+ADD PRIMARY KEY (`id`, `LectureId`),
 DROP INDEX `fk_subject_lecture_idx` ,
-ADD INDEX `fk_subject_lecture_idx` (`lectureId` ASC);
+ADD INDEX `fk_subject_lecture_idx` (`LectureId` ASC);
+
+ALTER TABLE `aspen`.`LecturesUsers` 
+CHANGE COLUMN `createdAt` `createdAt` DATETIME NOT NULL DEFAULT now() ;
 
 ALTER TABLE `aspen`.`Subjects` 
 ADD CONSTRAINT `fk_subject_lecture`
-  FOREIGN KEY (`lectureId`)
+  FOREIGN KEY (`LectureId`)
   REFERENCES `aspen`.`Lectures` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
