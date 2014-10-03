@@ -1004,7 +1004,9 @@ $(function () {
         DB.Save(Files.GetCurrent().GetName(), Editor.GetValue());
     });
 
-    if(DB.Exist(Files.GetCurrent().GetName())) {
+    if($("#file-content").length > 0) {
+        Editor.SetValue($("#file-content").text());
+    } else if(DB.Exist(Files.GetCurrent().GetName())) {
         Editor.SetValue(DB.Load(Files.GetCurrent().GetName()));
     }
 

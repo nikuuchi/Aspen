@@ -42,12 +42,29 @@ router.get('/subject/:file', function(req, res) {
 });
 
 router.get('/editor/:name', function(req, res) {
-    //TODO アクセス制限
-    res.render('editorView'); //TODO use :name
+    if(!auth.isLogin(req)) {
+        res.redirect('/');
+        return;
+    }
+    db.User.find({where: {github_id: req.signedCookies.sessionUserId}})
+                .then(function(user) {
+                    return db.SubmitStatus.find({where: db.Sequelize.and({UserId: user.id},{SubjectId: req.params.name})
+                });
+                }).then(function(status) {
+                    if(status) {
+                        res.render('editorView', {has_content: true, content: status.content});
+                    } else {
+                        return db.Subject.find({where: {id: req.params.name}});
+                    }
+                }).then(function(subject) {
+                    res.render('editorView', {has_content: true, content: subject.content});
+                }).catch(function(err) {
+                    console.log(err);
+                });
 });
 
 router.get('/editor', function(req, res) {
-    res.render('editorView');
+    res.render('editorView', {has_content: false});
 });
 
 

@@ -6,5 +6,8 @@ block header
 block content
   .demo-editor
     include editor
+  - if(has_content) {
+  #file-content(style="display: none")= content
+  - }
   .mastfoot
     .inner
