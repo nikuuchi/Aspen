@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS `aspen`.`Lectures` (
   `name` TEXT NOT NULL,
   `startAt` DATETIME NOT NULL DEFAULT now(),
   `deleteFlag` TINYINT(1) NOT NULL DEFAULT 0,
-  `createdAt` DATETIME NOT NULL,
+  `createdAt` DATETIME NOT NULL DEFAULT now(),
   `updatedAt` DATETIME NOT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;
@@ -48,18 +48,18 @@ DROP TABLE IF EXISTS `aspen`.`Subjects` ;
 CREATE TABLE IF NOT EXISTS `aspen`.`Subjects` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
-  `url` VARCHAR(255) NULL DEFAULT NULL,
+  `url` VARCHAR(255) NULL,
   `content` LONGTEXT NOT NULL,
-  `lectureId` INT NOT NULL,
+  `LectureId` INT NOT NULL,
   `startAt` DATETIME NULL DEFAULT NULL,
   `endAt` DATETIME NULL,
   `createdAt` DATETIME NULL DEFAULT NULL,
   `updatedAt` DATETIME NULL DEFAULT NULL,
   `deleteFlag` TINYINT(1) NOT NULL DEFAULT 0,
-  PRIMARY KEY (`id`, `lectureId`),
-  INDEX `fk_subject_lecture_idx` (`lectureId` ASC),
+  PRIMARY KEY (`id`, `LectureId`),
+  INDEX `fk_subject_lecture_idx` (`LectureId` ASC),
   CONSTRAINT `fk_subject_lecture`
-    FOREIGN KEY (`lectureId`)
+    FOREIGN KEY (`LectureId`)
     REFERENCES `aspen`.`Lectures` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
@@ -74,7 +74,7 @@ DROP TABLE IF EXISTS `aspen`.`LecturesUsers` ;
 CREATE TABLE IF NOT EXISTS `aspen`.`LecturesUsers` (
   `LectureId` INT NOT NULL,
   `UserId` INT NOT NULL,
-  `createdAt` DATETIME NOT NULL,
+  `createdAt` DATETIME NOT NULL DEFAULT now(),
   `updatedAt` DATETIME NOT NULL,
   PRIMARY KEY (`LectureId`, `UserId`),
   INDEX `fk_lecture_has_user_user1_idx` (`UserId` ASC),
@@ -116,7 +116,7 @@ CREATE TABLE IF NOT EXISTS `aspen`.`SubmitStatuses` (
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_user_has_subject_subject1`
     FOREIGN KEY (`SubjectId` , `id`)
-    REFERENCES `aspen`.`Subjects` (`id` , `lectureId`)
+    REFERENCES `aspen`.`Subjects` (`id` , `LectureId`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;

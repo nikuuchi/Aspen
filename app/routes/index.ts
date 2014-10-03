@@ -11,18 +11,24 @@ router.get('/', function(req, res) {
         db.User.find({where: {github_id: req.signedCookies.sessionUserId}}).then(function(user) {
             console.log(user);
             if(user) {
-                //Login
-                //ログインユーザの課題提出状況の提示
-                //TODO: DBからの読み出し Left join
-                var tableHead = ["課題名", "提出状況", "締切"];
-                var submits = new Array();
-                submits.push({"id": 0, "name": "Hello World", "status": 0, "endAt": new Date("10/21/2014")});
-                submits.push({"id": 1, "name": "sort", "status": 1, "endAt": new Date("10/14/2014")});
-                submits.push({"id": 2, "name": "fib", "status": 1, "endAt": new Date("10/14/2014")});
-
-                submits = ConvertSubmitsForView(submits);
-
-                res.render('list', { title: 'Aspen', tableHead: tableHead, submits: submits });
+              //Login
+              //ログインユーザの課題提出状況の提示
+              //TODO: DBからの読み出し
+              var tableHead = ["課題名", "提出状況", "締切"];
+              var datas = new Array();
+                db.User.findAll({include: [{model: db.Subject, where: {id: user.id}}]}).then(function(subjects){
+                  console.log(subjects);
+                  subjects.forEach((subject) => {
+                    datas.push({
+                      "id": subject.SubjectId,
+                      "name": subject.name,
+                      "status": subject.status,
+                      "endAt": subject.endAt
+                    });
+                  });
+                  datas = convertSubmitsForView(datas);
+                  res.render('list', { title: 'Aspen', tableHead: tableHead, datas: datas });
+                });
             } else {
                 //Not login
                 res.render('top', { title: 'Aspen' });
@@ -118,7 +124,7 @@ router.get('/list/all', function(req, res) {
     subjects.push([3, "sort"]);
     subjects.push([4, "if"]);
 
-    submits = ConvertSubmitsForView(submits);
+    submits = convertSubmitsForView(submits);
 
     res.render('all', {title: 'Aspen', tableHead: tableHead, submits: submits, students: students, subjects: subjects});
 });
@@ -135,7 +141,7 @@ router.get('/register', function(req, res) {
 
 
 
-function ConvertSubmitsForView(submits){
+function convertSubmitsForView(submits){
   var today = new Date();
   var oneDay = 86400000;
   var period;
