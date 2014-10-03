@@ -35,8 +35,9 @@ router.post('/subject/new', function(req, res) {
 router.post('/register', function(req, res) {
     var studentNumber = req.body.inputNumber;
     var userName = req.body.inputName;
-    var userId   = req.session.UserId;
-    db.User.find({github_id: req.session.UserId }).then(function(user) {
+    var userId   = req.signedCookies.sessionUserId;
+    console.log(req.signedCookies);
+    db.User.find({where: {github_id: userId}}).then(function(user) {
         user.studentNumber = studentNumber;
         user.name = userName;
         user.save().then(function() {

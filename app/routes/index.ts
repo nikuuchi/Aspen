@@ -19,14 +19,13 @@ router.get('/', function(req, res) {
     db.User.login({github_id: req.signedCookies.sessionUserId})
         .then(function(user) {
             if(user == null) {
-                throw 'no login';
+                throw 'no login'; //move to catch
             }
             return db.Subject.getStatusesEachUser((<any>db).Sequelize, db.SubmitStatus, user.id);
         })
         .then(function(subjects) {
-            var submits = [];
-            subjects.forEach((subject) => {
-                submits.push(createSubmitView(subject));
+            var submits = subjects.map((subject) => {
+                return createSubmitView(subject);
             });
             res.render('list', { tableHead: tableHead, submits: submits });
         })
@@ -59,67 +58,27 @@ router.get('/user/:userid', function(req, res) {
 router.get('/list/all', function(req, res) {
     //TODO DB
     var tableHead = ["学籍番号", "氏名", "課題名", "提出状況", "締切"];
-    var submits = new Array();
-    submits.push({
-      "subject_id": 3, "student_number": 1464150, "student_name": "須藤建", "subject_name": "sort", "status": 0, "endAt": new Date("10/21/2014")
-      });
-    submits.push({
-      "subject_id": 3, "student_number": 1464183, "student_name": "田村健介", "subject_name": "sort", "status": 0, "endAt": new Date("10/21/2014")
-      });
-    submits.push({
-      "subject_id": 3, "student_number": 1464184, "student_name": "田村侑士", "subject_name": "sort", "status": 1, "endAt": new Date("10/21/2014")
-      });
-    submits.push({
-      "subject_id": 3, "student_number": 1464275, "student_name": "山口真弥", "subject_name": "sort", "status": 0, "endAt": new Date("10/21/2014")
-      });
-    submits.push({
-      "subject_id": 3, "student_number": 1464311, "student_name": "本多峻", "subject_name": "sort", "status": 2, "endAt": new Date("10/21/2014")
-      });
-    submits.push({
-      "subject_id": 2, "student_number": 1464150, "student_name": "須藤建", "subject_name": "fib", "status": 2, "endAt": new Date("10/7/2014")
-      });
-    submits.push({
-      "subject_id": 2, "student_number": 1464183, "student_name": "田村健介", "subject_name": "fib", "status": 1, "endAt": new Date("10/7/2014")
-      });
-    submits.push({
-      "subject_id": 2, "student_number": 1464184, "student_name": "田村侑士", "subject_name": "fib", "status": 0, "endAt": new Date("10/7/2014")
-      });
-    submits.push({
-      "subject_id": 2, "student_number": 1464275, "student_name": "山口真弥", "subject_name": "fib", "status": 0, "endAt": new Date("10/7/2014")
-      });
-    submits.push({
-      "subject_id": 2, "student_number": 1464311, "student_name": "本多峻", "subject_name": "fib", "status": 1, "endAt": new Date("10/7/2014")
-      });
-    submits.push({
-      "subject_id": 1, "student_number": 1464150, "student_name": "須藤建", "subject_name": "Hello World", "status": 1, "endAt": new Date("9/27/2014")
-      });
-    submits.push({
-      "subject_id": 1, "student_number": 1464183, "student_name": "田村健介", "subject_name": "Hello World", "status": 0, "endAt": new Date("9/27/2014")
-      });
-    submits.push({
-      "subject_id": 1, "student_number": 1464184, "student_name": "田村侑士", "subject_name": "Hello World", "status": 2, "endAt": new Date("9/27/2014")
-      });
-    submits.push({
-      "subject_id": 1, "student_number": 1464275, "student_name": "山口真弥", "subject_name": "Hello World", "status": 1, "endAt": new Date("9/27/2014")
-      });
-    submits.push({
-      "subject_id": 1, "student_number": 1464311, "student_name": "本多峻", "subject_name": "Hello World", "status": 0, "endAt": new Date("9/27/2014")
-      });
-    var students = [];
-    students.push([1464183, "田村健介"]);
-    students.push([1464150, "須藤建"]);
-    students.push([1464184, "田村侑士"]);
-    students.push([1464275, "山口真弥"]);
-    students.push([1464311, "本多峻"]);
-    var subjects = [];
-    subjects.push([1, "Hello World"]);
-    subjects.push([2, "fib"]);
-    subjects.push([3, "sort"]);
-    subjects.push([4, "if"]);
+//"subject_id": 3, "student_number": 1464150, "student_name": "須藤建", "subject_name": "sort", "status": 0, "endAt": new Date("10/21/2014")
 
-    //submits = convertSubmitsForView(submits);
+//    students.push([1464183, "田村健介"]);
+//    subjects.push([1, "Hello World"]);
 
-    res.render('all', {tableHead: tableHead, submits: submits, students: students, subjects: subjects});
+
+    var lectureId = 1; //TODO Lecture
+    Promise.all([
+        db.User.getStudentList(lectureId),
+        db.Subject.getList(lectureId),
+        db.Subject.getStatuses(db)
+    ]).then(function(values) {
+        var students = values[0].map((student) => [student.studentNumber, student.name]);
+        console.log(students);
+        var subjects = values[1].map((subject) => [subject.id, subject.name]);
+        console.log(subjects);
+        var submits  = values[2].map((subject) => createSubmitView(subject));
+        console.log(submits);
+
+        res.render('all', {tableHead: tableHead, submits: submits, students: students, subjects: subjects});
+    });
 });
 
 router.get('/subject', function(req, res) {
@@ -157,8 +116,10 @@ var oneDay = 86400000;
 function createSubmitView(subject) {
     var today = new Date();
     var remainingDays = ((<any>subject.endAt) - (<any>today)) / oneDay;
-    console.log(remainingDays);
-    var status = subject.SubmitStatuses.status? subject.SubmitStatuses.status : 0;
+    var status = 0;
+    if(subject.SubmitStatuses[0]) {
+        status = subject.SubmitStatuses[0].status? subject.SubmitStatuses[0].status : 0;
+    }
     return {
         id: subject.id,
         name: subject.name,

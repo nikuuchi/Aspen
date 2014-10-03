@@ -57,13 +57,13 @@ block content
                       th #{tableHead[i]}
                     - }
                   tbody
-                    - for(var i = 0; i < datas.length; i++){
-                    tr(class="#{datas[i].cl}", subjectId="#{datas[i].subject_id}", studentNumber="#{datas[i].student_number}")
-                      td.submitedInList(subjectId="#{datas[i].subject_id}", studentNumber="#{datas[i].student_number}") #{datas[i].student_number}
-                      td.submitedInList(subjectId="#{datas[i].subject_id}", studentNumber="#{datas[i].student_number}") #{datas[i].student_name}
-                      td.submitedInList(subjectId="#{datas[i].subject_id}", studentNumber="#{datas[i].student_number}") #{datas[i].subject_name}
-                      td.submitedInList.status-text(subjectId="#{datas[i].subject_id}", studentNumber="#{datas[i].student_number}") #{datas[i].status}
-                      td.submitedInList(subjectId="#{datas[i].subject_id}", studentNumber="#{datas[i].student_number}") #{datas[i].endAt}
+                    - for(var i = 0; i < submits.length; i++){
+                    tr(class="#{submits[i].cl}", subjectId="#{submits[i].subject_id}", studentNumber="#{submits[i].student_number}")
+                      td.submitedInList(subjectId="#{submits[i].subject_id}", studentNumber="#{submits[i].student_number}") #{submits[i].student_number}
+                      td.submitedInList(subjectId="#{submits[i].subject_id}", studentNumber="#{submits[i].student_number}") #{submits[i].student_name}
+                      td.submitedInList(subjectId="#{submits[i].subject_id}", studentNumber="#{submits[i].student_number}") #{submits[i].subject_name}
+                      td.submitedInList.status-text(subjectId="#{submits[i].subject_id}", studentNumber="#{submits[i].student_number}") #{submits[i].status}
+                      td.submitedInList(subjectId="#{submits[i].subject_id}", studentNumber="#{submits[i].student_number}") #{submits[i].endAt}
                     - }
         .mastfoot
           .inner
