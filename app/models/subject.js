@@ -19,6 +19,17 @@ module.exports = function (sequelize, DataTypes) {
         classMethods: {
             associate: function (models) {
                 Subject.hasMany(models.SubmitStatus);
+            },
+            getStatuses: function (Seq, SubmitStatus, userId, successCallback, failureCallback) {
+                var lectureId = { LectureId: 1 /* Default */  };
+                var eqUserId = { 'SubmitStatuses.UserId': userId };
+                var isNullUserId = { 'SubmitStatuses.UserId': null };
+
+                //left outer join
+                Subject.findAll({
+                    include: [SubmitStatus],
+                    where: Seq.and(lectureId, Seq.or(eqUserId, isNullUserId))
+                }).then(successCallback, failureCallback);
             }
         }
     });

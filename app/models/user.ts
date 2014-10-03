@@ -21,6 +21,15 @@ module.exports = (sequelize, DataTypes) => {
             associate: (models) => {
                 User.hasMany(models.SubmitStatus);
                 User.hasMany(models.Lecture);
+            },
+            login: (cond, successCallback, failureCallback) => {
+                User.find({where: cond}).then(function(user) {
+                    if(user) {
+                        successCallback(user);
+                    } else {
+                        failureCallback();
+                    }
+                }, failureCallback);
             }
         }
     });

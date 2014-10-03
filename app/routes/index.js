@@ -4,41 +4,29 @@ var express = require('express');
 var router = express.Router();
 var db = require('../models');
 
+var tableHead = ["課題名", "提出状況", "締切"];
+
 /* GET home page. */
 router.get('/', function (req, res) {
     if (req.signedCookies) {
-        db.User.find({ where: { github_id: req.signedCookies.sessionUserId } }).then(function (user) {
-            console.log(user);
-            if (user) {
-                //Login
-                //ログインユーザの課題提出状況の提示
-                var tableHead = ["課題名", "提出状況", "締切"];
-                var submits = [];
-                var Seq = db.Sequelize;
-
-                //left outer join
-                db.Subject.findAll({
-                    include: [db.SubmitStatus],
-                    where: Seq.and({ LectureId: 1 /*Default */  }, Seq.or({ 'SubmitStatuses.UserId': user.id }, { 'SubmitStatuses.UserId': null }))
-                }).then(function (subjects) {
-                    console.log(subjects);
-                    if (subjects) {
-                        subjects.forEach(function (subject) {
-                            submits.push(createSubmitView(subject));
-                        });
-                    }
-                    res.render('list', { title: 'Aspen', tableHead: tableHead, submits: submits });
+        db.User.login({ github_id: req.signedCookies.sessionUserId }, function (user) {
+            var submits = [];
+            var Seq = db.Sequelize;
+            db.Subject.getStatuses(Seq, db.SubmitStatus, user.id, function (subjects) {
+                subjects.forEach(function (subject) {
+                    submits.push(createSubmitView(subject));
                 });
-            } else {
-                //Not login
-                res.render('top', { title: 'Aspen' });
-            }
-        }, function (err) {
-            res.send(err);
+                res.render('list', { tableHead: tableHead, submits: submits });
+            }, function () {
+                //TODO Error
+                res.render('top');
+            });
+        }, function () {
+            res.render('top');
         });
     } else {
         //Not login(初回アクセス?)
-        res.render('top', { title: 'Aspen' });
+        res.render('top');
     }
 });
 
@@ -124,7 +112,7 @@ router.get('/list/all', function (req, res) {
     subjects.push([4, "if"]);
 
     //submits = convertSubmitsForView(submits);
-    res.render('all', { title: 'Aspen', tableHead: tableHead, submits: submits, students: students, subjects: subjects });
+    res.render('all', { tableHead: tableHead, submits: submits, students: students, subjects: subjects });
 });
 
 router.get('/subject', function (req, res) {

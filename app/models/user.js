@@ -20,6 +20,15 @@ module.exports = function (sequelize, DataTypes) {
             associate: function (models) {
                 User.hasMany(models.SubmitStatus);
                 User.hasMany(models.Lecture);
+            },
+            login: function (cond, successCallback, failureCallback) {
+                User.find({ where: cond }).then(function (user) {
+                    if (user) {
+                        successCallback(user);
+                    } else {
+                        failureCallback();
+                    }
+                }, failureCallback);
             }
         }
     });
