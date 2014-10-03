@@ -752,6 +752,12 @@ $(function () {
     var Context = {};
     var Files = new C2JS.FileCollection();
 
+    //初期ページでは提出ボタンを出さないようにする
+    if (location.pathname == "/") {
+        var submit_button = $("#submit-file");
+        submit_button.hide();
+    }
+
     Aspen.Editor = Editor;
     Aspen.Output = Output;
     Aspen.Source = DB;

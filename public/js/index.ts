@@ -699,6 +699,11 @@ $(function () {
     var Context: any = {}; //TODO refactor C2JS.Response
     var Files: C2JS.FileCollection = new C2JS.FileCollection();
 
+    //初期ページでは提出ボタンを出さないようにする
+    if(location.pathname == "/") {
+        var submit_button = $("#submit-file");
+        submit_button.hide();
+    }
 
     Aspen.Editor = Editor;
     Aspen.Output = Output;
