@@ -13,7 +13,7 @@ router.get('/', function(req, res) {
             if(user) {
                 //Login
                 //ログインユーザの課題提出状況の提示
-                //TODO: DBからの読み出し
+                //TODO: DBからの読み出し Left join
                 var tableHead = ["課題名", "提出状況", "締切"];
                 var submits = new Array();
                 submits.push({"id": 0, "name": "Hello World", "status": 0, "endAt": new Date("10/21/2014")});
