@@ -5,6 +5,7 @@ module.exports = function (sequelize, DataTypes) {
         name: DataTypes.STRING,
         url: DataTypes.STRING,
         content: DataTypes.TEXT,
+        lectureId: DataTypes.INTEGER,
         startAt: DataTypes.DATE,
         endAt: DataTypes.DATE,
         createdAt: {

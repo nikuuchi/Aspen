@@ -1,13 +1,13 @@
 ///<reference path='../../typings/jstree/jstree.d.ts'/>
+/// <reference path="index.ts"/>
 var FileManager = (function () {
     function FileManager() {
         this.FTree = [
-            { "text": "root", "children": [{ "text": "program.c", "type": "file" }] }
+            { "text": "default", "id": "default", "children": [] }
         ];
+        this.FIndex = [[]];
+        this.FIndex["default"] = 0;
     }
-    FileManager.prototype.constractor = function () {
-    };
-
     FileManager.prototype.ref = function () {
         return $('#sidebar').jstree(true);
     };
@@ -30,10 +30,12 @@ var FileManager = (function () {
         return true;
     };
 
-    FileManager.prototype.getFile = function (path) {
-        if (localStorage[path])
-            return localStorage[path];
-        return false;
+    FileManager.prototype.getFile = function (obj) {
+        var path = this.getCurrentPath("_");
+    };
+
+    FileManager.prototype.getDefaultNode = function () {
+        return "default";
     };
 
     FileManager.prototype.getSelectedNode = function () {
@@ -45,8 +47,9 @@ var FileManager = (function () {
         return this.ref().get_type(this.getSelectedNode());
     };
 
-    FileManager.prototype.getCurrentPath = function () {
-        return this.ref().get_path(this.getSelectedNode(), "/");
+    FileManager.prototype.getCurrentPath = function (delim) {
+        if (typeof delim === "undefined") { delim = "/"; }
+        return this.ref().get_path(this.getSelectedNode(), delim);
     };
 
     FileManager.prototype.show = function () {

@@ -6,15 +6,14 @@ block header
   include editor_css
 
 block loadFiles
-    +js('/vendor/ace/ace.js')
-    +js('/js/index.js')
-    //+js('/js/subject_submit.js')
+    +js('/vendor/ace/src/ace.js')
+    +js('/js/subject_submit.js')
 
 block content
   include topbar
   .container
     h1 課題製作画面
-    form(role="form", action="/subject/new", method="POST")
+    form(role="form", action="/subject/new", method="POST", id="subject_form")
       .form-group
         label.control-label(for="inputNumber") 課題名
         input.form-control(type="text", placeholder="", name="name", id="name", required autofocus)
@@ -29,4 +28,4 @@ block content
         p
           pre#editor(rows="20", name="content", style="width:100%;")
       .form-group
-        button.btn.btn-primary.pull-right(type="submit") 作成
+        button.btn.btn-primary.pull-right(type="submit", onclick="postData()") 作成

@@ -21,9 +21,10 @@ router.post('/subject/new', function(req, res) {
         name: subject_name,
         url: "",
         content: content,
+        lectureId: 1, //Default Value
         startAt: subject_startAt,
         endAt: subject_endAt
-    }).success(function(subject){
+    }).then(function(subject){
         console.log(subject);
         res.redirect('/');
     });

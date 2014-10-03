@@ -50,16 +50,27 @@ CREATE TABLE IF NOT EXISTS `aspen`.`Subjects` (
   `name` VARCHAR(45) NOT NULL,
   `url` VARCHAR(255) NULL,
   `content` LONGTEXT NOT NULL,
+<<<<<<< HEAD
   `LectureId` INT NOT NULL,
+=======
+  `lectureId` INT NOT NULL,
+>>>>>>> c1e5572b5159db746751c14059663cb9aefa6c3b
   `startAt` DATETIME NULL DEFAULT NULL,
   `endAt` DATETIME NULL,
   `createdAt` DATETIME NULL DEFAULT NULL,
   `updatedAt` DATETIME NULL DEFAULT NULL,
   `deleteFlag` TINYINT(1) NOT NULL DEFAULT 0,
+<<<<<<< HEAD
   PRIMARY KEY (`id`, `LectureId`),
   INDEX `fk_subject_lecture_idx` (`LectureId` ASC),
   CONSTRAINT `fk_subject_lecture`
     FOREIGN KEY (`LectureId`)
+=======
+  PRIMARY KEY (`id`, `lectureId`),
+  INDEX `fk_subject_lecture_idx` (`lectureId` ASC),
+  CONSTRAINT `fk_subject_lecture`
+    FOREIGN KEY (`lectureId`)
+>>>>>>> c1e5572b5159db746751c14059663cb9aefa6c3b
     REFERENCES `aspen`.`Lectures` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
@@ -112,7 +123,11 @@ CREATE TABLE IF NOT EXISTS `aspen`.`SubmitStatuses` (
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_user_has_subject_subject1`
     FOREIGN KEY (`SubjectId` , `id`)
+<<<<<<< HEAD
     REFERENCES `aspen`.`Subjects` (`id` , `LectureId`)
+=======
+    REFERENCES `aspen`.`Subjects` (`id` , `lectureId`)
+>>>>>>> c1e5572b5159db746751c14059663cb9aefa6c3b
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;

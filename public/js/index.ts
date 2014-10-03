@@ -171,14 +171,22 @@ module C2JS {
         }
 
         SetName(text: string, Path: string): void {
+            if(Path === "") {
+              Path = "default";
+            }
             this.Name = text.replace(/\..*/, ".c");
             this.BaseName = this.Name.replace(/\..*/, "");
             this.Path = Path;
             this.PathArray = Path.split("/");
+            this.BaseName = this.PathArray.join("_") + "_" + this.BaseName;
         }
 
         GetName(): string {
-            return this.Name;
+            return this.PathArray.join("_") + "_" + this.Name;
+        }
+
+        GetNoPathName():string {
+          return this.Name;
         }
 
         GetBaseName(): string {
@@ -189,6 +197,18 @@ module C2JS {
           return this.Path;
         }
 
+        GetPathArray(): string[] {
+          return this.PathArray;
+        }
+
+        GetFullPathName(): string {
+          return this.Path + "/" + this.Name;
+        }
+
+        GetFullPathBaseName(): string {
+          return this.Path + "/" + this.Name.replace(/\..*/, "");
+        }
+
     }
 
     export class FileCollection {
@@ -197,31 +217,40 @@ module C2JS {
         private ActiveFileName: string;
         private ActiveFileIndex: number;
         private defaultNameKey: string = 'filename:defaultNameKey';
+        public Tree: FileManager = new FileManager();
 
         constructor() {
             this.UI = $('#file-name-lists');
-            this.ActiveFileName = localStorage.getItem(this.defaultNameKey) || "program.c";
+            this.ActiveFileName = localStorage.getItem(this.defaultNameKey) || "default_program.c";
             this.ActiveFileIndex = 0;
 
             for(var i = 0; i < localStorage.length; i++) {
-                var key = localStorage.key(i);
-                if(key == this.defaultNameKey || !key.match(/.*\.c/)) {
+                var keyArray = localStorage.key(i).split("_");
+                var key = keyArray.pop();
+                var path = "";
+                if(localStorage.key(i) == this.defaultNameKey || !key.match(/.*\.c/)) {
                     continue;
                 }
-                var file = new FileModel(localStorage.key(i));
+
+                path = keyArray.join("/");
+
+                var file = new FileModel(key, path);
                 var index = this.FileModels.push(file) - 1;
-                if(key == this.ActiveFileName) {
+                if(localStorage.key(i) == this.ActiveFileName) {
                     this.ActiveFileIndex = index;
                 }
             }
 
             //First access for c2js
             if(this.FileModels.length == 0) {
-                var file = new FileModel(this.ActiveFileName);
+                var pArray = this.ActiveFileName.split("_");
+                var fname = pArray.pop();
+                var path = pArray.join("/");
+                var file = new FileModel(fname, path);
                 var index = this.FileModels.push(file) - 1;
                 this.ActiveFileIndex = index;
-                localStorage.setItem(this.defaultNameKey, "program.c");
-                localStorage.setItem("program.c", GetHelloWorldSource());
+                localStorage.setItem(this.defaultNameKey, "default_program.c");
+                localStorage.setItem("default_program.c", GetHelloWorldSource());
             }
         }
 
@@ -282,9 +311,10 @@ module C2JS {
             localStorage.removeItem(BaseName + '.c');
         }
 
-        Rename(oldBaseName: string, newname: string, contents: string, Callback: any, DB: SourceDB): void {
-            this.Remove(oldBaseName);
-            var file = new FileModel(newname);
+        Rename(oldBaseName: string, newname: string, contents: string, Callback: any, DB: SourceDB, path: string): void {
+            if(path === "") path = "default";
+            this.Remove(path + "_" + oldBaseName);
+            var file = new FileModel(newname, path.split("_").join("/"));
             this.Append(file, Callback);
             this.SetCurrent(file.GetBaseName());
             DB.Save(file.GetName(), contents);
@@ -321,6 +351,25 @@ module C2JS {
                 }
             }
             return Name;
+        }
+
+        GenerateFTree() {
+          for(var i = 0; i < this.FileModels.length; i++) {
+            var fi = this.Tree.FIndex;
+            var ft = this.Tree.FTree;
+            var pArray = this.FileModels[i].GetPathArray();
+            for(var j in pArray) {
+              if(typeof fi[pArray[j]] === "undefined") {
+                ft.push({"text": pArray[j], "children": []});
+                fi[pArray[j]] = ft.length - 1;
+                fi[ft.length - 1] = [];
+              }
+
+              ft = ft[fi[pArray[j]]].children;
+              fi = fi[fi[pArray[j]]];
+            }
+            ft.push({"text":this.FileModels[i].GetNoPathName(), "type":"file"});
+          }
         }
 
     }
@@ -602,8 +651,13 @@ module C2JS {
         return FormatMessage(FormatFilename(ConvertTerminalColor(text), fileName), fileName);
     }
 
-    export function CheckFileName(name: string, DB: SourceDB, path: string = ""): string {
+    export function CheckFileName(name: string, DB: SourceDB, path: string = "default"): string {
         var filename = name;
+        if(path == "") {
+          path = "default";
+        } else {
+          path = path.split("/").join("_");
+        }
         if(filename == null) {
             return null;
         }
@@ -620,8 +674,8 @@ module C2JS {
         if(filename.match(/.*\.c/) == null) {
             filename += '.c';
         }
-        if(DB.Exist(path + filename)) {
-            alert("'"+path+filename+"' already exists.");
+        if(DB.Exist(path + "_" + filename)) {
+            alert("'"+filename+"' already exists.");
             return null;
         }
         return filename;
@@ -645,7 +699,7 @@ $(function () {
     var DB:     C2JS.SourceDB = new C2JS.SourceDB();
     var Context: any = {}; //TODO refactor C2JS.Response
     var Files: C2JS.FileCollection = new C2JS.FileCollection();
-    var Tree: FileManager = new FileManager();
+
 
     Aspen.Editor = Editor;
     Aspen.Output = Output;
@@ -697,6 +751,7 @@ $(function () {
     };
 
     Files.Show(ChangeCurrentFile);
+    Files.GenerateFTree();
     Output.Prompt();
 
     Aspen.Debug.SetRunning = (flag: boolean) => {
@@ -730,7 +785,7 @@ $(function () {
         var opt = '-m'; //TODO
         Output.Clear();
         Output.Prompt();
-        Output.PrintLn('gcc '+file.GetName()+' -o '+file.GetBaseName());
+        Output.PrintLn('gcc '+file.GetFullPathName()+' -o '+file.GetFullPathBaseName());
         DisableUI();
         Editor.RemoveAllErrorLine();
 
@@ -819,15 +874,14 @@ $(function () {
     };
 
     var CreateFileFunction = (e: any) => {
-        if(e.currentTarget.id !== "add-file-btn") Tree.ref().deselect_all();
         if(running) return;
         var path: string;
-        if(!Tree.getSelectedNode()){
+        if(e.currentTarget.id === "create-file") {
           path = "";
         } else {
-          path = Tree.getCurrentPath();
+          path = Files.Tree.getCurrentPath();
         }
-        if(Tree.getCurrentType() == "file"){
+        if(path !== "" && Files.Tree.getCurrentType() == "file"){
           alert("フォルダを選択してください");
           return;
         }
@@ -837,7 +891,11 @@ $(function () {
         if(filename == null) {
             return;
         }
-        if(typeof Tree.getSelectedNode() !== "undefined") Tree.setFile(Tree.getSelectedNode(), filename);
+        if(path !== "") {
+          Files.Tree.setFile(Files.Tree.getSelectedNode(), filename);
+        } else {
+          Files.Tree.setFile(Files.Tree.getDefaultNode(), filename);
+        }
         var file = new C2JS.FileModel(filename, path);
         Files.Append(file, ChangeCurrentFile);
         Files.SetCurrent(file.GetBaseName());
@@ -853,15 +911,16 @@ $(function () {
     var RenameFunction = (e: Event) => {
         if(Files.Empty() || running) return;
         DB.Save(Files.GetCurrent().GetName(), Editor.GetValue());
-        var oldfilebasename = Files.GetCurrent().GetBaseName();
+        var oldfilebasename = Files.GetCurrent().GetNoPathName().split(".")[0];
+        var oldfilepath = Files.GetCurrent().GetPathArray().join("_");
         var oldfilecontents = Editor.GetValue();
 
-        var filename = prompt("Rename: Please enter the file name.", oldfilebasename+".c");
-        filename = C2JS.CheckFileName(filename, DB);
+        var filename = prompt("Rename: Please enter the file name.", oldfilebasename);
+        filename = C2JS.CheckFileName(filename, DB, oldfilepath);
         if(filename == null) {
             return;
         }
-        Files.Rename(oldfilebasename, filename, oldfilecontents, ChangeCurrentFile, DB);
+        Files.Rename(oldfilebasename, filename, oldfilecontents, ChangeCurrentFile, DB, oldfilepath);
         Editor.SetValue(oldfilecontents);
         DB.Save(Files.GetCurrent().GetName(), Editor.GetValue());
     };

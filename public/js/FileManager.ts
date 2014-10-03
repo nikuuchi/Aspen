@@ -1,11 +1,16 @@
 ///<reference path='../../typings/jstree/jstree.d.ts'/>
+/// <reference path="index.ts"/>
 
 class FileManager {
   FTree:any = [
-    {"text":"root", "children":[{"text":"program.c","type":"file"}]}
+    {"text":"default", "id":"default", "children":[]}
   ];
-  constractor() {
+  FIndex:any = [[]];
+  constructor() {
+    this.FIndex["default"] = 0;
+
   }
+
 
   ref() : any {
     return $('#sidebar').jstree(true);
@@ -29,9 +34,13 @@ class FileManager {
     return true;
   }
 
-  getFile(path: string) {
-    if(localStorage[path]) return localStorage[path];
-    return false;
+  getFile(obj: any) {
+    var path = this.getCurrentPath("_");
+
+  }
+
+  getDefaultNode() {
+    return "default";
   }
 
   getSelectedNode() : string {
@@ -43,8 +52,8 @@ class FileManager {
     return this.ref().get_type(this.getSelectedNode());
   }
 
-  getCurrentPath() : string {
-    return this.ref().get_path(this.getSelectedNode(),"/");
+  getCurrentPath(delim: string = "/") : string {
+    return this.ref().get_path(this.getSelectedNode(),delim);
   }
 
   show() {
