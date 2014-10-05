@@ -17,8 +17,8 @@ CREATE TABLE IF NOT EXISTS `aspen`.`Users` (
   `studentNumber` VARCHAR(45) NULL DEFAULT NULL,
   `password` VARCHAR(255) NOT NULL,
   `role_admin` TINYINT(1) NOT NULL DEFAULT 0,
-  `createdAt` DATETIME NOT NULL DEFAULT now(),
-  `updatedAt` DATETIME NOT NULL,
+  `createdAt` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updatedAt` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `deleteFlag` TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;
@@ -32,9 +32,9 @@ DROP TABLE IF EXISTS `aspen`.`Lectures` ;
 CREATE TABLE IF NOT EXISTS `aspen`.`Lectures` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name` TEXT NOT NULL,
-  `startAt` DATETIME NOT NULL DEFAULT now(),
+  `startAt` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `deleteFlag` TINYINT(1) NOT NULL DEFAULT 0,
-  `createdAt` DATETIME NOT NULL DEFAULT now(),
+  `createdAt` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updatedAt` DATETIME NOT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;
@@ -53,8 +53,8 @@ CREATE TABLE IF NOT EXISTS `aspen`.`Subjects` (
   `LectureId` INT NOT NULL,
   `startAt` DATETIME NULL DEFAULT NULL,
   `endAt` DATETIME NULL,
-  `createdAt` DATETIME NULL DEFAULT NULL,
-  `updatedAt` DATETIME NULL DEFAULT NULL,
+  `createdAt` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
+  `updatedAt` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
   `deleteFlag` TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`, `LectureId`),
   INDEX `fk_subject_lecture_idx` (`LectureId` ASC),
@@ -74,8 +74,8 @@ DROP TABLE IF EXISTS `aspen`.`LecturesUsers` ;
 CREATE TABLE IF NOT EXISTS `aspen`.`LecturesUsers` (
   `LectureId` INT NOT NULL,
   `UserId` INT NOT NULL,
-  `createdAt` DATETIME NOT NULL DEFAULT now(),
-  `updatedAt` DATETIME NOT NULL,
+  `createdAt` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updatedAt` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`LectureId`, `UserId`),
   INDEX `fk_lecture_has_user_user1_idx` (`UserId` ASC),
   INDEX `fk_lecture_has_user_lecture1_idx` (`LectureId` ASC),
@@ -103,12 +103,14 @@ CREATE TABLE IF NOT EXISTS `aspen`.`SubmitStatuses` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `status` INT NULL DEFAULT 0 COMMENT '0: Not yet, 1: Submitted, 2: Succeed',
   `content` LONGTEXT NULL DEFAULT NULL,
-  `createdAt` DATETIME NULL DEFAULT now(),
-  `updatedAt` TIMESTAMP NULL DEFAULT NULL,
+  `createdAt` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
+  `updatedAt` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `deleteFlag` TINYINT(1) NULL DEFAULT NULL,
-  PRIMARY KEY (`id`, `UserId`, `SubjectId`),
   INDEX `fk_user_has_subject_subject1_idx` (`SubjectId` ASC, `id` ASC),
   INDEX `fk_user_has_subject_user1_idx` (`UserId` ASC),
+  PRIMARY KEY (`id`),
+  INDEX `User_INDEX` (`UserId` ASC),
+  INDEX `Subject_INDEX` (`SubjectId` ASC),
   CONSTRAINT `fk_user_has_subject_user1`
     FOREIGN KEY (`UserId`)
     REFERENCES `aspen`.`Users` (`id`)
