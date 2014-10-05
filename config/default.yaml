@@ -2,6 +2,8 @@ cookie:
   secret: 'REPLACE SECRET IN DEVELOPMENT.YAML'
 session:
   secret: 'REPLACE SECRET IN DEVELOPMENT.YAML'
+base:
+    path: ''
 db:
   host: 'localhost'
   user: 'root'

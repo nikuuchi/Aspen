@@ -6,15 +6,15 @@ var router = express.Router();
 var db = require('../models');
 var auth = require('../helper/auth');
 var Promise = require('bluebird');
+var config = require('config');
 
 var tableHead = ["課題名", "提出状況", "締切"];
 /* GET home page. */
 router.get('/', function(req, res) {
     if(!auth.isLogin(req)) {
-        res.render('top');
+        res.render('top', { basePath: config.base.path });
         return;
     }
-    var failureCallback = () => res.render('top');
 
     db.User.login({github_id: req.signedCookies.sessionUserId})
         .then(function(user) {
@@ -27,11 +27,11 @@ router.get('/', function(req, res) {
             var submits = subjects.map((subject) => {
                 return createSubmitView(subject);
             });
-            res.render('list', { tableHead: tableHead, submits: submits });
+            res.render('list', { tableHead: tableHead, submits: submits, basePath: config.base.path });
         })
         .catch(function(err) {
             console.log(err);
-            res.render('top');
+            res.render('top', {basePath: config.base.path });
         });
 });
 
@@ -48,29 +48,28 @@ router.get('/editor/:name', function(req, res) {
     }
     db.User.find({where: {github_id: req.signedCookies.sessionUserId}})
                 .then(function(user) {
-                    return db.SubmitStatus.find({where: db.Sequelize.and({UserId: user.id},{SubjectId: req.params.name})
-                });
+                    return db.SubmitStatus.find({where: db.Sequelize.and({UserId: user.id},{SubjectId: req.params.name})});
                 }).then(function(status) {
                     if(status) {
-                        res.render('editorView', {has_content: true, content: status.content});
+                        res.render('editorView', {has_content: true, content: status.content, basePath: config.base.path});
                     } else {
                         return db.Subject.find({where: {id: req.params.name}});
                     }
                 }).then(function(subject) {
-                    res.render('editorView', {has_content: true, content: subject.content});
+                    res.render('editorView', {has_content: true, content: subject.content, basePath: config.base.path});
                 }).catch(function(err) {
                     console.log(err);
                 });
 });
 
 router.get('/editor', function(req, res) {
-    res.render('editorView', {has_content: false});
+    res.render('editorView', {has_content: false, basePath: config.base.path});
 });
 
 
 router.get('/user/:userid', function(req, res) {
     //TODO アクセス制限
-    res.render('list');
+    res.render('list', { basePath: config.base.path });
 });
 
 router.get('/list/all', function(req, res) {
@@ -90,19 +89,20 @@ router.get('/list/all', function(req, res) {
             tableHead: tableHead,
             submits: submits,
             students: students,
-            subjects: subjects
+            subjects: subjects,
+            basePath: config.base.path
         });
     });
 });
 
 router.get('/subject', function(req, res) {
     //TODO Check admin role
-    res.render('subject');
+    res.render('subject', { basePath: config.base.path });
 });
 
 router.get('/register', function(req, res) {
     //TODO アクセス制限
-    res.render('register');
+    res.render('register',{ basePath: config.base.path });
 });
 
 

@@ -1,9 +1,9 @@
 mixin js(path)
-  script(type='text/javascript', src=path)
+  script(type='text/javascript', src=basePath+path)
 mixin js_async(path)
-  script(type='text/javascript', src=path, async='async')
+  script(type='text/javascript', src=basePath+path, async='async')
 mixin css(path)
-  link(rel='stylesheet', href=path)
+  link(rel='stylesheet', href=basePath+path)
 mixin template(id)
   script(id=id, type="text/x-jquery-tmpl")
     block

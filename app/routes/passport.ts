@@ -19,32 +19,35 @@ export var login = function(req: any, res: any) {
         Referer = config.passport.host_url+'/';
     }
     //Login
-    db.User.find({where: { github_id: userId } }).then(function(result){
+    db.User.login({ github_id: userId }).then(function(result){
         if(result != null) {
             //Login succeeded.
             console.log("user is found.");
             var auth = new Auth.Auth(req, res);
+            console.log(userId);
+            console.log(result.name);
             auth.set(userId, result.name);
-            console.log(res);
             console.log("Redirect.");
-            res.redirect(Referer);
+            throw 'abort chain';
+            return null;
         } else {
             //User Registration
-            db.User.create({ name: userName, github_id: userId, password: ''}).then(function(result){
-                console.log("user created.");
-                var auth = new Auth.Auth(req, res);
-                auth.set(userId, userName);
-                res.redirect(Referer + 'register');
-            },
-            function(error) {
-                console.log('error');
-                console.log(error);
-                res.redirect(Referer);
-            });
+            return db.User.create({ name: userName, github_id: userId, password: ''});
         }
-    },
+    })
+    .then(function(result){
+        console.log("user created.");
+        var auth = new Auth.Auth(req, res);
+        auth.set(userId, userName);
+        Referer += 'register';
+    })
+    .catch(
     function(error) {
-        console.log(error);
+        if(error != 'abort chain') {
+            console.log(error);
+        }
+    })
+    .finally(function() {
         res.redirect(Referer);
     });
 };
