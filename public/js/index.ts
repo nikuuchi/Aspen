@@ -396,11 +396,15 @@ module C2JS {
 
     }
 
+    export function getSubjectId(): Number {
+        var pathes = location.pathname.split("/");
+        var _subjectId = pathes[pathes.length - 1];
+        return (_subjectId == "editor")? -1 : parseInt(_subjectId);
+    }
+
     export function Compile(source, option, filename, isCached, Context, callback, onerror) {
         if(isCached) {
-            var pathes = location.pathname.split("/");
-            var _subjectId = pathes[pathes.length - 1];
-            var subjectId = (_subjectId == "editor")? -1 : parseInt(_subjectId);
+            var subjectId = getSubjectId();
             $.ajax({
                 type: "POST",
                 url: "/compile",
@@ -704,7 +708,25 @@ $(function () {
     if(location.pathname == "/") {
         var submit_button = $("#submit-file");
         submit_button.hide();
+    } else {
+        //提出ボタンの挙動
+        $("#submit-file").click(function(event) {
+            var subjectId = C2JS.getSubjectId();
+            var callback = () => {
+                alert('提出しました！');
+            };
+            (<any>$).ajax({
+                type: "POST",
+                url: "/submit",
+                data: JSON.stringify({content: Editor.GetValue(), subjectId: subjectId}),
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                success: callback,
+                error: onerror
+            });
+        });
     }
+
 
     Aspen.Editor = Editor;
     Aspen.Output = Output;

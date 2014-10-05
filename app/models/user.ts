@@ -33,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
              * ログイン状態の確認
              * @method login
              * @param {Object} cond ユーザの検索条件
-             *
+             * @return {Promise}
              */
             login: (cond) => {
                 return User.find({where: cond});
@@ -43,9 +43,19 @@ module.exports = (sequelize, DataTypes) => {
              * 講義ごとの学生リストはまだ取得できない
              * @method getStudentList
              * @param {Number} lectureId 講義番号
+             * @return {Promise}
              */
             getStudentList: (lectureId) => {
                 return User.findAll({where: {role_admin: false}});
+            },
+            /**
+             * githubIdからuserを取得する
+             * @method findByGithub
+             * @param {Number} githubId Github ID
+             * @return {Promise}
+             */
+            findByGithub: (githubId) => {
+                return User.find({where: {github_id: githubId}});
             }
         }
     });
