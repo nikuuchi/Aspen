@@ -43,7 +43,7 @@ router.get('/subject/:file', function(req, res) {
 
 router.get('/editor/:name', function(req, res) {
     if(!auth.isLogin(req)) {
-        res.redirect('/');
+        res.redirect(config.base.path + '/');
         return;
     }
     db.User.find({where: {github_id: req.signedCookies.sessionUserId}})
