@@ -71,7 +71,7 @@ passport.deserializeUser(function (user, done) {
         clientSecret: config.passport.github.client_secret,
         callbackURL: config.passport.host_url + "/login/github/callback"
     }, function (accessToken, refreshToken, profile, done) {
-        console.log(config.passport.github);
+        console.error(config.passport.github);
         process.nextTick(function () {
             return done(null, profile);
         });
