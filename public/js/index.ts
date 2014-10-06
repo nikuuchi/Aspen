@@ -1,6 +1,7 @@
 ///<reference path='../../typings/jquery/jquery_plugins.d.ts'/>
 ///<reference path='../../typings/ace/ace.d.ts'/>
 ///<reference path='../../typings/jstree/jstree.d.ts'/>
+///<reference path='../../typings/config/config.d.ts'/>
 /// <reference path="FileManager.ts"/>
 
 declare var CodeMirror: any;
@@ -407,7 +408,7 @@ module C2JS {
             var subjectId = getSubjectId();
             $.ajax({
                 type: "POST",
-                url: "/compile",
+                url: Config.basePath + "/compile",
                 data: JSON.stringify({source: source, option: option, filename: filename, subjectId: subjectId}),
                 dataType: 'json',
                 contentType: "application/json; charset=utf-8",
@@ -705,7 +706,7 @@ $(function () {
     var Files: C2JS.FileCollection = new C2JS.FileCollection();
 
     //初期ページでは提出ボタンを出さないようにする
-    if(location.pathname == "/") {
+    if(location.pathname == Config.basePath + "/") {
         var submit_button = $("#submit-file");
         submit_button.hide();
     } else {
@@ -717,7 +718,7 @@ $(function () {
             };
             (<any>$).ajax({
                 type: "POST",
-                url: "/submit",
+                url: Config.basePath + "/submit",
                 data: JSON.stringify({content: Editor.GetValue(), subjectId: subjectId}),
                 dataType: 'json',
                 contentType: "application/json; charset=utf-8",
