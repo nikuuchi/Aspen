@@ -43,9 +43,9 @@ router.post('/subject/new', function(req, res) {
         endAt: subject_endAt
     }).then(function(subject){
         console.log(subject);
-        res.redirect('/');
+        res.redirect(config.base.path + '/');
     }, function(err){
-        res.redirect('/subject');
+        res.redirect(config.base.path + '/subject');
     });
 });
 
@@ -58,10 +58,10 @@ router.post('/register', function(req, res) {
         user.studentNumber = studentNumber;
         user.name = userName;
         user.save().then(function() {
-            res.redirect('/'); //FIXME
+            res.redirect(config.base.path + '/'); //FIXME
         }, function() {
             console.log('error');
-            res.redirect('/'); //FIXME
+            res.redirect(config.base.path + '/'); //FIXME
         });
     }, function(err) {
         console.log(err);
