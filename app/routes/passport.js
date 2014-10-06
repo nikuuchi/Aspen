@@ -14,7 +14,7 @@ exports.login = function (req, res) {
     var userId = user.id;
 
     //var Referer = req.header('Referer');
-    var Referer = config.passport.host_url + '/';
+    var redirectPath = config.base.path + '/';
 
     //Login
     db.User.login({ github_id: userId }).then(function (result) {
@@ -36,13 +36,13 @@ exports.login = function (req, res) {
         console.log("user created.");
         var auth = new Auth.Auth(req, res);
         auth.set(userId, userName);
-        Referer += 'register';
+        redirectPath += 'register';
     }).catch(function (error) {
         if (error != 'abort chain') {
             console.log(error);
         }
     }).finally(function () {
-        res.redirect(config.passport.host_url + '/');
+        res.redirect(redirectPath);
     });
 };
 
