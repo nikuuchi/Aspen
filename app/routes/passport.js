@@ -13,10 +13,8 @@ exports.login = function (req, res) {
     var userName = user.username;
     var userId = user.id;
 
-    var Referer = req.header('Referer');
-    if (Referer == null) {
-        Referer = config.passport.host_url + '/';
-    }
+    //var Referer = req.header('Referer');
+    var Referer = config.passport.host_url + '/';
 
     //Login
     db.User.login({ github_id: userId }).then(function (result) {

@@ -42,7 +42,7 @@ app.use(post_api);
 
 app.get('/login/github', passport.passport.authenticate('github'));
 
-app.get('/login/github/callback', passport.passport.authenticate('github', { failureRedirect: '/' }), passport.login);
+app.get('/login/github/callback', passport.passport.authenticate('github', { failureRedirect: config.base.path + '/' }), passport.login);
 
 app.get('/logout', passport.logout);
 
