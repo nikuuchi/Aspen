@@ -25,38 +25,38 @@ input#file-open-dialog(type='file', style='display:none;', accept=".c")
             a#create-file-menu(href='#')
               span.glyphicon.glyphicon-plus
               | &nbsp;
-              | New File...
+              | 新規作成...
               //span.pull-right Ctrl+N
           li
             a#open-file-menu(href='#')
               span.glyphicon.glyphicon-folder-open
               | &nbsp;
-              | Open File...
+              | ファイルを開く...
               //span.pull-right Ctrl+O
           li.disabled-on-files-empty
             a#save-file-menu(href='#')
               span.glyphicon.glyphicon-floppy-save
               | &nbsp;
-              | Save
+              | ファイルのダウンロード
               //span.pull-right Ctrl+S
           li.disabled-on-files-empty
             a#rename-menu(href='#')
               span.glyphicon.glyphicon-edit
               | &nbsp;
-              | Rename...
+              | ファイル名の変更...
               //span.pull-right Ctrl+R
           li.divider
           li.disabled-on-files-empty
             a#delete-file-menu(href='#')
               span.glyphicon.glyphicon-remove
               | &nbsp;
-              | Delete File
+              | ファイルの削除
               //span.pull-right Ctrl+W
           li.disabled-on-files-empty
             a#delete-all-file-menu(href='#')
               span.glyphicon.glyphicon-remove
               | &nbsp;
-              | Delete All Files
+              | 全てのファイルを削除する
         | &nbsp;
         button#compile.btn.navbar-btn.btn-primary.disabled-on-files-empty.disabled-on-running(type='button', data-toggle="tooltip", title="Run&nbsp;(Ctrl-Enter)", onContextmenu="return false")
           | &nbsp;
