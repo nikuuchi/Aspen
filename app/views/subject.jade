@@ -13,7 +13,7 @@ block content
   include topbar
   .container
     h1 課題製作画面
-    form(role="form", action="/subject/new", method="POST", id="subject_form")
+    form(role="form", action="#{basePath}/subject/new", method="POST", id="subject_form")
       .form-group
         label.control-label(for="inputNumber") 課題名
         input.form-control(type="text", placeholder="", name="name", id="name", required autofocus)

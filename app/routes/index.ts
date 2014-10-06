@@ -105,7 +105,6 @@ router.get('/register', function(req, res) {
     res.render('register',{ basePath: config.base.path });
 });
 
-
 function formatEndAt(endAt) {
     return (+endAt.getFullYear() - 2000) + "/" + ((+endAt.getMonth() < 9)? "0" : "") + (+endAt.getMonth() + 1) + "/" + ((+endAt.getDate() < 10)? "0" : "") + endAt.getDate();
 }

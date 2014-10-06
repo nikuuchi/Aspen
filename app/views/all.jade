@@ -10,7 +10,7 @@ block header
 
 block loadFiles
   +js('/js/submitedList.js')
-  +js('../vendor/jquery/jquery.tablesorter.js')
+  +js('/vendor/jquery/jquery.tablesorter.js')
 
 block content
   .site-wrapper
@@ -22,7 +22,7 @@ block content
             .row
               .col-sm-3.block-center-off
                 p.control-panel
-                  a.btn.btn-success(href="/subject") 新規課題の作成
+                  a.btn.btn-success(href="#{basePath}/subject") 新規課題の作成
                 p.control-panel
                   input.form-control.control-search(type="text")
                   | &nbsp;
