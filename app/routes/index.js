@@ -21,9 +21,14 @@ router.get('/', function (req, res) {
             throw 'no login';
         }
         return db.Subject.getStatusesEachUser(db.Sequelize, db.SubmitStatus, user.id);
-    }).then(function (subjects) {
+    }).then(function (results) {
+        var subjects = results[0];
+        var submit_statuses = results[1];
+        console.log(subjects);
+        console.log(submit_statuses);
+
         var submits = subjects.map(function (subject) {
-            return createSubmitView(subject);
+            return createSubmitView(subject, submit_statuses);
         });
         res.render('list', { tableHead: tableHead, submits: submits, basePath: config.base.path });
     }).catch(function (err) {
@@ -151,12 +156,19 @@ function createAllSubmitView(subject) {
     };
 }
 
-function createSubmitView(subject) {
+function findBySubjectId(submit_statuses, subjectId) {
+    return submit_statuses.filter(function (submit) {
+        return submit.SubjectId == subjectId;
+    });
+}
+
+function createSubmitView(subject, submit_statuses) {
     var today = new Date();
     var remainingDays = (subject.endAt - today) / oneDay;
     var status = 0;
-    if (subject.SubmitStatuses[0]) {
-        status = subject.SubmitStatuses[0].status ? subject.SubmitStatuses[0].status : 0;
+    var submitStatus = findBySubjectId(submit_statuses, subject.id);
+    if (submitStatus[0]) {
+        status = submitStatus[0].status ? submitStatus[0].status : 0;
     }
     return {
         id: subject.id,

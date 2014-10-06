@@ -1,6 +1,8 @@
 ///<reference path="../../typings/express/express.d.ts" />
 ///<reference path="../../typings/node/node.d.ts" />
 
+var Promise = require('bluebird');
+
 /**
  * Subject
  * @class Subject
@@ -54,13 +56,12 @@ module.exports = (sequelize, DataTypes) => {
              */
             getStatusesEachUser: (Seq, SubmitStatus, userId) => {
                 var lectureId = { LectureId: 1 /* Default */};
-                var eqUserId = {'SubmitStatuses.UserId': userId};
-                var isNullUserId = {'SubmitStatuses.UserId': null};
+                var eqUserId =  { UserId: userId};
                 //left outer join
-                return Subject.findAll({
-                    include: [SubmitStatus],
-                    where: Seq.and(lectureId, Seq.or(eqUserId, isNullUserId))
-                });
+                return Promise.all([
+                        Subject.findAll({where: lectureId}),
+                        SubmitStatus.findAll({where: eqUserId})
+                ]);
             },
             /**
              * 講義ごとの課題一覧を取得する
