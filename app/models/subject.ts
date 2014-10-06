@@ -36,16 +36,16 @@ module.exports = (sequelize, DataTypes) => {
              * 全ユーザの提出状況を検索する
              * @method getStatuses
              * @param {Object} db DB
+             * @param {Number} lectureId 講義番号
              * @return {Promise} Promise
              */
-            getStatuses: (db) => {
-                var lecturId = {LectureId: 1};
-                return Subject.findAll({
-                        include: [{
-                            model: db.SubmitStatus,
-                            include: [db.User]
-                        }]
-                });
+            getStatuses: (db, lectureId) => {
+                var isLecture = {LectureId: lectureId};
+                return Promise.all([
+                    db.User.getStudentList(lectureId),
+                    db.Subject.getList(lectureId),
+                    db.Subject.findAll({ where: isLecture})
+                ]);
             },
             /**
              * 各ユーザの提出状況を検索する

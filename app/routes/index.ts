@@ -7,6 +7,7 @@ var db = require('../models');
 var auth = require('../helper/auth');
 var Promise = require('bluebird');
 var config = require('config');
+var lodash = require('lodash');
 
 var tableHead = ["課題名", "提出状況", "締切"];
 /* GET home page. */
@@ -78,17 +79,14 @@ router.get('/user/:userid', function(req, res) {
 });
 
 router.get('/list/all', function(req, res) {
-    //TODO DB
     var tableHead = ["学籍番号", "氏名", "課題名", "提出状況", "締切"];
-    var lectureId = 1; //TODO Lecture
-    Promise.all([
-        db.User.getStudentList(lectureId),
-        db.Subject.getList(lectureId),
-        db.Subject.getStatuses(db)
-    ]).then(function(values) {
+
+    db.Subject.getStatuses(db, 1/*lectureId*/)
+        .then(function(values) {
         var students = values[0].map((student) => [student.studentNumber, student.name]);
         var subjects = values[1].map((subject) => [subject.id, subject.name]);
-        var submits  = values[2].map((subject) => createAllSubmitView(subject));
+
+        var submits  = createAllSubmitViews(values[2], values[0], values[1]);
 
         res.render('all', {
             tableHead: tableHead,
@@ -131,32 +129,44 @@ function chooseClass(status, remainingDays) {
 var statusArray = ["未提出", "提出済", "合格"];
 var oneDay = 86400000;
 
-function createAllSubmitView(subject) {
+function createAllSubmitViews(submits, students, subjects) {
     var today = new Date();
-    var remainingDays = ((<any>subject.endAt) - (<any>today)) / oneDay;
-    var status = 0;
-    var student_name = '';
-    var student_number = '';
-    console.log(subject);
-    if(subject.SubmitStatuses[0]) {
-        student_name = subject.SubmitStatuses[0].User.name;
-        student_number = subject.SubmitStatuses[0].User.studentNumber;
-        status = subject.SubmitStatuses[0].status? subject.SubmitStatuses[0].status : 0;
-    }
-    return {
-        id: subject.id,
-        student_name: student_name,
-        student_number: student_number,
-        subject_name: subject.name,
-        status: statusArray[status],
-        endAt: formatEndAt(subject.endAt),
-        endAtTime: subject.endAt.getTime(),
-        cl: chooseClass(status, remainingDays),
-    }
+
+    var result = [];
+
+    lodash.forEach(subjects, (subject) => {
+        var remainingDays = ((<any>subject.endAt) - (<any>today)) / oneDay;
+
+        var submits_eachSubject = findBySubjectId(submits, subject.id);
+
+        lodash.forEach(students, (student) => {
+            var status = 0;
+
+            var submit = findByUserId(submits_eachSubject, student.id)[0];
+            if(submit) {
+                status = submit.status? submit.status : 0;
+            }
+            result.push({
+                id: subject.id,
+                student_name: student.name,
+                student_number: student.studentNumber,
+                subject_name: subject.name,
+                status: statusArray[status],
+                endAt: formatEndAt(subject.endAt),
+                endAtTime: subject.endAt.getTime(),
+                cl: chooseClass(status, remainingDays),
+            });
+        });
+    });
+    return result;
+}
+
+function findByUserId(submit_statuses, userId) {
+    return submit_statuses.filter((submit) => submit.UserId == userId);
 }
 
 function findBySubjectId(submit_statuses, subjectId) {
-    return submit_statuses.filter(function(submit) { return submit.SubjectId == subjectId;});
+    return submit_statuses.filter((submit) => submit.SubjectId == subjectId);
 }
 
 function createSubmitView(subject, submit_statuses) {
