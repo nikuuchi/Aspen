@@ -881,14 +881,14 @@ $(function () {
                     return;
                 }
                 if (res.error.length > 0) {
-                    Output.PrintLn(C2JS.FormatClangErrorMessage(res.error, file.GetBaseName()));
+                    Output.PrintLn(C2JS.FormatClangErrorMessage(res.error, file.GetFullPathBaseName()));
                     Editor.SetErrorLines(FindErrorNumbersInErrorMessage(res.error));
                 }
                 Output.Prompt();
 
                 Context.error = res.error;
                 if (!res.error.match("error:")) {
-                    Output.PrintLn('./' + file.GetBaseName());
+                    Output.PrintLn('./' + file.GetFullPathBaseName());
                     C2JS.Run(res.source, Context, Output);
                 } else {
                     Context.source = null;
