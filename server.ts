@@ -7,7 +7,7 @@ var favicon = require('static-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var session = require('express-session');
+var session = require('cookie-session');
 
 
 var config = require('config');

@@ -44,7 +44,7 @@ exports.login = function (req, res) {
             console.log(error);
         }
     }).finally(function () {
-        res.redirect(Referer);
+        res.redirect(config.passport.host_url + '/');
     });
 };
 
@@ -53,7 +53,7 @@ exports.logout = function (req, res) {
     var auth = new Auth.Auth(req, res);
     auth.clear();
     req.logout();
-    res.redirect('/');
+    res.redirect(config.base.path + '/');
 };
 
 passport.serializeUser(function (user, done) {

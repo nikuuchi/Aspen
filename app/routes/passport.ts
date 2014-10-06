@@ -48,7 +48,7 @@ export var login = function(req: any, res: any) {
         }
     })
     .finally(function() {
-        res.redirect(Referer);
+        res.redirect(config.passport.host_url+'/');
     });
 };
 
@@ -57,7 +57,7 @@ export var logout = function(req: any, res: any) {
     var auth = new Auth.Auth(req, res);
     auth.clear();
     req.logout();
-    res.redirect('/');
+    res.redirect(config.base.path + '/');
 };
 
 passport.serializeUser(function(user, done) {
