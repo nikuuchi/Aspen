@@ -56,9 +56,9 @@ CREATE TABLE IF NOT EXISTS `aspen`.`Subjects` (
   `createdAt` DATETIME NULL,
   `updatedAt` DATETIME NULL,
   `deleteFlag` TINYINT(1) NOT NULL DEFAULT 0,
-  PRIMARY KEY (`id`, `LectureId`),
-  INDEX `fk_subject_lecture_idx` (`LectureId` ASC),
-  CONSTRAINT `fk_subject_lecture`
+  PRIMARY KEY (`id`),
+  INDEX `fk_Subjects_Lectures1_idx` (`LectureId` ASC),
+  CONSTRAINT `fk_Subjects_Lectures1`
     FOREIGN KEY (`LectureId`)
     REFERENCES `aspen`.`Lectures` (`id`)
     ON DELETE NO ACTION
@@ -117,8 +117,8 @@ CREATE TABLE IF NOT EXISTS `aspen`.`SubmitStatuses` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_user_has_subject_subject1`
-    FOREIGN KEY (`SubjectId` , `id`)
-    REFERENCES `aspen`.`Subjects` (`id` , `LectureId`)
+    FOREIGN KEY (`SubjectId`)
+    REFERENCES `aspen`.`Subjects` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
