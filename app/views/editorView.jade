@@ -1,9 +1,12 @@
 extends layout
 
 block header
+  +css('/css/index.css')
   include editor_css
 
 block content
+  include topbar
+  .space(style="padding: 20px")
   .demo-editor
     include editor
   - if(has_content) {

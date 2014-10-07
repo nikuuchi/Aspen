@@ -273,15 +273,12 @@ body {
   border-bottom-color: #fff;
 }
 
-@media (min-width: 768px) {
-  .masthead-brand {
-    float: left;
-  }
-  .masthead-nav {
-    float: right;
-  }
+.masthead-brand {
+  float: left;
 }
-
+.masthead-nav {
+  float: right;
+}
 
 /*
  * Cover
@@ -319,6 +316,13 @@ body {
  * Affix and center
  */
 
+@media (max-width: 768px) {
+
+  button.nav.masthead-nav-toggle{
+    display: "";
+  }
+}
+
 @media (min-width: 768px) {
   /* Pull out the header and footer */
   .masthead{
@@ -327,6 +331,9 @@ body {
   .mastfoot {
     position: fixed;
     bottom: 0;
+  }
+  button.nav.masthead-nav-toggle{
+    display: none;
   }
   /* Start the vertical centering */
   .site-wrapper-inner {
