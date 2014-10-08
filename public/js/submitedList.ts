@@ -2,8 +2,8 @@
 
 var studentListFlag = false;
 var subjectListFlag = false;
-var targetStudentNumber: number;
-var targetSubjectId: number;
+var targetStudentNumber;
+var targetSubjectId;
 var allData;
 
 $(function(){
@@ -31,20 +31,20 @@ $(function(){
     switch(id){
       case "student-content":
         $(".student-head").text($(this).text());
-        targetStudentNumber = Number($(this).attr("number"));
+        targetStudentNumber = $(this).attr("number");
         break;
       case "subject-content":
         $(".subject-head").text($(this).text());
-        targetSubjectId = Number($(this).attr("number"));
+        targetSubjectId = $(this).attr("number");
         break;
     }
 
     for(var i = 0; i < allData.length; i++){
       $(allData[i]).css("display", "");
-      if(Number($(allData[i]).attr("studentNumber")) != targetStudentNumber && targetStudentNumber > -1){
+      if($(allData[i]).attr("studentNumber") != targetStudentNumber && targetStudentNumber != -1){
         $(allData[i]).css("display", "none");
       }
-      if(Number($(allData[i]).attr("subjectId")) != targetSubjectId && targetSubjectId > -1){
+      if($(allData[i]).attr("subjectId") != targetSubjectId && targetSubjectId != -1){
         $(allData[i]).css("display", "none");
       }
     }

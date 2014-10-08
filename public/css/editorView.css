@@ -34,7 +34,7 @@ code {
 .sidebar-btn {
   z-index: 13;
   position: fixed;
-  top: 1%;
+  top: 60px;
   left: 1%;
 }
 
