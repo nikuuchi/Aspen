@@ -6,6 +6,24 @@ var db = require('../models');
 var http = require('http');
 var config = require('config');
 
+router.post('/save', function (req, res) {
+    if (!req.signedCookies) {
+        res.status(401).json({ error: "error" });
+        return;
+    }
+    var content = req.body.content;
+    var subjectId = req.body.subjectId;
+    var gUserId = req.signedCookies.sessionUserId;
+    db.User.findByGithub(gUserId).then(function (user) {
+        return db.SubmitStatus.saveTemporary(content, user.id, subjectId, db.Sequelize);
+    }).then(function (submit) {
+        console.log(submit);
+        res.json({});
+    }).catch(function () {
+        res.status(401).json({ error: "something bad" });
+    });
+});
+
 router.post('/submit', function (req, res) {
     if (!req.signedCookies) {
         res.status(401).json({ error: "error" });

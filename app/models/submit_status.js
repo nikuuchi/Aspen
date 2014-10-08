@@ -53,6 +53,30 @@ module.exports = function (sequelize, DataTypes) {
                         });
                     }
                 });
+            },
+            /**
+            * 一時保存
+            * @method saveTemporary
+            * @param {String} content 提出内容
+            * @param {Number} userId ユーザID
+            * @param {Number} subjectId 課題番号
+            * @return {Promise}
+            */
+            saveTemporary: function (content, userId, subjectId, seq) {
+                return SubmitStatus.find({ where: seq.and({ UserId: userId }, { SubjectId: subjectId }) }).then(function (submit) {
+                    if (submit) {
+                        submit.content = content;
+                        return submit.save();
+                    } else {
+                        console.log("hi");
+                        return SubmitStatus.create({
+                            UserId: userId,
+                            SubjectId: subjectId,
+                            content: content,
+                            status: 0
+                        });
+                    }
+                });
             }
         }
     });
