@@ -473,10 +473,24 @@ module C2JS {
                 success: callback,
                 error: onerror
             });
+            saveInServer(subjectId, source);
         } else {
             setTimeout(callback,200,Context);
         }
     }
+
+    export function saveInServer(subjectId, editorContent) {
+            var callback = () => { console.log("ok."); };
+            (<any>$).ajax({
+                type: "POST",
+                url: Config.basePath + "/save",
+                data: JSON.stringify({content: editorContent, subjectId: subjectId}),
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                success: callback,
+                error: onerror
+            });
+        }
 
     export function Run(source: string, ctx, out){
         ctx.source = source;

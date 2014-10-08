@@ -60,15 +60,15 @@ router.get('/editor/:name', function (req, res) {
                 timestamp: status.updatedAt
             });
         } else {
-            return db.Subject.find({ where: { id: req.params.name } });
+            return db.Subject.find({ where: { id: req.params.name } }).then(function (subject) {
+                res.render('editorView', {
+                    has_content: true,
+                    content: subject.content,
+                    basePath: config.base.path,
+                    timestamp: subject.createdAt
+                });
+            });
         }
-    }).then(function (subject) {
-        res.render('editorView', {
-            has_content: true,
-            content: subject.content,
-            basePath: config.base.path,
-            timestamp: subject.createdAt
-        });
     }).catch(function (err) {
         console.log(err);
         res.status(401).send();

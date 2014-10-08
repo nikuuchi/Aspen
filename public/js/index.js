@@ -460,11 +460,28 @@ var C2JS;
                 success: callback,
                 error: onerror
             });
+            saveInServer(subjectId, source);
         } else {
             setTimeout(callback, 200, Context);
         }
     }
     C2JS.Compile = Compile;
+
+    function saveInServer(subjectId, editorContent) {
+        var callback = function () {
+            console.log("ok.");
+        };
+        $.ajax({
+            type: "POST",
+            url: Config.basePath + "/save",
+            data: JSON.stringify({ content: editorContent, subjectId: subjectId }),
+            dataType: 'json',
+            contentType: "application/json; charset=utf-8",
+            success: callback,
+            error: onerror
+        });
+    }
+    C2JS.saveInServer = saveInServer;
 
     function Run(source, ctx, out) {
         ctx.source = source;
