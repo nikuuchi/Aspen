@@ -816,7 +816,7 @@ $(function () {
     var Files = new C2JS.FileLoader();
 
     //初期ページでは提出ボタンを出さないようにする
-    if (location.pathname == Config.basePath + "/") {
+    if (location.pathname == Config.basePath + "/" || location.pathname == Config.basePath + "/editor") {
         var submit_button = $("#submit-file");
         submit_button.hide();
     } else {

@@ -71,6 +71,7 @@ router.get('/editor/:name', function (req, res) {
         });
     }).catch(function (err) {
         console.log(err);
+        res.status(401).send();
     });
 });
 
