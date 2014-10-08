@@ -53,12 +53,22 @@ router.get('/editor/:name', function (req, res) {
         return db.SubmitStatus.find({ where: db.Sequelize.and({ UserId: user.id }, { SubjectId: req.params.name }) });
     }).then(function (status) {
         if (status) {
-            res.render('editorView', { has_content: true, content: status.content, basePath: config.base.path });
+            res.render('editorView', {
+                has_content: true,
+                content: status.content,
+                basePath: config.base.path,
+                timestamp: status.updatedAt
+            });
         } else {
             return db.Subject.find({ where: { id: req.params.name } });
         }
     }).then(function (subject) {
-        res.render('editorView', { has_content: true, content: subject.content, basePath: config.base.path });
+        res.render('editorView', {
+            has_content: true,
+            content: subject.content,
+            basePath: config.base.path,
+            timestamp: subject.createdAt
+        });
     }).catch(function (err) {
         console.log(err);
     });
