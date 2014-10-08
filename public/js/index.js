@@ -220,8 +220,10 @@ var C2JS;
             var content = $("#file-content").text();
             var timestamp = $("#file-timestamp").text();
             var oldcontent = sessionStorage.getItem(filename + ".c");
-            var oldtimestamp = sessionStorage.getItem(filename + ".time");
-            if (oldcontent !== null && oldtimestamp !== null) {
+            var olddate = sessionStorage.getItem(filename + ".time");
+            var oldtimestamp;
+            if (oldcontent !== null && olddate !== null) {
+                oldtimestamp = new Date(olddate);
                 if (timestamp < oldtimestamp) {
                     content = oldcontent;
                     timestamp = oldtimestamp;
@@ -421,8 +423,7 @@ var C2JS;
             sessionStorage.setItem(fileName, source);
             var timeName = fileName.replace(/\..*/, ".time");
             var date = new Date();
-            var timestamp = date.getFullYear() + "-" + ("0" + (date.getMonth() + 1)).slice(-2) + "-" + ("0" + date.getDay()).slice(-2) + " " + ("0" + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2) + ":" + ("0" + date.getSeconds()).slice(-2);
-            sessionStorage.setItem(timeName, timestamp);
+            sessionStorage.setItem(timeName, date.toString());
         };
 
         SourceDB.prototype.Load = function (fileName) {
