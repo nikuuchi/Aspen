@@ -170,11 +170,12 @@ var C2JS;
             this.BaseName = this.Name.replace(/\..*/, "");
             this.Path = Path;
             this.PathArray = Path.split("/");
-            this.BaseName = this.PathArray.join("_") + "_" + this.BaseName;
+            //this.BaseName = this.PathArray.join("_") + "_" + this.BaseName;
         };
 
         FileModel.prototype.GetName = function () {
-            return this.PathArray.join("_") + "_" + this.Name;
+            return this.Name;
+            //return this.PathArray.join("_") + "_" + this.Name;
         };
 
         FileModel.prototype.GetNoPathName = function () {
@@ -204,6 +205,56 @@ var C2JS;
     })();
     C2JS.FileModel = FileModel;
 
+    var FileLoader = (function () {
+        function FileLoader() {
+            this.UI = $('#file-name-lists');
+            this.SetItem();
+        }
+        FileLoader.prototype.SetItem = function () {
+            var filename = location.pathname.split("/").pop();
+            if (filename === "editor" || filename === "") {
+                filename = "program";
+            } else {
+                filename = "subject" + filename;
+            }
+            var content = $("#file-content").text();
+            var timestamp = $("#file-timestamp").text();
+            var oldcontent = sessionStorage.getItem(filename + ".c");
+            var oldtimestamp = sessionStorage.getItem(filename + ".time");
+            if (oldcontent !== null && oldtimestamp !== null) {
+                if (timestamp < oldtimestamp) {
+                    content = oldcontent;
+                    timestamp = oldtimestamp;
+                }
+            }
+            if (content === "") {
+                content = GetHelloWorldSource();
+            }
+            sessionStorage.setItem(filename + ".c", content);
+            sessionStorage.setItem(filename + ".time", timestamp);
+
+            this.FileModel = new FileModel(filename + ".c");
+        };
+
+        FileLoader.prototype.Empty = function () {
+            return this.FileModel == null;
+        };
+
+        FileLoader.prototype.GetCurrent = function () {
+            return this.FileModel;
+        };
+
+        FileLoader.prototype.Show = function () {
+            this.UI.prepend($('#file-list-template').tmpl(this.FileModel));
+            $("#" + this.GetCurrent().GetBaseName()).parent().addClass('active');
+            $("#" + this.GetCurrent().GetBaseName()).click(function () {
+                return false;
+            });
+        };
+        return FileLoader;
+    })();
+    C2JS.FileLoader = FileLoader;
+
     var FileCollection = (function () {
         function FileCollection() {
             this.FileModels = [];
@@ -212,7 +263,6 @@ var C2JS;
             this.UI = $('#file-name-lists');
             this.ActiveFileName = localStorage.getItem(this.defaultNameKey) || "default_program.c";
             this.ActiveFileIndex = 0;
-
             for (var i = 0; i < localStorage.length; i++) {
                 var keyArray = localStorage.key(i).split("_");
                 var key = keyArray.pop();
@@ -368,19 +418,23 @@ var C2JS;
         function SourceDB() {
         }
         SourceDB.prototype.Save = function (fileName, source) {
-            localStorage.setItem(fileName, source);
+            sessionStorage.setItem(fileName, source);
+            var timeName = fileName.replace(/\..*/, ".time");
+            var date = new Date();
+            var timestamp = date.getFullYear() + "-" + ("0" + (date.getMonth() + 1)).slice(-2) + "-" + ("0" + date.getDay()).slice(-2) + " " + ("0" + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2) + ":" + ("0" + date.getSeconds()).slice(-2);
+            sessionStorage.setItem(timeName, timestamp);
         };
 
         SourceDB.prototype.Load = function (fileName) {
-            return localStorage.getItem(fileName);
+            return sessionStorage.getItem(fileName);
         };
 
         SourceDB.prototype.Delete = function (fileName) {
-            return localStorage.removeItem(fileName);
+            return sessionStorage.removeItem(fileName);
         };
 
         SourceDB.prototype.Exist = function (fileName) {
-            return localStorage.getItem(fileName) != null;
+            return sessionStorage.getItem(fileName) != null;
         };
         return SourceDB;
     })();
@@ -758,7 +812,7 @@ $(function () {
     var Output = new C2JS.Output($("#output"));
     var DB = new C2JS.SourceDB();
     var Context = {};
-    var Files = new C2JS.FileCollection();
+    var Files = new C2JS.FileLoader();
 
     //初期ページでは提出ボタンを出さないようにする
     if (location.pathname == Config.basePath + "/") {
@@ -828,13 +882,16 @@ $(function () {
     var ChangeCurrentFile = function (e) {
         if (running)
             return;
-        Files.SetCurrent(e.target.id);
+
+        //Files.SetCurrent((<any>e.target).id);
         Editor.SetValue(DB.Load(Files.GetCurrent().GetName()));
         Editor.ClearHistory();
     };
 
-    Files.Show(ChangeCurrentFile);
-    Files.GenerateFTree();
+    Files.Show();
+
+    //Files.Show(ChangeCurrentFile);
+    //Files.GenerateFTree();
     Output.Prompt();
 
     Aspen.Debug.SetRunning = function (flag) {
@@ -921,30 +978,31 @@ $(function () {
         return str.indexOf(suffix, str.length - suffix.length) !== -1;
     };
 
-    $("#file-open-dialog").change(function (e) {
-        var file = this.files[0];
-        if (file) {
-            if (!endsWith(file.name, ".c")) {
-                alert("Unsupported file type.\nplease select '*.c' file.");
-                return;
-            }
-            var reader = new FileReader();
-            reader.onerror = function (e) {
-                alert(e);
-            };
-            reader.onload = function (e) {
-                DB.Save(Files.GetCurrent().GetName(), Editor.GetValue());
-                var fileModel = new C2JS.FileModel(Files.MakeUniqueName(file.name));
-                Files.Append(fileModel, ChangeCurrentFile);
-                Files.SetCurrent(fileModel.GetBaseName());
-                Editor.SetValue(e.target.result);
-                DB.Save(Files.GetCurrent().GetName(), Editor.GetValue());
-                Editor.ClearHistory();
-            };
-            reader.readAsText(file, 'utf-8');
-        }
+    /*
+    $("#file-open-dialog").change(function(e: Event) {
+    var file: File = this.files[0];
+    if(file) {
+    if(!endsWith(file.name, ".c")){
+    alert("Unsupported file type.\nplease select '*.c' file.");
+    return;
+    }
+    var reader = new FileReader();
+    reader.onerror = (e: Event)=> {
+    alert(<any>e);
+    };
+    reader.onload = (e: Event)=> {
+    DB.Save(Files.GetCurrent().GetName(), Editor.GetValue());
+    var fileModel = new C2JS.FileModel(Files.MakeUniqueName(file.name));
+    Files.Append(fileModel, ChangeCurrentFile);
+    Files.SetCurrent(fileModel.GetBaseName());
+    Editor.SetValue((<any>e.target).result);
+    DB.Save(Files.GetCurrent().GetName(), Editor.GetValue());
+    Editor.ClearHistory();
+    };
+    reader.readAsText(file, 'utf-8');
+    }
     });
-
+    */
     var OnFilesBecomeEmpty = function () {
         $("#delete-file").hide();
         $(".disabled-on-files-empty").addClass("disabled");
@@ -957,90 +1015,86 @@ $(function () {
         Editor.Enable();
     };
 
-    var CreateFileFunction = function (e) {
-        if (running)
-            return;
-        var path;
-        if (e.currentTarget.id === "create-file") {
-            path = "";
-        } else {
-            path = Files.Tree.getCurrentPath();
-        }
-        if (path !== "" && Files.Tree.getCurrentType() == "file") {
-            alert("フォルダを選択してください");
-            return;
-        }
-        var pathMassage = path ? "\"" + path + "/\"" : "";
-        var filename = prompt("Please enter the file name." + pathMassage, C2JS.CheckFileName("", DB));
-        filename = C2JS.CheckFileName(filename, DB, path);
-        if (filename == null) {
-            return;
-        }
-        if (path !== "") {
-            Files.Tree.setFile(Files.Tree.getSelectedNode(), filename);
-        } else {
-            Files.Tree.setFile(Files.Tree.getDefaultNode(), filename);
-        }
-        var file = new C2JS.FileModel(filename, path);
-        Files.Append(file, ChangeCurrentFile);
-        Files.SetCurrent(file.GetBaseName());
-        OnFilesBecomeNotEmpty();
-        Editor.ResetHelloWorld();
-        Editor.ClearHistory();
+    /* var CreateFileFunction = (e: any) => {
+    if(running) return;
+    var path: string;
+    if(e.currentTarget.id === "create-file") {
+    path = "";
+    } else {
+    path = Files.Tree.getCurrentPath();
+    }
+    if(path !== "" && Files.Tree.getCurrentType() == "file"){
+    alert("フォルダを選択してください");
+    return;
+    }
+    var pathMassage =path? "\"" + path + "/\"":"";
+    var filename = prompt("Please enter the file name." + pathMassage, C2JS.CheckFileName("", DB));
+    filename = C2JS.CheckFileName(filename, DB, path);
+    if(filename == null) {
+    return;
+    }
+    if(path !== "") {
+    Files.Tree.setFile(Files.Tree.getSelectedNode(), filename);
+    } else {
+    Files.Tree.setFile(Files.Tree.getDefaultNode(), filename);
+    }
+    var file = new C2JS.FileModel(filename, path);
+    Files.Append(file, ChangeCurrentFile);
+    Files.SetCurrent(file.GetBaseName());
+    OnFilesBecomeNotEmpty();
+    Editor.ResetHelloWorld();
+    Editor.ClearHistory();
     };
-    $("#create-file").tooltip({ placement: "bottom", html: true });
+    (<any>$("#create-file")).tooltip({placement: "bottom", html: true});
     $("#create-file").click(CreateFileFunction);
     $("#create-file-menu").click(CreateFileFunction);
     $('#add-file-btn').click(CreateFileFunction);
-
-    var RenameFunction = function (e) {
-        if (Files.Empty() || running)
-            return;
-        DB.Save(Files.GetCurrent().GetName(), Editor.GetValue());
-        var oldfilebasename = Files.GetCurrent().GetNoPathName().split(".")[0];
-        var oldfilepath = Files.GetCurrent().GetPathArray().join("_");
-        var oldfilecontents = Editor.GetValue();
-
-        var filename = prompt("Rename: Please enter the file name.", oldfilebasename);
-        filename = C2JS.CheckFileName(filename, DB, oldfilepath);
-        if (filename == null) {
-            return;
-        }
-        Files.Rename(oldfilebasename, filename, oldfilecontents, ChangeCurrentFile, DB, oldfilepath);
-        Editor.SetValue(oldfilecontents);
-        DB.Save(Files.GetCurrent().GetName(), Editor.GetValue());
+    
+    var RenameFunction = (e: Event) => {
+    if(Files.Empty() || running) return;
+    DB.Save(Files.GetCurrent().GetName(), Editor.GetValue());
+    var oldfilebasename = Files.GetCurrent().GetNoPathName().split(".")[0];
+    var oldfilepath = Files.GetCurrent().GetPathArray().join("_");
+    var oldfilecontents = Editor.GetValue();
+    
+    var filename = prompt("Rename: Please enter the file name.", oldfilebasename);
+    filename = C2JS.CheckFileName(filename, DB, oldfilepath);
+    if(filename == null) {
+    return;
+    }
+    Files.Rename(oldfilebasename, filename, oldfilecontents, ChangeCurrentFile, DB, oldfilepath);
+    Editor.SetValue(oldfilecontents);
+    DB.Save(Files.GetCurrent().GetName(), Editor.GetValue());
     };
     $("#rename-menu").click(RenameFunction);
-
-    var DeleteFileFunction = function (e) {
-        if (Files.Empty() || running)
-            return;
-        var BaseName = Files.GetCurrent().GetBaseName();
-        if (C2JS.ConfirmToRemove(BaseName)) {
-            Files.Remove(BaseName);
-            if (Files.Empty()) {
-                OnFilesBecomeEmpty();
-            } else {
-                Editor.SetValue(DB.Load(Files.GetCurrent().GetName()));
-            }
-        }
+    
+    var DeleteFileFunction = (e: Event) => {
+    if(Files.Empty() || running) return;
+    var BaseName = Files.GetCurrent().GetBaseName();
+    if(C2JS.ConfirmToRemove(BaseName)) {
+    Files.Remove(BaseName);
+    if(Files.Empty()){
+    OnFilesBecomeEmpty();
+    }else{
+    Editor.SetValue(DB.Load(Files.GetCurrent().GetName()));
+    }
+    }
     };
-
-    $("#delete-file").tooltip({ placement: "bottom", html: true });
+    
+    (<any>$("#delete-file")).tooltip({placement: "bottom", html: true});
     $("#delete-file").click(DeleteFileFunction);
     $("#delete-file-menu").click(DeleteFileFunction);
-
-    var DeleteAllFilesFunction = function (e) {
-        if (Files.Empty() || running)
-            return;
-        var BaseName = Files.GetCurrent().GetBaseName();
-        if (C2JS.ConfirmAllRemove()) {
-            Files.Clear();
-        }
-        OnFilesBecomeEmpty();
+    
+    var DeleteAllFilesFunction = (e: Event) => {
+    if(Files.Empty() || running) return;
+    var BaseName = Files.GetCurrent().GetBaseName();
+    if(C2JS.ConfirmAllRemove()) {
+    Files.Clear();
+    }
+    OnFilesBecomeEmpty();
     };
     $("#delete-all-file-menu").click(DeleteAllFilesFunction);
-
+    */
     var JpModeCheckFunction = (function (e) {
         Aspen.Language = this.checked ? "ja" : "en";
     });

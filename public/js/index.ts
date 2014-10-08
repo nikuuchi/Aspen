@@ -179,11 +179,12 @@ module C2JS {
             this.BaseName = this.Name.replace(/\..*/, "");
             this.Path = Path;
             this.PathArray = Path.split("/");
-            this.BaseName = this.PathArray.join("_") + "_" + this.BaseName;
+            //this.BaseName = this.PathArray.join("_") + "_" + this.BaseName;
         }
 
         GetName(): string {
-            return this.PathArray.join("_") + "_" + this.Name;
+          return this.Name;
+          //return this.PathArray.join("_") + "_" + this.Name;
         }
 
         GetNoPathName():string {
@@ -212,6 +213,59 @@ module C2JS {
 
     }
 
+    export class FileLoader {
+      private FileModel: FileModel;
+      private UI: JQuery;
+
+      constructor() {
+        this.UI = $('#file-name-lists');
+        this.SetItem();
+      }
+
+      SetItem() {
+        var filename = location.pathname.split("/").pop();
+        if(filename === "editor" || filename === "") {
+          filename = "program";
+        } else {
+          filename = "subject" + filename;
+        }
+        var content: string = $("#file-content").text();
+        var timestamp = $("#file-timestamp").text();
+        var oldcontent = sessionStorage.getItem(filename + ".c");
+        var oldtimestamp = sessionStorage.getItem(filename + ".time");
+        if(oldcontent !== null && oldtimestamp !== null) {
+          if(timestamp < oldtimestamp) {
+            content = oldcontent;
+            timestamp = oldtimestamp;
+          }
+        }
+        if(content === "") {
+          content = GetHelloWorldSource();
+        }
+        sessionStorage.setItem(filename + ".c", content);
+        sessionStorage.setItem(filename + ".time", timestamp);
+
+        this.FileModel = new FileModel(filename + ".c");
+      }
+
+      Empty() {
+        return this.FileModel == null;
+      }
+
+      GetCurrent() {
+        return this.FileModel;
+      }
+
+      Show() {
+        this.UI.prepend($('#file-list-template').tmpl(this.FileModel));
+        $("#" + this.GetCurrent().GetBaseName()).parent().addClass('active');
+        $("#" + this.GetCurrent().GetBaseName()).click(function() {
+          return false;
+        });
+      }
+
+    }
+
     export class FileCollection {
         private FileModels: FileModel[] = [];
         private UI: JQuery;
@@ -224,7 +278,6 @@ module C2JS {
             this.UI = $('#file-name-lists');
             this.ActiveFileName = localStorage.getItem(this.defaultNameKey) || "default_program.c";
             this.ActiveFileIndex = 0;
-
             for(var i = 0; i < localStorage.length; i++) {
                 var keyArray = localStorage.key(i).split("_");
                 var key = keyArray.pop();
@@ -380,19 +433,23 @@ module C2JS {
         }
 
         Save(fileName: string, source: string): void {
-            localStorage.setItem(fileName, source);
+            sessionStorage.setItem(fileName, source);
+            var timeName = fileName.replace(/\..*/, ".time");
+            var date = new Date();
+            var timestamp = date.getFullYear() + "-" + ("0" + (date.getMonth() + 1)).slice(-2) + "-" + ("0" + date.getDay()).slice(-2) + " " + ("0" + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2) + ":" + ("0" + date.getSeconds()).slice(-2);
+            sessionStorage.setItem(timeName, timestamp);
         }
 
         Load(fileName: string): string {
-            return localStorage.getItem(fileName);
+            return sessionStorage.getItem(fileName);
         }
 
         Delete(fileName: string): void {
-            return localStorage.removeItem(fileName);
+            return sessionStorage.removeItem(fileName);
         }
 
         Exist(fileName: string): boolean {
-            return localStorage.getItem(fileName) != null;
+            return sessionStorage.getItem(fileName) != null;
         }
 
     }
@@ -703,7 +760,7 @@ $(function () {
     var Output: C2JS.Output   = new C2JS.Output($("#output"));
     var DB:     C2JS.SourceDB = new C2JS.SourceDB();
     var Context: any = {}; //TODO refactor C2JS.Response
-    var Files: C2JS.FileCollection = new C2JS.FileCollection();
+    var Files: C2JS.FileLoader = new C2JS.FileLoader();
 
     //初期ページでは提出ボタンを出さないようにする
     if(location.pathname == Config.basePath + "/") {
@@ -773,13 +830,15 @@ $(function () {
 
     var ChangeCurrentFile = (e: Event) => {
         if(running) return
-        Files.SetCurrent((<any>e.target).id);
+        //Files.SetCurrent((<any>e.target).id);
         Editor.SetValue(DB.Load(Files.GetCurrent().GetName()));
         Editor.ClearHistory();
     };
 
-    Files.Show(ChangeCurrentFile);
-    Files.GenerateFTree();
+
+    Files.Show();
+    //Files.Show(ChangeCurrentFile);
+    //Files.GenerateFTree();
     Output.Prompt();
 
     Aspen.Debug.SetRunning = (flag: boolean) => {
@@ -864,7 +923,7 @@ $(function () {
     var endsWith = function(str, suffix) {
         return str.indexOf(suffix, str.length - suffix.length) !== -1;
     }
-
+/*
     $("#file-open-dialog").change(function(e: Event) {
         var file: File = this.files[0];
         if(file) {
@@ -888,7 +947,7 @@ $(function () {
             reader.readAsText(file, 'utf-8');
         }
     });
-
+*/
     var OnFilesBecomeEmpty = () => {
         $("#delete-file").hide();
         $(".disabled-on-files-empty").addClass("disabled");
@@ -901,7 +960,7 @@ $(function () {
         Editor.Enable();
     };
 
-    var CreateFileFunction = (e: any) => {
+    /* var CreateFileFunction = (e: any) => {
         if(running) return;
         var path: string;
         if(e.currentTarget.id === "create-file") {
@@ -980,7 +1039,7 @@ $(function () {
         OnFilesBecomeEmpty();
     };
     $("#delete-all-file-menu").click(DeleteAllFilesFunction);
-
+    */
     var JpModeCheckFunction = (function(e: Event) {
         Aspen.Language = this.checked ? "ja" : "en";
     });
