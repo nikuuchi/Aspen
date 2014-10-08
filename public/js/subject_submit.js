@@ -8,12 +8,27 @@ $(function () {
     editor.setFontSize(14);
 });
 
+function createHiddenElement(name, value) {
+    var hidden_element = document.createElement("input");
+    hidden_element.setAttribute("name", name);
+    hidden_element.setAttribute("type", "hidden");
+    hidden_element.setAttribute("value", value);
+    return hidden_element;
+}
+
+function getSubjectId() {
+    var pathes = location.pathname.split("/");
+    var _subjectId = pathes[pathes.length - 1];
+    return (_subjectId == "editor") ? 0 : parseInt(_subjectId);
+}
+
 function postData() {
     var form = document.getElementById("subject_form");
-    var hidden_element = document.createElement("input");
-    hidden_element.setAttribute("name", "content");
-    hidden_element.setAttribute("type", "hidden");
-    hidden_element.setAttribute("value", editor.getValue());
-    form.appendChild(hidden_element);
+
+    var hidden1 = createHiddenElement("content", editor.getValue());
+    var hidden2 = createHiddenElement("subjectId", getSubjectId());
+
+    form.appendChild(hidden1);
+    form.appendChild(hidden2);
     form.submit();
 }

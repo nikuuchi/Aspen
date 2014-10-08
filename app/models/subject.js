@@ -71,6 +71,25 @@ module.exports = function (sequelize, DataTypes) {
             */
             getList: function (lecturId) {
                 return Subject.findAll({ where: { LectureId: lecturId } });
+            },
+            createOrUpdate: function (name, endAt, subjectId, content) {
+                return Subject.find({ where: { id: subjectId } }).then(function (subject) {
+                    if (subject) {
+                        subject.name = name;
+                        subject.endAt = endAt;
+                        subject.content = content;
+                        return subject.save();
+                    } else {
+                        return Subject.create({
+                            name: name,
+                            url: "",
+                            content: content,
+                            LectureId: 1,
+                            startAt: new Date(),
+                            endAt: endAt
+                        });
+                    }
+                });
             }
         }
     });

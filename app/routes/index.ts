@@ -41,10 +41,44 @@ router.get('/', function(req, res) {
         });
 });
 
+
+/**
+ * Format a date like YYYY-MM-DD.
+ *
+ * @param {string} template
+ * @return {string}
+ * @license MIT
+ */
+function formatDate(template, d) {
+    var specs = 'YYYY:MM:DD:HH:mm:ss'.split(':');
+    var date = new Date(d - d.getTimezoneOffset() * 60000);
+    return date.toISOString().split(/[-:.TZ]/).reduce(function(template, item, i) {
+        return template.split(specs[i]).join(item);
+    }, template);
+}
+
 router.get('/subject/:file', function(req, res) {
-    //TODO アクセス制限
-    //作成した課題自体の編集を行う
-    res.render('subject'); //FIXME
+    if(!auth.isLogin(req)) {
+        res.redirect(config.base.path + '/');
+        return;
+    }
+    db.Subject.find({where: {id: req.params.file}})
+        .then((subject) => {
+            if(subject) {
+                res.render('subject', {
+                    basePath: config.base.path,
+                    content: subject.content,
+                    endAt: formatDate("YYYY-MM-DD", subject.endAt),
+                    name: subject.name? subject.name : ""
+                });
+            } else {
+                throw new Error('not found');
+            }
+        })
+        .catch(function(err) {
+            console.log(err);
+            res.status(404).send('not found.');
+        });
 });
 
 router.get('/editor/:name', function(req, res) {
@@ -116,8 +150,18 @@ router.get('/list/all', function(req, res) {
 });
 
 router.get('/subject', function(req, res) {
+    if(!auth.isLogin(req)) {
+        res.redirect(config.base.path + '/');
+        return;
+    }
+    //db.User.find({where: db.Sequelize.and({github_id: req.signedCookies.sessionUserId}, {admin_role:
     //TODO Check admin role
-    res.render('subject', { basePath: config.base.path });
+    res.render('subject', {
+        basePath: config.base.path,
+        content: '',
+        endAt: '',
+        name: ''
+    });
 });
 
 router.get('/register', function(req, res) {
