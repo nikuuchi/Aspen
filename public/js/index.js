@@ -13,19 +13,9 @@ var C2JS;
     }
     C2JS.GetHelloWorldSource = GetHelloWorldSource;
 
-    var Size = (function () {
-        function Size(width, height) {
-            this.width = width;
-            this.height = height;
-        }
-        return Size;
-    })();
-    C2JS.Size = Size;
-
     var Editor = (function () {
         function Editor($editor) {
             this.markedErrorLines = [];
-            this.size = new Size($editor.width(), $editor.height());
             this.editor = ace.edit("editor");
             this.editor.setTheme("ace/theme/xcode");
             this.editor.getSession().setMode("ace/mode/c_cpp");
@@ -51,42 +41,33 @@ var C2JS;
             this.SetValue("");
         };
 
-        Editor.prototype.SetSize = function (size) {
-            this.editor.setSize(size.width, size.height);
-            this.size = size;
-        };
-
         Editor.prototype.Disable = function () {
-            //this.editor.setOption("readOnly", "nocursor");
             this.editor.setReadOnly(true);
             $("#editor").css({ "background-color": "#eee" });
         };
 
         Editor.prototype.Enable = function () {
-            //this.editor.setOption("readOnly", false);
             this.editor.setReadOnly(false);
             $("#editor").css({ "background-color": "#fff" });
         };
 
-        Editor.prototype.SetErrorLine = function (line) {
-            var session = this.editor.getSession();
-
-            //TODO error line
-            this.markedErrorLines.push(line - 1);
-        };
-
         Editor.prototype.SetErrorLines = function (lines) {
+            var annotations = [];
             for (var i = 0; i < lines.length; ++i) {
-                this.SetErrorLine(lines[i]);
+                //this.SetErrorLine(lines[i]); //FIXME
+                annotations.push({
+                    row: lines[i].n - 1,
+                    type: "error",
+                    text: lines[i].t
+                });
+                console.log(annotations);
+                this.markedErrorLines.push(i + 1);
             }
+            this.editor.getSession().setAnnotations(annotations);
         };
 
         Editor.prototype.RemoveAllErrorLine = function () {
-            //FIXME update for ace
-            //for(var i = 0; i < this.markedErrorLines.length; ++i){
-            //    this.editor.removeLineClass(this.markedErrorLines[i], "text", "errorLine");
-            //}
-            this.markedErrorLines = [];
+            this.editor.getSession().clearAnnotations();
         };
 
         Editor.prototype.ResetHelloWorld = function () {
@@ -936,7 +917,7 @@ $(function () {
         jQuery.each(message.split(".c"), (function (k, v) {
             var match = v.match(/:(\d+):\d+:\s+error/);
             if (match && match[1]) {
-                errorLineNumbers.push(match[1]);
+                errorLineNumbers.push({ n: match[1], t: match.input });
             }
         }));
         return errorLineNumbers;

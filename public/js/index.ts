@@ -21,17 +21,10 @@ module C2JS {
         message:  string;
     }
 
-    export class Size {
-        constructor(public width: number, public height: number) {
-        }
-    }
-
     export class Editor {
-        size: Size;
-        private editor: any; //TODO CodeMirror
+        private editor: any;
         private markedErrorLines: number[] = [];
         constructor($editor: JQuery) {
-            this.size = new Size($editor.width(), $editor.height());
             this.editor = ace.edit("editor");
             this.editor.setTheme("ace/theme/xcode");
             this.editor.getSession().setMode("ace/mode/c_cpp");
@@ -58,41 +51,33 @@ module C2JS {
             this.SetValue("");
         }
 
-        SetSize(size: Size): void {
-            this.editor.setSize(size.width, size.height);
-            this.size = size;
-        }
-
         Disable(): void {
-            //this.editor.setOption("readOnly", "nocursor");
             this.editor.setReadOnly(true);
             $("#editor").css({"background-color": "#eee"});
         }
 
         Enable(): void {
-            //this.editor.setOption("readOnly", false);
             this.editor.setReadOnly(false);
             $("#editor").css({"background-color": "#fff"});
         }
 
-        SetErrorLine(line: number){
-            var session = this.editor.getSession();
-            //TODO error line
-            this.markedErrorLines.push(line-1);
-        }
-
-        SetErrorLines(lines: number[]){
+        SetErrorLines(lines: any[]){
+            var annotations = [];
             for(var i = 0; i < lines.length; ++i){
-                this.SetErrorLine(lines[i]);
+                //this.SetErrorLine(lines[i]); //FIXME
+                annotations.push({
+                    row: lines[i].n-1,
+                    type: "error",
+                    text: lines[i].t
+                });
+                console.log(annotations);
+                this.markedErrorLines.push(i+1);
             }
+            this.editor.getSession().setAnnotations(annotations);
         }
 
         RemoveAllErrorLine(): void {
-            //FIXME update for ace
-            //for(var i = 0; i < this.markedErrorLines.length; ++i){
-            //    this.editor.removeLineClass(this.markedErrorLines[i], "text", "errorLine");
-            //}
-            this.markedErrorLines = [];
+            this.editor.getSession().clearAnnotations();
         }
 
         ResetHelloWorld(): void {
@@ -879,7 +864,7 @@ $(function () {
         jQuery.each(message.split(".c"), (function(k, v){
             var match = v.match(/:(\d+):\d+:\s+error/);
             if(match && match[1]){
-                errorLineNumbers.push(match[1]);
+                errorLineNumbers.push({n:match[1], t: match.input});
             }
         }));
         return errorLineNumbers;
