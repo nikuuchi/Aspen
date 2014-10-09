@@ -1131,6 +1131,12 @@ $(function () {
                     ev.stopPropagation();
                     CompileCallback(ev);
                     return;
+
+                case 83:
+                    ev.preventDefault();
+                    ev.stopPropagation();
+                    Aspen.Source.Save(Files.GetCurrent().GetName(), Editor.GetValue());
+                    return;
             }
         }
     };

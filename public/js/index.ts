@@ -1088,11 +1088,11 @@ $(function () {
 //                    ev.stopPropagation();
 //                    RenameFunction(ev);
 //                    return;
-//                case 83:/*s*/
-//                    ev.preventDefault();
-//                    ev.stopPropagation();
-//                    SaveFunction(ev);
-//                    return;
+                case 83:/*s*/
+                    ev.preventDefault();
+                    ev.stopPropagation();
+                    Aspen.Source.Save(Files.GetCurrent().GetName(), Editor.GetValue());
+                    return;
 //                case 79:/*o*/
 //                    ev.preventDefault();
 //                    ev.stopPropagation();
