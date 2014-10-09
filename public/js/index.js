@@ -949,7 +949,7 @@ $(function () {
         var opt = '-m';
         Output.Clear();
         Output.Prompt();
-        Output.PrintLn('gcc ' + file.GetFullPathName() + ' -o ' + file.GetFullPathBaseName());
+        Output.PrintLn('gcc ' + file.GetName() + ' -o ' + file.GetBaseName());
         DisableUI();
         Editor.RemoveAllErrorLine();
 
@@ -961,14 +961,14 @@ $(function () {
                     return;
                 }
                 if (res.error.length > 0) {
-                    Output.PrintLn(C2JS.FormatClangErrorMessage(res.error, file.GetFullPathBaseName()));
+                    Output.PrintLn(C2JS.FormatClangErrorMessage(res.error, file.GetBaseName()));
                     Editor.SetErrorLines(FindErrorNumbersInErrorMessage(res.error));
                 }
                 Output.Prompt();
 
                 Context.error = res.error;
                 if (!res.error.match("error:")) {
-                    Output.PrintLn('./' + file.GetFullPathBaseName());
+                    Output.PrintLn('./' + file.GetBaseName());
                     C2JS.Run(res.source, Context, Output);
                 } else {
                     Context.source = null;
