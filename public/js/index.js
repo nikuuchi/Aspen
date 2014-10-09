@@ -952,7 +952,7 @@ $(function () {
         var opt = '-m';
         Output.Clear();
         Output.Prompt();
-        Output.PrintLn('gcc ' + file.GetFullPathName() + ' -o ' + file.GetFullPathBaseName());
+        Output.PrintLn('gcc ' + file.GetName() + ' -o ' + file.GetBaseName());
         DisableUI();
         Editor.RemoveAllErrorLine();
 
@@ -966,14 +966,14 @@ $(function () {
                     return;
                 }
                 if (res.error.length > 0) {
-                    Output.PrintLn(C2JS.FormatClangErrorMessage(res.error, file.GetFullPathBaseName()));
+                    Output.PrintLn(C2JS.FormatClangErrorMessage(res.error, file.GetBaseName()));
                     Editor.SetErrorLines(FindErrorNumbersInErrorMessage(res.error));
                 }
                 Output.Prompt();
 
                 Context.error = res.error;
                 if (!res.error.match("error:")) {
-                    Output.PrintLn('./' + file.GetFullPathBaseName());
+                    Output.PrintLn('./' + file.GetBaseName());
                     C2JS.Run(res.source, Context, Output);
                 } else {
                     Context.source = null;
@@ -1136,6 +1136,12 @@ $(function () {
                     ev.stopPropagation();
                     CompileCallback(ev);
                     return;
+
+                case 83:
+                    ev.preventDefault();
+                    ev.stopPropagation();
+                    Aspen.Source.Save(Files.GetCurrent().GetName(), Editor.GetValue());
+                    return;
             }
         }
     };
@@ -1144,10 +1150,10 @@ $(function () {
         DB.Save(Files.GetCurrent().GetName(), Editor.GetValue());
     });
 
-    if ($("#file-content").length > 0) {
-        Editor.SetValue($("#file-content").text());
-    } else if (DB.Exist(Files.GetCurrent().GetName())) {
+    if (DB.Exist(Files.GetCurrent().GetName())) {
         Editor.SetValue(DB.Load(Files.GetCurrent().GetName()));
+    } else if ($("#file-content").length > 0) {
+        Editor.SetValue($("#file-content").text());
     }
 
     if (_ua.Trident && _ua.ltIE9) {
