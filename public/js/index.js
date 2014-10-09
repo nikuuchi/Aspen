@@ -16,7 +16,7 @@ var C2JS;
     var Editor = (function () {
         function Editor($editor) {
             this.markedErrorLines = [];
-            this.editor = ace.edit("editor");
+            this.editor = ace.edit($editor.attr('id'));
             this.editor.setTheme("ace/theme/xcode");
             this.editor.getSession().setMode("ace/mode/c_cpp");
             this.editor.setFontSize(14);
@@ -917,7 +917,14 @@ $(function () {
         jQuery.each(message.split(".c"), (function (k, v) {
             var match = v.match(/:(\d+):\d+:\s+error/);
             if (match && match[1]) {
-                errorLineNumbers.push({ n: match[1], t: match.input });
+                var m = v;
+                try  {
+                    m = v.split("\n")[0].split("error:")[1].trim();
+                } catch (e) {
+                    console.log(e);
+                } finally {
+                    errorLineNumbers.push({ n: match[1], t: m });
+                }
             }
         }));
         return errorLineNumbers;
