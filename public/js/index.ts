@@ -499,7 +499,7 @@ module C2JS {
         out.Prompt();
     }
 
-    function TranslateMessageToJapanese(text: string): string{
+    export function TranslateMessageToJapanese(text: string): string{
         text = text.replace(/&nbsp;/g, " ");
         var wordtable = {
             "variable":"変数",
@@ -867,6 +867,9 @@ $(function () {
                 var m = v;
                 try {
                     m = v.split("\n")[0].split("error:")[1].trim();
+                    if(Aspen.Language == "ja"){
+                        m = C2JS.TranslateMessageToJapanese(m);
+                    }
                 } catch(e) {
                     console.log(e);
                 } finally {

@@ -719,6 +719,7 @@ var C2JS;
         }
         return text;
     }
+    C2JS.TranslateMessageToJapanese = TranslateMessageToJapanese;
 
     function ConvertTerminalColor(text) {
         return text.replace(/\[31m(.*)\[0m/g, '<span class="text-danger">$1</span>');
@@ -920,6 +921,9 @@ $(function () {
                 var m = v;
                 try  {
                     m = v.split("\n")[0].split("error:")[1].trim();
+                    if (Aspen.Language == "ja") {
+                        m = C2JS.TranslateMessageToJapanese(m);
+                    }
                 } catch (e) {
                     console.log(e);
                 } finally {
