@@ -1139,10 +1139,10 @@ $(function () {
         DB.Save(Files.GetCurrent().GetName(), Editor.GetValue());
     });
 
-    if ($("#file-content").length > 0) {
-        Editor.SetValue($("#file-content").text());
-    } else if (DB.Exist(Files.GetCurrent().GetName())) {
+    if (DB.Exist(Files.GetCurrent().GetName())) {
         Editor.SetValue(DB.Load(Files.GetCurrent().GetName()));
+    } else if ($("#file-content").length > 0) {
+        Editor.SetValue($("#file-content").text());
     }
 
     if (_ua.Trident && _ua.ltIE9) {
