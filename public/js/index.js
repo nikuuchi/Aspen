@@ -218,7 +218,12 @@ var C2JS;
                 filename = "subject" + filename;
             }
             var content = $("#file-content").text();
-            var timestamp = $("#file-timestamp").text();
+            var timestamp;
+            if ($("#file-timestamp").text() !== "") {
+                timestamp = new Date($("#file-timestamp").text());
+            } else {
+                timestamp = "";
+            }
             var oldcontent = sessionStorage.getItem(filename + ".c");
             var olddate = sessionStorage.getItem(filename + ".time");
             var oldtimestamp;
