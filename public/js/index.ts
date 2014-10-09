@@ -488,6 +488,9 @@ module C2JS {
 
     export function saveInServer(subjectId, editorContent) {
             var callback = () => { console.log("ok."); };
+            if(subjectId == -1) {
+                return;
+            }
             (<any>$).ajax({
                 type: "POST",
                 url: Config.basePath + "/save",

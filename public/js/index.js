@@ -479,6 +479,9 @@ var C2JS;
         var callback = function () {
             console.log("ok.");
         };
+        if (subjectId == -1) {
+            return;
+        }
         $.ajax({
             type: "POST",
             url: Config.basePath + "/save",
