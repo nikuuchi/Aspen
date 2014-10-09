@@ -17,3 +17,8 @@ pre {
 code {
   font-size: 100%;
 }
+
+.error_line {
+  background-color: #f2dede;
+  position: absolute;
+}

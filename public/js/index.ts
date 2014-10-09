@@ -76,7 +76,8 @@ module C2JS {
         }
 
         SetErrorLine(line: number){
-            this.editor.addLineClass(line-1, "text", "errorLine");
+            var session = this.editor.getSession();
+            //TODO error line
             this.markedErrorLines.push(line-1);
         }
 
@@ -87,9 +88,10 @@ module C2JS {
         }
 
         RemoveAllErrorLine(): void {
-            for(var i = 0; i < this.markedErrorLines.length; ++i){
-                this.editor.removeLineClass(this.markedErrorLines[i], "text", "errorLine");
-            }
+            //FIXME update for ace
+            //for(var i = 0; i < this.markedErrorLines.length; ++i){
+            //    this.editor.removeLineClass(this.markedErrorLines[i], "text", "errorLine");
+            //}
             this.markedErrorLines = [];
         }
 
@@ -897,6 +899,8 @@ $(function () {
         Editor.RemoveAllErrorLine();
 
         C2JS.Compile(src, opt, file.GetName(), changeFlag, Context, function(res){
+            console.log(changeFlag);
+            console.log(res);
             try{
                 changeFlag = false;
                 if(res == null) {
