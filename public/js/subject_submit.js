@@ -7,13 +7,11 @@ $(function () {
     editor.setTheme("ace/theme/xcode");
     editor.getSession().setMode("ace/mode/c_cpp");
     editor.setFontSize(14);
-
     markdownEditor = ace.edit("markdownEditor");
     markdownEditor.setTheme("ace/theme/xcode");
     markdownEditor.getSession().setMode("ace/mode/markdown");
     markdownEditor.setFontSize(14);
 });
-
 function createHiddenElement(name, value) {
     var hidden_element = document.createElement("input");
     hidden_element.setAttribute("name", name);
@@ -21,19 +19,15 @@ function createHiddenElement(name, value) {
     hidden_element.setAttribute("value", value);
     return hidden_element;
 }
-
 function getSubjectId() {
     var pathes = location.pathname.split("/");
     var _subjectId = pathes[pathes.length - 1];
     return (_subjectId == "editor") ? 0 : parseInt(_subjectId);
 }
-
 function postData() {
     var form = document.getElementById("subject_form");
-
     var hidden1 = createHiddenElement("content", editor.getValue());
     var hidden2 = createHiddenElement("subjectId", getSubjectId());
-
     form.appendChild(hidden1);
     form.appendChild(hidden2);
     form.submit();

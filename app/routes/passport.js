@@ -1,21 +1,16 @@
 ///<reference path='../../typings/node/node.d.ts'/>
 ///<reference path='../../typings/express/express.d.ts'/>
 var passport = require('passport');
-
 var github = require('passport-github').Strategy;
 var config = require('config');
-
 var Auth = require('../helper/auth');
 var db = require('../models');
-
 exports.login = function (req, res) {
     var user = req.user;
     var userName = user.username;
     var userId = user.id;
-
     //var Referer = req.header('Referer');
     var redirectPath = config.base.path + '/';
-
     //Login
     db.User.login({ github_id: userId }).then(function (result) {
         if (result != null) {
@@ -28,7 +23,8 @@ exports.login = function (req, res) {
             console.log("Redirect.");
             throw 'abort chain';
             return null;
-        } else {
+        }
+        else {
             //User Registration
             return db.User.create({ name: userName, github_id: userId, password: '' });
         }
@@ -45,7 +41,6 @@ exports.login = function (req, res) {
         res.redirect(redirectPath);
     });
 };
-
 exports.logout = function (req, res) {
     console.log('hi logout');
     var auth = new Auth.Auth(req, res);
@@ -53,15 +48,12 @@ exports.logout = function (req, res) {
     req.logout();
     res.redirect(config.base.path + '/');
 };
-
 passport.serializeUser(function (user, done) {
     done(null, user.id);
 });
-
 passport.deserializeUser(function (user, done) {
     done(null, user);
 });
-
 (function () {
     if (config.passport.github.client_id == '')
         return;
@@ -77,5 +69,4 @@ passport.deserializeUser(function (user, done) {
         });
     }));
 })();
-
 exports.passport = passport;

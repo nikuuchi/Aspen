@@ -42,7 +42,7 @@
     "gulp-yuidoc": "^0.1.2",
     "karma": "~0.12.23",
     "tsd": "~0.5.7",
-    "typescript": "~1.0.1",
+    "typescript": "^1.1.0-1",
     "yuidocjs": "^0.3.50"
   }
 }

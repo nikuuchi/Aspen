@@ -473,7 +473,7 @@ module C2JS {
 
     export function saveInServer(subjectId, editorContent) {
             var callback = () => { console.log("ok."); };
-            if(subjectId == -1) {
+            if(subjectId == -1 || subjectId == null) {
                 return;
             }
             (<any>$).ajax({
