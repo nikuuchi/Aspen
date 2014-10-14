@@ -1,11 +1,17 @@
 ///<reference path="../../typings/jquery/jquery.d.ts" />
 ///<reference path="../../typings/ace/ace.d.ts" />
 var editor;
+var markdownEditor;
 $(function () {
     editor = ace.edit("editor");
     editor.setTheme("ace/theme/xcode");
     editor.getSession().setMode("ace/mode/c_cpp");
     editor.setFontSize(14);
+
+    markdownEditor = ace.edit("markdownEditor");
+    markdownEditor.setTheme("ace/theme/xcode");
+    markdownEditor.getSession().setMode("ace/mode/c_cpp");
+    markdownEditor.setFontSize(14);
 });
 
 function createHiddenElement(name, value) {
