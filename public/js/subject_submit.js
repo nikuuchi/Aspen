@@ -10,7 +10,7 @@ $(function () {
 
     markdownEditor = ace.edit("markdownEditor");
     markdownEditor.setTheme("ace/theme/xcode");
-    markdownEditor.getSession().setMode("ace/mode/c_cpp");
+    markdownEditor.getSession().setMode("ace/mode/markdown");
     markdownEditor.setFontSize(14);
 });
 
