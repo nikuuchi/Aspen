@@ -38,6 +38,13 @@ code {
   left: 1%;
 }
 
+.sidebar-btn-right {
+  z-index: 13;
+  position: fixed;
+  top: 60px;
+  left: 95%;
+}
+
 .sidebar {
   background-color: #EEE;
   opacity: 0;
@@ -46,6 +53,23 @@ code {
   position: fixed;
   top: 0;
   left: -300px;
+}
+
+.sidebar-right {
+  overflow-y: auto;
+  padding: 1em;
+  padding-top: 3em;
+
+  text-align: left;
+  z-index: 4;
+  background-color: #FFF;
+  opacity: 0;
+  width: 480px;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 100%;
+  border-left: solid 1px #eee;
 }
 
 .file-edit-view {
@@ -60,6 +84,6 @@ code {
   overflow: auto;
 }
 
-.sidebar,.editor-view,.sidebar-btn, #editor, .btnglyph {
+.sidebar, .demo-editor, .sidebar-right, .editor-view,.sidebar-btn, #editor, .btnglyph {
   transition: all .2s cubic-bezier(.4,0,.2,1);
 }

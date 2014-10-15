@@ -56,7 +56,7 @@ $(function() {
   var sbFlag = false;
   var editorW = $('#editor').css("width");
   $('.sidebar-btn').click(function() {
-    if(!sbFlag) {
+    if($(".sidebar-right").css("left")) {
       $('.sidebar').css("opacity", "1");
       var sidebarW = $('.sidebar').width();
       $('.sidebar').css("left", "0");
