@@ -460,7 +460,7 @@ var C2JS;
         var callback = function () {
             console.log("ok.");
         };
-        if (subjectId == -1) {
+        if (subjectId == -1 || subjectId == null) {
             return;
         }
         $.ajax({
@@ -1021,6 +1021,7 @@ $(function () {
             $('.sidebar-right').css("opacity", "0");
         }
     };
+
     RSidebarBtnClickFunction();
     $('.sidebar-btn-right').click(RSidebarBtnClickFunction);
 
@@ -1099,14 +1100,14 @@ $(function () {
     $("#create-file").click(CreateFileFunction);
     $("#create-file-menu").click(CreateFileFunction);
     $('#add-file-btn').click(CreateFileFunction);
-    
+
     var RenameFunction = (e: Event) => {
     if(Files.Empty() || running) return;
     DB.Save(Files.GetCurrent().GetName(), Editor.GetValue());
     var oldfilebasename = Files.GetCurrent().GetNoPathName().split(".")[0];
     var oldfilepath = Files.GetCurrent().GetPathArray().join("_");
     var oldfilecontents = Editor.GetValue();
-    
+
     var filename = prompt("Rename: Please enter the file name.", oldfilebasename);
     filename = C2JS.CheckFileName(filename, DB, oldfilepath);
     if(filename == null) {
@@ -1117,7 +1118,7 @@ $(function () {
     DB.Save(Files.GetCurrent().GetName(), Editor.GetValue());
     };
     $("#rename-menu").click(RenameFunction);
-    
+
     var DeleteFileFunction = (e: Event) => {
     if(Files.Empty() || running) return;
     var BaseName = Files.GetCurrent().GetBaseName();
@@ -1130,11 +1131,11 @@ $(function () {
     }
     }
     };
-    
+
     (<any>$("#delete-file")).tooltip({placement: "bottom", html: true});
     $("#delete-file").click(DeleteFileFunction);
     $("#delete-file-menu").click(DeleteFileFunction);
-    
+
     var DeleteAllFilesFunction = (e: Event) => {
     if(Files.Empty() || running) return;
     var BaseName = Files.GetCurrent().GetBaseName();

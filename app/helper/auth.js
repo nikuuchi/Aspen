@@ -11,7 +11,6 @@ var Auth = (function () {
         this.req.session.userId = userId;
         this.req.session.userName = userName;
     };
-
     Auth.prototype.clear = function () {
         //this.res.clearCookie('userId');
         this.res.clearCookie('userName');
@@ -23,7 +22,6 @@ var Auth = (function () {
     return Auth;
 })();
 exports.Auth = Auth;
-
 function isLogin(req) {
     if (req.signedCookies) {
         return req.signedCookies.sessionUserId != null;

@@ -7,16 +7,13 @@ var auth = require('../helper/auth');
 var Promise = require('bluebird');
 var config = require('config');
 var lodash = require('lodash');
-
 var tableHead = ["課題名", "提出状況", "締切"];
-
 /* GET home page. */
 router.get('/', function (req, res) {
     if (!auth.isLogin(req)) {
         res.render('top', { basePath: config.base.path });
         return;
     }
-
     db.User.login({ github_id: req.signedCookies.sessionUserId }).then(function (user) {
         if (user == null) {
             throw 'no login';
@@ -27,7 +24,6 @@ router.get('/', function (req, res) {
         var submit_statuses = results[1];
         console.log(subjects);
         console.log(submit_statuses);
-
         var submits = subjects.map(function (subject) {
             return createSubmitView(subject, submit_statuses);
         });
@@ -37,14 +33,13 @@ router.get('/', function (req, res) {
         res.render('top', { basePath: config.base.path });
     });
 });
-
 /**
-* Format a date like YYYY-MM-DD.
-*
-* @param {string} template
-* @return {string}
-* @license MIT
-*/
+ * Format a date like YYYY-MM-DD.
+ *
+ * @param {string} template
+ * @return {string}
+ * @license MIT
+ */
 function formatDate(template, d) {
     var specs = 'YYYY:MM:DD:HH:mm:ss'.split(':');
     var date = new Date(d - d.getTimezoneOffset() * 60000);
@@ -52,7 +47,6 @@ function formatDate(template, d) {
         return template.split(specs[i]).join(item);
     }, template);
 }
-
 router.get('/subject/:file', function (req, res) {
     if (!auth.isLogin(req)) {
         res.redirect(config.base.path + '/');
@@ -66,7 +60,8 @@ router.get('/subject/:file', function (req, res) {
                 endAt: formatDate("YYYY-MM-DD", subject.endAt),
                 name: subject.name ? subject.name : ""
             });
-        } else {
+        }
+        else {
             throw new Error('not found');
         }
     }).catch(function (err) {
@@ -74,14 +69,15 @@ router.get('/subject/:file', function (req, res) {
         res.status(404).send('not found.');
     });
 });
-
 router.get('/editor/:name', function (req, res) {
     if (!auth.isLogin(req)) {
         res.redirect(config.base.path + '/');
         return;
     }
     db.User.find({ where: { github_id: req.signedCookies.sessionUserId } }).then(function (user) {
-        return db.SubmitStatus.find({ where: db.Sequelize.and({ UserId: user.id }, { SubjectId: req.params.name }) });
+        return db.SubmitStatus.find({
+            where: db.Sequelize.and({ UserId: user.id }, { SubjectId: req.params.name })
+        });
     }).then(function (status) {
         if (status) {
             res.render('editorView', {
@@ -90,7 +86,8 @@ router.get('/editor/:name', function (req, res) {
                 basePath: config.base.path,
                 timestamp: status.updatedAt
             });
-        } else {
+        }
+        else {
             return db.Subject.find({ where: { id: req.params.name } }).then(function (subject) {
                 res.render('editorView', {
                     has_content: true,
@@ -105,29 +102,19 @@ router.get('/editor/:name', function (req, res) {
         res.status(401).send();
     });
 });
-
 router.get('/editor', function (req, res) {
     res.render('editorView', { has_content: false, basePath: config.base.path });
 });
-
 router.get('/user/:userid', function (req, res) {
     //TODO アクセス制限
     res.render('list', { basePath: config.base.path });
 });
-
 router.get('/list/all', function (req, res) {
     var tableHead = ["学籍番号", "氏名", "課題名", "提出状況", "締切"];
-
     db.Subject.getStatuses(db, 1).then(function (values) {
-        var students = values[0].map(function (student) {
-            return [student.studentNumber, student.name];
-        });
-        var subjects = values[1].map(function (subject) {
-            return [subject.id, subject.name];
-        });
-
+        var students = values[0].map(function (student) { return [student.studentNumber, student.name]; });
+        var subjects = values[1].map(function (subject) { return [subject.id, subject.name]; });
         var submits = createAllSubmitViews(values[2], values[0], values[1]);
-
         res.render('all', {
             tableHead: tableHead,
             submits: submits,
@@ -137,13 +124,11 @@ router.get('/list/all', function (req, res) {
         });
     });
 });
-
 router.get('/subject', function (req, res) {
     if (!auth.isLogin(req)) {
         res.redirect(config.base.path + '/');
         return;
     }
-
     //db.User.find({where: db.Sequelize.and({github_id: req.signedCookies.sessionUserId}, {admin_role:
     //TODO Check admin role
     res.render('subject', {
@@ -153,46 +138,36 @@ router.get('/subject', function (req, res) {
         name: ''
     });
 });
-
 router.get('/register', function (req, res) {
     //TODO アクセス制限
     res.render('register', { basePath: config.base.path });
 });
-
 function formatEndAt(endAt) {
     return (+endAt.getFullYear() - 2000) + "/" + ((+endAt.getMonth() < 9) ? "0" : "") + (+endAt.getMonth() + 1) + "/" + ((+endAt.getDate() < 10) ? "0" : "") + endAt.getDate();
 }
-
 var statusClasses = ["status-notyet-margin", "status-submitted", "status-success"];
 var statusClosingClasses = ["status-closing-notyet", "status-closing-submitted", "status-closing-success"];
-
 function chooseClass(status, remainingDays) {
     if (remainingDays > 0) {
         if (remainingDays < 7 && status == 0) {
             return "status-notyet-danger";
         }
         return statusClasses[status];
-    } else {
+    }
+    else {
         return statusClosingClasses[status];
     }
 }
-
 var statusArray = ["未提出", "提出済", "合格"];
 var oneDay = 86400000;
-
 function createAllSubmitViews(submits, students, subjects) {
     var today = new Date();
-
     var result = [];
-
     lodash.forEach(subjects, function (subject) {
         var remainingDays = (subject.endAt - today) / oneDay;
-
         var submits_eachSubject = findBySubjectId(submits, subject.id);
-
         lodash.forEach(students, function (student) {
             var status = 0;
-
             var submit = findByUserId(submits_eachSubject, student.id)[0];
             if (submit) {
                 status = submit.status ? submit.status : 0;
@@ -211,19 +186,12 @@ function createAllSubmitViews(submits, students, subjects) {
     });
     return result;
 }
-
 function findByUserId(submit_statuses, userId) {
-    return submit_statuses.filter(function (submit) {
-        return submit.UserId == userId;
-    });
+    return submit_statuses.filter(function (submit) { return submit.UserId == userId; });
 }
-
 function findBySubjectId(submit_statuses, subjectId) {
-    return submit_statuses.filter(function (submit) {
-        return submit.SubjectId == subjectId;
-    });
+    return submit_statuses.filter(function (submit) { return submit.SubjectId == subjectId; });
 }
-
 function createSubmitView(subject, submit_statuses) {
     var today = new Date();
     var remainingDays = (subject.endAt - today) / oneDay;
@@ -241,5 +209,4 @@ function createSubmitView(subject, submit_statuses) {
         cl: chooseClass(status, remainingDays)
     };
 }
-
 module.exports = router;
