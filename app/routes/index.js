@@ -58,6 +58,7 @@ router.get('/subject/:file', function (req, res) {
             res.render('subject', {
                 basePath: config.base.path,
                 content: subject.content,
+                example: subject.example,
                 endAt: formatDate("YYYY-MM-DD", subject.endAt),
                 name: subject.name ? subject.name : ""
             });
