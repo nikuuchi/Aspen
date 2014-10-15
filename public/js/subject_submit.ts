@@ -1,6 +1,6 @@
 ///<reference path="../../typings/jquery/jquery.d.ts" />
 ///<reference path="../../typings/ace/ace.d.ts" />
-
+declare var markdown: any;
 var editor;
 var markdownEditor;
 $(function() {
@@ -13,6 +13,21 @@ $(function() {
     markdownEditor.setTheme("ace/theme/xcode");
     markdownEditor.getSession().setMode("ace/mode/markdown");
     (<any>markdownEditor).setFontSize(14);
+
+    markdownEditor.on("change", function(){
+      $(".markdown").empty();
+      $(".markdown").append(markdown.toHTML(markdownEditor.getValue()));
+    });
+
+    $(window).resize(function() {
+      var width = $(window).width();
+      var sidebarW = $('.sidebar-right').width();
+      $('.sidebar-right').css("left", width - sidebarW + "px");
+    });
+
+    RSidebarBtnClickFunction();
+    $('.sidebar-btn-right').click(RSidebarBtnClickFunction);
+
 });
 
 function createHiddenElement(name, value) {
@@ -43,3 +58,22 @@ function postData() {
     form.appendChild(subjectIdElement);
     (<any>form).submit();
 }
+
+function RSidebarBtnClickFunction() {
+  var sbpos = parseInt($(".sidebar-right").css("left").replace(/px/g,""));
+  var width = $(window).width();
+  if(sbpos === width) {
+    $('.sidebar-btn-right').css("opacity", "0.4");
+    $('.sidebar-right').css("opacity", "1");
+    var sidebarW = parseInt($(".sidebar-right").css("width").replace(/px/g,""));
+    $('.sidebar-right').css("left", width - sidebarW + "px");
+    $('.main-view').css("margin-right", sidebarW + "px");
+    $('.btnglyph').css("transform","rotate(180deg)");
+  } else {
+    $('.sidebar-btn-right').css("opacity", "1");
+    $('.sidebar-right').css("left", "100%");
+    $('.main-view').css("margin-right", "0");
+    $('.btnglyph').css("transform","rotate(0deg)");
+    $('.sidebar-right').css("opacity", "0");
+  }
+};

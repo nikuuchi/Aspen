@@ -967,7 +967,7 @@ $(function () {
         $('.sidebar-right').css("opacity", "0");
       }
     };
-    
+
     RSidebarBtnClickFunction();
     $('.sidebar-btn-right').click(RSidebarBtnClickFunction);
 
