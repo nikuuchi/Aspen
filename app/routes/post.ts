@@ -54,12 +54,14 @@ router.post('/subject/new', function(req, res) {
     var subject_endAt = req.body.limit;
     var subject_startAt = new Date();
     var content = req.body.content;
+    var example = req.body.example;
     console.log(content);
     db.Subject.createOrUpdate(
         subject_name,
         subject_endAt,
         req.body.subjectId,
-        content
+        content,
+        example
     )
     .then((subject) => {
         console.log(subject);

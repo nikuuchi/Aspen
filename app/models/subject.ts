@@ -17,6 +17,7 @@ module.exports = (sequelize, DataTypes) => {
         name:    DataTypes.STRING,
         url:     DataTypes.STRING,
         content: DataTypes.TEXT,
+        example: DataTypes.TEXT,
         startAt: DataTypes.DATE,
         endAt:   DataTypes.DATE,
         createdAt: {
@@ -72,19 +73,31 @@ module.exports = (sequelize, DataTypes) => {
             getList: (lecturId: number) => {
                 return Subject.findAll({where : {LectureId: lecturId}});
             },
-            createOrUpdate: (name, endAt, subjectId, content) => {
+            /**
+             * subjectIdにマッチしない場合、新しい課題を作成する
+             * @method createOrUpdate
+             * @param {String} name 課題名
+             * @param {Date} endAt 提出期限
+             * @param {Number} subjectId 課題ID
+             * @param {String} content 内容題
+             * @param {String} example 例 
+             * @return {Promise} Promise
+             */
+            createOrUpdate: (name, endAt, subjectId, content, example) => {
                 return Subject.find({where: {id: subjectId}})
                     .then((subject) => {
                         if(subject) {
                             subject.name = name;
                             subject.endAt = endAt;
                             subject.content = content;
+                            subject.example = example;
                             return subject.save();
                         } else {
                             return Subject.create({
                                 name: name,
                                 url: "",
                                 content: content,
+                                example: example,
                                 LectureId: 1, //Default Value
                                 startAt: new Date(),
                                 endAt: endAt

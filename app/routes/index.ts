@@ -8,6 +8,7 @@ var auth = require('../helper/auth');
 var Promise = require('bluebird');
 var config = require('config');
 var lodash = require('lodash');
+var md = require("markdown").markdown.toHTML;
 
 var tableHead = ["課題名", "提出状況", "締切"];
 /* GET home page. */
@@ -44,7 +45,7 @@ router.get('/', function(req, res) {
 
 /**
  * Format a date like YYYY-MM-DD.
- *
+ * @method formatDate
  * @param {string} template
  * @return {string}
  * @license MIT
@@ -86,33 +87,40 @@ router.get('/editor/:name', function(req, res) {
         res.redirect(config.base.path + '/');
         return;
     }
+    var userId = 0;
     db.User.find({where: {github_id: req.signedCookies.sessionUserId}})
                 .then(function(user) {
-                    return db.SubmitStatus.find({
+                    userId = user.id;
+                    return db.Subject.find({where: {id: req.params.name}});
+                })
+                .then(function(subject) {
+                    db.SubmitStatus.find({
                         where: db.Sequelize.and(
-                                   {UserId: user.id},
+                                   {UserId: userId},
                                    {SubjectId: req.params.name}
-                    )});
-                }).then(function(status) {
-                    if(status) {
-                        res.render('editorView', {
-                            has_content: true,
-                            content: status.content,
-                            basePath: config.base.path,
-                            timestamp: status.updatedAt
-                        });
-                    } else {
-                        return db.Subject
-                                    .find({where: {id: req.params.name}})
-                                    .then(function(subject) {
-                                        res.render('editorView', {
-                                            has_content: true,
-                                            content: subject.content,
-                                            basePath: config.base.path,
-                                            timestamp: subject.createdAt
-                                        });
-                                    });
-                    }
+                    )}).then(function(status){
+                        if(status) {
+                            res.render('editorView', {
+                                has_content: true,
+                                content: status.content,
+                                example: subject.example,
+                                basePath: config.base.path,
+                                timestamp: status.updatedAt,
+                                md: md,
+                                title: subject.name
+                            });
+                        } else {
+                            res.render('editorView', {
+                                has_content: true,
+                                content: subject.content,
+                                example: subject.example,
+                                basePath: config.base.path,
+                                timestamp: subject.createdAt,
+                                md: md,
+                                title: subject.name
+                            });
+                        }
+                    })
                 }).catch(function(err) {
                     console.log(err);
                     res.status(401).send();

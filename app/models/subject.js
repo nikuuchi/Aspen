@@ -15,6 +15,7 @@ module.exports = function (sequelize, DataTypes) {
         name: DataTypes.STRING,
         url: DataTypes.STRING,
         content: DataTypes.TEXT,
+        example: DataTypes.TEXT,
         startAt: DataTypes.DATE,
         endAt: DataTypes.DATE,
         createdAt: {
@@ -70,12 +71,23 @@ module.exports = function (sequelize, DataTypes) {
             getList: function (lecturId) {
                 return Subject.findAll({ where: { LectureId: lecturId } });
             },
-            createOrUpdate: function (name, endAt, subjectId, content) {
+            /**
+             * subjectIdにマッチしない場合、新しい課題を作成する
+             * @method createOrUpdate
+             * @param {String} name 課題名
+             * @param {Date} endAt 提出期限
+             * @param {Number} subjectId 課題ID
+             * @param {String} content 内容題
+             * @param {String} example 例
+             * @return {Promise} Promise
+             */
+            createOrUpdate: function (name, endAt, subjectId, content, example) {
                 return Subject.find({ where: { id: subjectId } }).then(function (subject) {
                     if (subject) {
                         subject.name = name;
                         subject.endAt = endAt;
                         subject.content = content;
+                        subject.example = example;
                         return subject.save();
                     }
                     else {
@@ -83,6 +95,7 @@ module.exports = function (sequelize, DataTypes) {
                             name: name,
                             url: "",
                             content: content,
+                            example: example,
                             LectureId: 1,
                             startAt: new Date(),
                             endAt: endAt

@@ -26,9 +26,11 @@ function getSubjectId() {
 }
 function postData() {
     var form = document.getElementById("subject_form");
-    var hidden1 = createHiddenElement("content", editor.getValue());
-    var hidden2 = createHiddenElement("subjectId", getSubjectId());
-    form.appendChild(hidden1);
-    form.appendChild(hidden2);
+    var contentElement = createHiddenElement("content", editor.getValue());
+    var exampleElement = createHiddenElement("example", markdownEditor.getValue());
+    var subjectIdElement = createHiddenElement("subjectId", getSubjectId());
+    form.appendChild(contentElement);
+    form.appendChild(exampleElement);
+    form.appendChild(subjectIdElement);
     form.submit();
 }
