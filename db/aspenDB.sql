@@ -50,6 +50,7 @@ CREATE TABLE IF NOT EXISTS `aspen`.`Subjects` (
   `name` VARCHAR(45) NOT NULL,
   `url` VARCHAR(255) NULL,
   `content` LONGTEXT NOT NULL,
+  `example` LONGTEXT NULL,
   `LectureId` INT NOT NULL,
   `startAt` DATETIME NULL DEFAULT NULL,
   `endAt` DATETIME NULL,

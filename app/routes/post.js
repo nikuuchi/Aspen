@@ -44,8 +44,9 @@ router.post('/subject/new', function (req, res) {
     var subject_endAt = req.body.limit;
     var subject_startAt = new Date();
     var content = req.body.content;
+    var example = req.body.example;
     console.log(content);
-    db.Subject.createOrUpdate(subject_name, subject_endAt, req.body.subjectId, content).then(function (subject) {
+    db.Subject.createOrUpdate(subject_name, subject_endAt, req.body.subjectId, content, example).then(function (subject) {
         console.log(subject);
         res.redirect(config.base.path + '/');
     }).catch(function (err) {
