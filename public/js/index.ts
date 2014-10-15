@@ -23,7 +23,8 @@ module C2JS {
 
     export class Editor {
         private editor: any;
-        private markedErrorLines: number[] = [];
+        //private markedErrorLines: number[] = [];
+        private errorLineIds: number[] = [];
         constructor($editor: JQuery) {
             this.editor = ace.edit($editor.attr('id'));
             this.editor.setTheme("ace/theme/xcode");
@@ -63,21 +64,27 @@ module C2JS {
 
         SetErrorLines(lines: any[]){
             var annotations = [];
+            var session =this.editor.getSession();
             for(var i = 0; i < lines.length; ++i){
-                //this.SetErrorLine(lines[i]); //FIXME
+                var row = lines[i].n - 1;
                 annotations.push({
-                    row: lines[i].n-1,
+                    row: row,
                     type: "error",
                     text: lines[i].t
                 });
-                console.log(annotations);
-                this.markedErrorLines.push(i+1);
+                var range = session.highlightLines(row, row, "error_line");
+                //this.markedErrorLines.push(i+1);
+                this.errorLineIds.push(range.id);
             }
             this.editor.getSession().setAnnotations(annotations);
         }
 
         RemoveAllErrorLine(): void {
-            this.editor.getSession().clearAnnotations();
+            var session = this.editor.getSession();
+            session.clearAnnotations();
+            for(var i = 0; i < this.errorLineIds.length; i++) {
+                session.removeMarker(this.errorLineIds[i]);
+            }
         }
 
         ResetHelloWorld(): void {
@@ -85,7 +92,7 @@ module C2JS {
         }
 
         ClearHistory(): void {
-            //this.editor.clearHistory();
+            this.editor.getUndoManager().reset();
         }
 
         ContainsMultiByteSpace(): boolean {
