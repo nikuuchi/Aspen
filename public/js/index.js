@@ -15,7 +15,8 @@ var C2JS;
 
     var Editor = (function () {
         function Editor($editor) {
-            this.markedErrorLines = [];
+            //private markedErrorLines: number[] = [];
+            this.errorLineIds = [];
             this.editor = ace.edit($editor.attr('id'));
             this.editor.setTheme("ace/theme/xcode");
             this.editor.getSession().setMode("ace/mode/c_cpp");
@@ -53,21 +54,27 @@ var C2JS;
 
         Editor.prototype.SetErrorLines = function (lines) {
             var annotations = [];
+            var session = this.editor.getSession();
             for (var i = 0; i < lines.length; ++i) {
-                //this.SetErrorLine(lines[i]); //FIXME
+                var row = lines[i].n - 1;
                 annotations.push({
-                    row: lines[i].n - 1,
+                    row: row,
                     type: "error",
                     text: lines[i].t
                 });
-                console.log(annotations);
-                this.markedErrorLines.push(i + 1);
+                var range = session.highlightLines(row, row, "error_line");
+                //this.markedErrorLines.push(i+1);
+                this.errorLineIds.push(range.id);
             }
             this.editor.getSession().setAnnotations(annotations);
         };
 
         Editor.prototype.RemoveAllErrorLine = function () {
-            this.editor.getSession().clearAnnotations();
+            var session = this.editor.getSession();
+            session.clearAnnotations();
+            for (var i = 0; i < this.errorLineIds.length; i++) {
+                session.removeMarker(this.errorLineIds[i]);
+            }
         };
 
         Editor.prototype.ResetHelloWorld = function () {
@@ -75,7 +82,7 @@ var C2JS;
         };
 
         Editor.prototype.ClearHistory = function () {
-            //this.editor.clearHistory();
+            this.editor.getUndoManager().reset();
         };
 
         Editor.prototype.ContainsMultiByteSpace = function () {
