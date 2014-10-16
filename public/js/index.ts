@@ -1144,6 +1144,11 @@ $(function () {
         }
     };
 
+    var peditor:any = ace.edit("peditor");
+    peditor.setTheme("ace/theme/xcode");
+    peditor.getSession().setMode("ace/mode/c_cpp");
+    peditor.setFontSize(14);
+
     $(window).on("beforeunload", (e: Event)=> {
         DB.Save(Files.GetCurrent().GetName(), Editor.GetValue());
     });
