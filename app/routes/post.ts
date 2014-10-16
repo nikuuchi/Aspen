@@ -52,6 +52,9 @@ router.post('/submit', function(req, res) {
 router.post('/subject/new', function(req, res) {
     var subject_name = req.body.name;
     var subject_endAt = req.body.limit;
+    if(req.body.limit == null || req.body.limit == 0) {
+        subject_endAt = new Date();
+    }
     var subject_startAt = new Date();
     var content = req.body.content;
     var example = req.body.example;
