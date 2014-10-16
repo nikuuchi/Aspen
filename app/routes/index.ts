@@ -18,11 +18,16 @@ router.get('/', function(req, res) {
         return;
     }
 
+    var user_name = "";
+    var user_student_id = "";
     db.User.login({github_id: req.signedCookies.sessionUserId})
         .then(function(user) {
             if(user == null) {
                 throw 'no login'; //move to catch
             }
+            user_name = user.name;
+            user_student_id = user.studentNumber;
+
             return db.Subject.getStatusesEachUser((<any>db).Sequelize, db.SubmitStatus, user.id);
         })
         .then(function(results) {
@@ -34,7 +39,7 @@ router.get('/', function(req, res) {
             var submits = subjects.map((subject) => {
                 return createSubmitView(subject, submit_statuses);
             });
-            res.render('list', { tableHead: tableHead, submits: submits, basePath: config.base.path });
+            res.render('list', { tableHead: tableHead, submits: submits, basePath: config.base.path, user_name:  user_name, student_id: user_student_id});
         })
         .catch(function(err) {
             console.log(err);
@@ -90,9 +95,14 @@ router.get('/editor/:name', function(req, res) {
         return;
     }
     var userId = 0;
+    var user_name = "";
+    var user_studentId = "";
+
     db.User.find({where: {github_id: req.signedCookies.sessionUserId}})
                 .then(function(user) {
                     userId = user.id;
+                    user_name = user.name;
+                    user_studentId = user.studentNumber;
                     return db.Subject.find({where: {id: req.params.name}});
                 })
                 .then(function(subject) {
@@ -110,7 +120,9 @@ router.get('/editor/:name', function(req, res) {
                                 timestamp: status.updatedAt,
                                 md: md,
                                 title: subject.name,
-                                is_show_content: true
+                                is_show_content: true,
+                                user_name: user_name,
+                                student_id: user_studentId
                             });
                         } else {
                             res.render('editorView', {
@@ -121,7 +133,9 @@ router.get('/editor/:name', function(req, res) {
                                 timestamp: subject.createdAt,
                                 md: md,
                                 title: subject.name,
-                                is_show_content: true
+                                is_show_content: true,
+                                user_name: user_name,
+                                student_id: user_studentId
                             });
                         }
                     })
@@ -132,12 +146,25 @@ router.get('/editor/:name', function(req, res) {
 });
 
 router.get('/editor', function(req, res) {
-    res.render('editorView', {has_content: false, basePath: config.base.path});
+    db.User.find({where: {github_id: req.signedCookies.sessionUserId}})
+                .then(function(user) {
+                    res.render('editorView', {
+                        has_content: false,
+                        basePath: config.base.path,
+                        user_name: user.name,
+                        student_id: user.studentNumber
+                    });
+                }).catch(function(err){
+                    console.log(err);
+                    res.redirect(config.base.path + '/');
+                });
 });
 
 
 router.get('/user/:userid', function(req, res) {
     //TODO アクセス制限
+    res.redirect(config.base.path + '/');
+    return;
     res.render('list', { basePath: config.base.path });
 });
 
@@ -156,7 +183,9 @@ router.get('/list/all', function(req, res) {
             submits: submits,
             students: students,
             subjects: subjects,
-            basePath: config.base.path
+            basePath: config.base.path,
+            user_name: '',
+            student_id: ''
         });
     });
 });
@@ -174,7 +203,9 @@ router.get('/subject', function(req, res) {
         endAt: '',
         name: '',
         is_show_content: false,
-        example: ''
+        example: '',
+        user_name: '',
+        student_id: ''
     });
 });
 
