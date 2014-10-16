@@ -71,7 +71,8 @@ router.get('/subject/:file', function(req, res) {
                     content: subject.content,
                     example: subject.example,
                     endAt: formatDate("YYYY-MM-DD", subject.endAt),
-                    name: subject.name? subject.name : ""
+                    name: subject.name? subject.name : "",
+                    is_show_content: false
                 });
             } else {
                 throw new Error('not found');
@@ -108,7 +109,8 @@ router.get('/editor/:name', function(req, res) {
                                 basePath: config.base.path,
                                 timestamp: status.updatedAt,
                                 md: md,
-                                title: subject.name
+                                title: subject.name,
+                                is_show_content: true
                             });
                         } else {
                             res.render('editorView', {
@@ -118,7 +120,8 @@ router.get('/editor/:name', function(req, res) {
                                 basePath: config.base.path,
                                 timestamp: subject.createdAt,
                                 md: md,
-                                title: subject.name
+                                title: subject.name,
+                                is_show_content: true
                             });
                         }
                     })
@@ -169,7 +172,9 @@ router.get('/subject', function(req, res) {
         basePath: config.base.path,
         content: '',
         endAt: '',
-        name: ''
+        name: '',
+        is_show_content: false,
+        example: ''
     });
 });
 
