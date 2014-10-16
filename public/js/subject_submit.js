@@ -37,13 +37,21 @@ function getSubjectId() {
 }
 function postData() {
     var form = document.getElementById("subject_form");
+    var nameValue = $("input[id=name]").attr("value");
+    var limitValue = $("input[id=limit]").attr("value");
     var contentElement = createHiddenElement("content", editor.getValue());
     var exampleElement = createHiddenElement("example", markdownEditor.getValue());
     var subjectIdElement = createHiddenElement("subjectId", getSubjectId());
-    form.appendChild(contentElement);
-    form.appendChild(exampleElement);
-    form.appendChild(subjectIdElement);
-    form.submit();
+    console.log(form);
+    if (nameValue && limitValue && contentElement.value && exampleElement.value && subjectIdElement.value) {
+        form.appendChild(contentElement);
+        form.appendChild(exampleElement);
+        form.appendChild(subjectIdElement);
+        form.submit();
+    }
+    else {
+        alert("入力項目が足りません");
+    }
 }
 function RSidebarBtnClickFunction() {
     var sbpos = parseInt($(".sidebar-right").css("left").replace(/px/g, ""));

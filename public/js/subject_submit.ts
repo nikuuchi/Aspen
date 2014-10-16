@@ -48,15 +48,24 @@ function getSubjectId(): Number {
 function postData() {
     var form = document.getElementById("subject_form");
 
+    var nameValue = $("input[id=name]").attr("value");
+    var limitValue = $("input[id=limit]").attr("value");
+
     var contentElement = createHiddenElement("content", editor.getValue());
     var exampleElement = createHiddenElement("example", markdownEditor.getValue());
     var subjectIdElement = createHiddenElement("subjectId", getSubjectId());
 
+    console.log(form);
 
-    form.appendChild(contentElement);
-    form.appendChild(exampleElement);
-    form.appendChild(subjectIdElement);
-    (<any>form).submit();
+
+    if(nameValue && limitValue && contentElement.value && exampleElement.value && subjectIdElement.value){
+      form.appendChild(contentElement);
+      form.appendChild(exampleElement);
+      form.appendChild(subjectIdElement);
+      (<any>form).submit();
+    } else {
+      alert("入力項目が足りません")
+    }
 }
 
 function RSidebarBtnClickFunction() {
