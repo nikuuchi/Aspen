@@ -4,7 +4,14 @@
       a(href="#{basePath}/") Aspen
     ul.nav.masthead-nav(style="float: left; padding-left: 20px")
       li
-        a ヘルプ
+        a(href="#{basePath}/doc/help/index.html")ヘルプ
     ul.nav.masthead-nav
       li
         a(href="#{basePath}/logout") ログアウト
+    ul.nav.masthead-nav
+      li
+        a= student_id
+      | &nbsp;
+      li
+        a= user_name
+      | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
