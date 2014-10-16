@@ -877,6 +877,9 @@ $(function () {
         Editor.RemoveAllErrorLine();
         C2JS.Compile(src, opt, file.GetName(), changeFlag, Context, function (res) {
             console.log(changeFlag);
+            res.error.replace(/<U\+(.{4})>/g, function (all, code) {
+                return String.fromCharCode(parseInt(code, 16));
+            });
             console.log(res);
             try {
                 changeFlag = false;
