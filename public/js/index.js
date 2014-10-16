@@ -945,7 +945,11 @@ $(function () {
             $('.sidebar-right').css("opacity", "0");
         }
     };
-    RSidebarBtnClickFunction();
+    if (location.pathname != Config.basePath + "/" && location.pathname != Config.basePath + "/editor") {
+        RSidebarBtnClickFunction();
+        $(".sidebar-right").css("display", "inline");
+        $(".sidebar-btn-right").css("display", "inline");
+    }
     $('.sidebar-btn-right').click(RSidebarBtnClickFunction);
     var endsWith = function (str, suffix) {
         return str.indexOf(suffix, str.length - suffix.length) !== -1;

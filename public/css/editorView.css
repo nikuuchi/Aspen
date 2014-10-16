@@ -72,6 +72,10 @@ code {
   border-left: solid 1px #eee;
 }
 
+.sidebar-right, .sidebar-btn-right {
+  display: none;
+}
+
 .file-edit-view {
   padding: 1em;
   border-bottom: solid 1px #AAA;
