@@ -23,7 +23,6 @@ module C2JS {
 
     export class Editor {
         private editor: any;
-        //private markedErrorLines: number[] = [];
         private errorLineIds: number[] = [];
         constructor($editor: JQuery) {
             this.editor = ace.edit($editor.attr('id'));
@@ -73,7 +72,6 @@ module C2JS {
                     text: lines[i].t
                 });
                 var range = session.highlightLines(row, row, "error_line");
-                //this.markedErrorLines.push(i+1);
                 this.errorLineIds.push(range.id);
             }
             this.editor.getSession().setAnnotations(annotations);
@@ -461,6 +459,8 @@ module C2JS {
     }
 
     export function Compile(source, option, filename, isCached, Context, callback, onerror) {
+        $("#peditor").hide();
+        $("#poplar-title").hide();
         if(isCached) {
             var subjectId = getSubjectId();
             $.ajax({
@@ -780,6 +780,12 @@ $(function () {
     var Context: any = {}; //TODO refactor C2JS.Response
     var Files: C2JS.FileLoader = new C2JS.FileLoader();
 
+    var peditor:any = ace.edit("peditor");
+    peditor.setTheme("ace/theme/xcode");
+    peditor.getSession().setMode("ace/mode/c_cpp");
+    peditor.setFontSize(14);
+
+
     //初期ページでは提出ボタンを出さないようにする
     if(location.pathname == Config.basePath + "/" || location.pathname == Config.basePath + "/editor") {
         var submit_button = $("#submit-file");
@@ -853,6 +859,34 @@ $(function () {
         Editor.ClearHistory();
     };
 
+
+    $("#poplar").click((ev: Event) => {
+        peditor.setValue("");
+        var content = Editor.GetValue();
+        var subjectId = C2JS.getSubjectId();
+        var onerror = () => console.log("error");
+        var callback = (res)=> {
+            if($(".sidebar-right").css("opacity") == "0") {
+                $(".sidebar-btn-right").click();
+            }
+            $("#peditor").show();
+            $("#poplar-title").show();
+            peditor.setValue(res.source);
+            peditor.clearSelection();
+            peditor.gotoLine(0);
+
+            console.log(res);
+        };
+        $.ajax({
+            type: "POST",
+            url: Config.basePath + "/poplar",
+            data: JSON.stringify({source: content, subjectId: subjectId}),
+            dataType: 'json',
+            contentType: "application/json; charset=utf-8",
+            success: callback,
+            error: onerror
+        });
+    });
 
     Files.Show();
     //Files.Show(ChangeCurrentFile);
@@ -1143,11 +1177,6 @@ $(function () {
             }
         }
     };
-
-    var peditor:any = ace.edit("peditor");
-    peditor.setTheme("ace/theme/xcode");
-    peditor.getSession().setMode("ace/mode/c_cpp");
-    peditor.setFontSize(14);
 
     $(window).on("beforeunload", (e: Event)=> {
         DB.Save(Files.GetCurrent().GetName(), Editor.GetValue());

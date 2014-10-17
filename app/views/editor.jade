@@ -67,6 +67,10 @@ input#file-open-dialog(type='file', style='display:none;', accept=".c")
           span.glyphicon.glyphicon-play
           | &nbsp;
           | 実行
+        | &nbsp;
+        button#poplar.btn.navbar-btn.btn-warning.disabled-on-files-empty.disabled-on-running(type='button', data-toggle="tooltip", title="Correct&nbsp;", onContextmenu="return false")
+          | &nbsp;
+          | エラー訂正(β)
 
     +template('file-list-template')
       li.file-tab.disabled-on-running

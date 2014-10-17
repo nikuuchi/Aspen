@@ -95,21 +95,22 @@ router.post('/register', function(req, res) {
     });
 });
 
+var post_compile_option = {
+    hostname: config.compile.host,
+    port:     config.compile.port,
+    path:     config.compile.path,
+    method:   'POST',
+    headers: {'Content-Type': 'application/json'}
+};
+
 router.post('/compile', function(req, res) {
     //dest server is configured by default.yaml
     var client_body = req.body;
     if(req.signedCookies.sessionUserId) {
         client_body.userId = req.signedCookies.sessionUserId;
     }
-    var options = {
-        hostname: config.compile.host,
-        port:     config.compile.port,
-        path:     config.compile.path,
-        method:   'POST',
-        headers: {'Content-Type': 'application/json'}
-    };
 
-    var request = http.request(options, function(response) {
+    var request = http.request(post_compile_option, function(response) {
         var body = '';
         response.setEncoding('utf8');
 
@@ -128,7 +129,37 @@ router.post('/compile', function(req, res) {
     request.end();
 });
 
+var post_poplar_option = {
+    hostname: config.poplar.host,
+    port:     config.poplar.port,
+    path:     config.poplar.path,
+    method:   'POST',
+    headers: {'Content-Type': 'application/json'}
+};
+
 router.post('/poplar', function(req, res) {
+    var client_body = req.body;
+    if(req.signedCookies.sessionUserId) {
+        client_body.userId = req.signedCookies.sessionUserId;
+    }
+
+    var request = http.request(post_poplar_option, function(response) {
+        var body = '';
+        response.setEncoding('utf8');
+
+        response.on('data', function(chunk) {
+            body += chunk;
+        });
+
+        response.on('end', function() {
+            var ret = JSON.parse(body);
+            res.json(ret);
+        });
+    });
+    //TODO POST
+    request.write(JSON.stringify(client_body));
+    request.write('\n');
+    request.end();
 });
 
 router.post('/dummy/compile', function(req, res) {

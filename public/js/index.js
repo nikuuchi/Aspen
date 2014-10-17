@@ -12,7 +12,6 @@ var C2JS;
     C2JS.GetHelloWorldSource = GetHelloWorldSource;
     var Editor = (function () {
         function Editor($editor) {
-            //private markedErrorLines: number[] = [];
             this.errorLineIds = [];
             this.editor = ace.edit($editor.attr('id'));
             this.editor.setTheme("ace/theme/xcode");
@@ -53,7 +52,6 @@ var C2JS;
                     text: lines[i].t
                 });
                 var range = session.highlightLines(row, row, "error_line");
-                //this.markedErrorLines.push(i+1);
                 this.errorLineIds.push(range.id);
             }
             this.editor.getSession().setAnnotations(annotations);
@@ -389,6 +387,8 @@ var C2JS;
     }
     C2JS.getSubjectId = getSubjectId;
     function Compile(source, option, filename, isCached, Context, callback, onerror) {
+        $("#peditor").hide();
+        $("#poplar-title").hide();
         if (isCached) {
             var subjectId = getSubjectId();
             $.ajax({
@@ -760,6 +760,10 @@ $(function () {
     var DB = new C2JS.SourceDB();
     var Context = {}; //TODO refactor C2JS.Response
     var Files = new C2JS.FileLoader();
+    var peditor = ace.edit("peditor");
+    peditor.setTheme("ace/theme/xcode");
+    peditor.getSession().setMode("ace/mode/c_cpp");
+    peditor.setFontSize(14);
     //初期ページでは提出ボタンを出さないようにする
     if (location.pathname == Config.basePath + "/" || location.pathname == Config.basePath + "/editor") {
         var submit_button = $("#submit-file");
@@ -827,6 +831,32 @@ $(function () {
         Editor.SetValue(DB.Load(Files.GetCurrent().GetName()));
         Editor.ClearHistory();
     };
+    $("#poplar").click(function (ev) {
+        peditor.setValue("");
+        var content = Editor.GetValue();
+        var subjectId = C2JS.getSubjectId();
+        var onerror = function () { return console.log("error"); };
+        var callback = function (res) {
+            if ($(".sidebar-right").css("opacity") == "0") {
+                $(".sidebar-btn-right").click();
+            }
+            $("#peditor").show();
+            $("#poplar-title").show();
+            peditor.setValue(res.source);
+            peditor.clearSelection();
+            peditor.gotoLine(0);
+            console.log(res);
+        };
+        $.ajax({
+            type: "POST",
+            url: Config.basePath + "/poplar",
+            data: JSON.stringify({ source: content, subjectId: subjectId }),
+            dataType: 'json',
+            contentType: "application/json; charset=utf-8",
+            success: callback,
+            error: onerror
+        });
+    });
     Files.Show();
     //Files.Show(ChangeCurrentFile);
     //Files.GenerateFTree();
@@ -1089,10 +1119,6 @@ $(function () {
             }
         }
     };
-    var peditor = ace.edit("peditor");
-    peditor.setTheme("ace/theme/xcode");
-    peditor.getSession().setMode("ace/mode/c_cpp");
-    peditor.setFontSize(14);
     $(window).on("beforeunload", function (e) {
         DB.Save(Files.GetCurrent().GetName(), Editor.GetValue());
     });
