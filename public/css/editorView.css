@@ -34,8 +34,15 @@ code {
 #peditor {
   display:none;
   width: 400px;
-  height: 300px;
-  top: 400px;
+  height: 50%;
+  top: 200px;
+  overflow: hidden;
+}
+
+#poplar-title {
+  display:none;
+  top: 190px;
+  position: relative;
   overflow: hidden;
 }
 

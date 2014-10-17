@@ -766,6 +766,9 @@ $(function () {
     peditor.setFontSize(14);
     //初期ページでは提出ボタンを出さないようにする
     if (location.pathname == Config.basePath + "/" || location.pathname == Config.basePath + "/editor") {
+        if (location.pathname == Config.basePath + "/") {
+            $("#poplar").hide();
+        }
         var submit_button = $("#submit-file");
         submit_button.hide();
     }
@@ -831,6 +834,10 @@ $(function () {
         Editor.SetValue(DB.Load(Files.GetCurrent().GetName()));
         Editor.ClearHistory();
     };
+    if (location.pathname != Config.basePath + "/") {
+        $(".sidebar-btn-right").css({ display: "inline" });
+        $(".sidebar-right").css({ display: "inline" });
+    }
     $("#poplar").click(function (ev) {
         peditor.setValue("");
         var content = Editor.GetValue();
