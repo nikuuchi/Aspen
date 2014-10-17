@@ -678,7 +678,8 @@ module C2JS {
     }
 
     function FormatMessage(text: string, filename: string): string {
-        text = text.replace(/ERROR.*$/gm,"") // To remove a message that is not Clang one but Emscripten's.
+        text = text.replace(/<U\+(.{4})>/g, function(all, code){ return String.fromCharCode(parseInt(code, 16)) })
+                   .replace(/ERROR.*$/gm,"") // To remove a message that is not Clang one but Emscripten's.
                    .replace(/</gm, "&lt;")
                    .replace(/>/gm, "&gt;");
 
@@ -905,7 +906,6 @@ $(function () {
 
         C2JS.Compile(src, opt, file.GetName(), changeFlag, Context, function(res){
             console.log(changeFlag);
-            res.error.replace(/<U\+(.{4})>/g, function(all, code){ return String.fromCharCode(parseInt(code, 16)) });
             console.log(res);
             try{
                 changeFlag = false;

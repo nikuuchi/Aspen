@@ -675,7 +675,9 @@ var C2JS;
         return text.replace(/[\r\n|\r|\n]/g, "<br>\n");
     }
     function FormatMessage(text, filename) {
-        text = text.replace(/ERROR.*$/gm, "").replace(/</gm, "&lt;").replace(/>/gm, "&gt;");
+        text = text.replace(/<U\+(.{4})>/g, function (all, code) {
+            return String.fromCharCode(parseInt(code, 16));
+        }).replace(/ERROR.*$/gm, "").replace(/</gm, "&lt;").replace(/>/gm, "&gt;");
         var textlines = text.split(/[\r\n|\r|\n]/g);
         for (var i = 0; i < textlines.length; ++i) {
             if (textlines[i].lastIndexOf(filename, 0) == 0) {
@@ -877,9 +879,6 @@ $(function () {
         Editor.RemoveAllErrorLine();
         C2JS.Compile(src, opt, file.GetName(), changeFlag, Context, function (res) {
             console.log(changeFlag);
-            res.error.replace(/<U\+(.{4})>/g, function (all, code) {
-                return String.fromCharCode(parseInt(code, 16));
-            });
             console.log(res);
             try {
                 changeFlag = false;
