@@ -219,7 +219,7 @@ function formatEndAt(endAt) {
 }
 
 var statusClasses        = ["status-notyet-margin",  "status-submitted",         "status-success"];
-var statusClosingClasses = ["status-closing-notyet", "status-closing-submitted", "status-closing-success"];
+var statusClosingClasses = ["status-closing-notyet", "status-submitted", "status-closing-success"];
 
 function chooseClass(status, remainingDays) {
     if(remainingDays > 0) {

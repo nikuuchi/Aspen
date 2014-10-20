@@ -189,7 +189,7 @@ function formatEndAt(endAt) {
     return (+endAt.getFullYear() - 2000) + "/" + ((+endAt.getMonth() < 9) ? "0" : "") + (+endAt.getMonth() + 1) + "/" + ((+endAt.getDate() < 10) ? "0" : "") + endAt.getDate();
 }
 var statusClasses = ["status-notyet-margin", "status-submitted", "status-success"];
-var statusClosingClasses = ["status-closing-notyet", "status-closing-submitted", "status-closing-success"];
+var statusClosingClasses = ["status-closing-notyet", "status-submitted", "status-closing-success"];
 function chooseClass(status, remainingDays) {
     if (remainingDays > 0) {
         if (remainingDays < 7 && status == 0) {

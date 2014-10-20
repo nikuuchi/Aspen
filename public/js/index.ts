@@ -863,7 +863,7 @@ $(function () {
     };
 
 
-    if(location.pathname != Config.basePath + "/" && location.pathname != Config.basePath + "/editor") {
+    if(location.pathname != Config.basePath + "/") {
         $(".sidebar-btn-right").css({display: "inline"});
         $(".sidebar-right").css({display: "inline"});
     }
