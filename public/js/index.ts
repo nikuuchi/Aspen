@@ -30,7 +30,7 @@ module C2JS {
             this.editor.getSession().setMode("ace/mode/c_cpp");
             this.editor.setFontSize(14);
 
-            this.ResetHelloWorld();
+            //this.ResetHelloWorld();
         }
 
         OnChange(callback: (e: Event)=>void): void {

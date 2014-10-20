@@ -17,7 +17,7 @@ var C2JS;
             this.editor.setTheme("ace/theme/xcode");
             this.editor.getSession().setMode("ace/mode/c_cpp");
             this.editor.setFontSize(14);
-            this.ResetHelloWorld();
+            //this.ResetHelloWorld();
         }
         Editor.prototype.OnChange = function (callback) {
             this.editor.on("change", callback);
