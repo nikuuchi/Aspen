@@ -938,11 +938,13 @@ $(function () {
         return errorLineNumbers;
     }
 
-    $('#reset-button').click(() => {
-        if(confirm('この課題を解き始める前の状態に戻します。よろしいですか？')) {
-           Editor.SetValue($("#file-reset").text()); 
-        }
-    });
+    if($('#file-reset').length > 0) {
+        $('#reset-button').show().click(() => {
+            if(confirm('この課題を解き始める前の状態に戻します。よろしいですか？')) {
+               Editor.SetValue($("#file-reset").text()); 
+            }
+        });
+    }
 
     var CompileCallback = (e: Event)=> {
         if(Files.Empty() || running) return;
