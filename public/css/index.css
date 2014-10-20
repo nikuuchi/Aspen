@@ -249,6 +249,7 @@ body {
 .masthead-nav > li + li {
   margin-left: 20px;
 }
+.myName,
 .masthead-nav > li > a {
   padding-top: 15px;
   padding-bottom: 5px;
@@ -280,6 +281,9 @@ body {
   float: right;
 }
 
+.myName {
+  padding-bottom: 0px;
+}
 /*
  * Cover
  */
