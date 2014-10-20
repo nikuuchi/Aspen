@@ -32,11 +32,11 @@ block content
         .form-group
           label.control-label(for="inputName") 問題文
           p
-            pre#markdownEditor(rows="5", name="content", style="width:100%;height:85px")= example
+            pre#markdownEditor(rows="5", name="content", style="width:100%;height:85px")= content
         .form-group
           label.control-label(for="inputName") エディタの初期値
           p
-            pre#editor(rows="20", name="content", style="width:100%;")= content
+            pre#editor(rows="20", name="content", style="width:100%;")= example
         .form-group
           button.btn.btn-primary.pull-right(type="submit") 作成
   include sidebar_subject
