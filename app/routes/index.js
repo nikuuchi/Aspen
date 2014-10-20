@@ -110,8 +110,8 @@ router.get('/editor/:name', function (req, res) {
             else {
                 res.render('editorView', {
                     has_content: true,
-                    content: subject.content,
-                    example: subject.example,
+                    content: subject.example,
+                    example: subject.content,
                     basePath: config.base.path,
                     timestamp: subject.createdAt,
                     md: md,
