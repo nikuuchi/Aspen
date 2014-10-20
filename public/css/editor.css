@@ -22,3 +22,8 @@ code {
   background-color: #f2dede;
   position: absolute;
 }
+
+.info_line {
+  background-color: #dedeff;
+  position: absolute;
+}

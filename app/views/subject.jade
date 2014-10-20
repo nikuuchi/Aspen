@@ -19,7 +19,7 @@ block content
   .container
     .main-view
       h1 課題登録
-      form(role="form", action="#{basePath}/subject/new", method="POST", id="subject_form")
+      form(role="form", action="#{basePath}/subject/new", method="POST", id="subject_form", onsubmit="return postData();")
         .form-group
           label.control-label(for="inputNumber") 課題名
           input.form-control(type="text", placeholder="", name="name", id="name", value="#{name}", required autofocus)
@@ -38,5 +38,5 @@ block content
           p
             pre#editor(rows="20", name="content", style="width:100%;")= content
         .form-group
-          button.btn.btn-primary.pull-right(type="submit", onclick="postData()") 作成
+          button.btn.btn-primary.pull-right(type="submit") 作成
   include sidebar_subject
