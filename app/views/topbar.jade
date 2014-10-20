@@ -7,14 +7,14 @@
         a(href="#{basePath}/") 課題一覧
       | &nbsp;
       li
-        a(href="#{basePath}/doc/help/index.html") マニュアル
+        a(href="#{basePath}/doc/help/index.html", onClick="window.open('#{basePath}/doc/help/index.html','','scrollbars=yes,Width=800,Height=800');return false;") マニュアル
     ul.nav.masthead-nav
       li
         a(href="#{basePath}/logout") ログアウト
     ul.nav.masthead-nav
       li
-        p.myName #{student_id}
+        .myName #{student_id}
       | &nbsp;
       li
-        p.myName #{user_name}
+        .myName #{user_name}
       | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
