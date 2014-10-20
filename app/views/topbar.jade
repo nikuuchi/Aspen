@@ -7,7 +7,12 @@
         a(href="#{basePath}/") 課題一覧
       | &nbsp;
       li
+        - var number = parseInt(student_id.slice(1));
+        - if(number < 1464200) {
         a(href="#{basePath}/doc/help/index.html", onClick="window.open('#{basePath}/doc/help/index.html','','scrollbars=yes,Width=800,Height=800');return false;") マニュアル
+        - } else {
+        a(href="#{basePath}/doc/help/index_b.html", onClick="window.open('#{basePath}/doc/help/index_b.html','','scrollbars=yes,Width=800,Height=800');return false;") マニュアル
+        - }
     ul.nav.masthead-nav
       li
         a(href="#{basePath}/logout") ログアウト

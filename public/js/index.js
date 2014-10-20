@@ -773,6 +773,7 @@ $(function () {
         submit_button.hide();
     }
     else {
+        // A/Bテスト
         var num = parseInt($.cookie("studentNumber").slice(1));
         if (isNaN(num)) {
             num = 0;
