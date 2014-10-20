@@ -938,6 +938,12 @@ $(function () {
         return errorLineNumbers;
     }
 
+    $('#reset-button').click(() => {
+        if(confirm('この課題を解き始める前の状態に戻します。よろしいですか？')) {
+           Editor.SetValue($("#file-reset").text()); 
+        }
+    });
+
     var CompileCallback = (e: Event)=> {
         if(Files.Empty() || running) return;
         if(Editor.ContainsMultiByteSpace()) {

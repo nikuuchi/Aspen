@@ -109,6 +109,7 @@ router.get('/editor/:name', function (req, res) {
                 res.render('editorView', {
                     has_content: true,
                     content: subject.example,
+                    subject_reset: subject.content,
                     example: status.content,
                     basePath: config.base.path,
                     timestamp: status.updatedAt,
@@ -123,6 +124,7 @@ router.get('/editor/:name', function (req, res) {
                 res.render('editorView', {
                     has_content: true,
                     content: subject.example,
+                    subject_reset: subject.content,
                     example: subject.content,
                     basePath: config.base.path,
                     timestamp: subject.createdAt,
