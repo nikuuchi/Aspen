@@ -7,7 +7,18 @@ var auth = require('../helper/auth');
 var Promise = require('bluebird');
 var config = require('config');
 var lodash = require('lodash');
-var md = require("markdown").markdown.toHTML;
+//var md = require("markdown").markdown.toHTML;
+var marked = require('marked');
+marked.setOptions({
+    renderer: new marked.Renderer(),
+    gfm: true,
+    tables: true,
+    breaks: false,
+    pedantic: false,
+    sanitize: true,
+    smartLists: true,
+    smartypants: false
+});
 var tableHead = ["課題名", "提出状況", "締切"];
 /* GET home page. */
 router.get('/', function (req, res) {
@@ -100,7 +111,7 @@ router.get('/editor/:name', function (req, res) {
                     example: status.content,
                     basePath: config.base.path,
                     timestamp: status.updatedAt,
-                    md: md,
+                    md: marked,
                     title: subject.name,
                     is_show_content: true,
                     user_name: user_name,
@@ -114,7 +125,7 @@ router.get('/editor/:name', function (req, res) {
                     example: subject.content,
                     basePath: config.base.path,
                     timestamp: subject.createdAt,
-                    md: md,
+                    md: marked,
                     title: subject.name,
                     is_show_content: true,
                     user_name: user_name,
