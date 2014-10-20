@@ -8,6 +8,7 @@
   "dependencies": {
     "bluebird": "^2.3.4",
     "body-parser": "~1.0.0",
+    "compression": "^1.2.0",
     "config": "^1.2.0",
     "cookie-parser": "~1.0.1",
     "cookie-session": "^1.0.2",

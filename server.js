@@ -15,6 +15,10 @@ var app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'app/views'));
 app.set('view engine', 'jade');
+if (app.get('env') === 'production') {
+    var compression = require('compression');
+    app.use(compression());
+}
 app.use(favicon());
 app.use(logger('dev'));
 app.use(bodyParser.json());
