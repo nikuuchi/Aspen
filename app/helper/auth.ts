@@ -27,3 +27,8 @@ export function isLogin(req) {
     }
     return false;
 }
+
+export function setStudentNumber(res: any, id: string): void {
+    res.cookie('studentNumber', id);
+}
+

@@ -773,6 +773,13 @@ $(function () {
         submit_button.hide();
     }
     else {
+        var num = parseInt($.cookie("studentNumber").slice(1));
+        if (isNaN(num)) {
+            num = 0;
+        }
+        if (num < 1464200) {
+            $("#poplar").hide();
+        }
         //提出ボタンの挙動
         $("#submit-file").click(function (event) {
             var subjectId = C2JS.getSubjectId();

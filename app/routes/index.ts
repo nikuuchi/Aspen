@@ -39,6 +39,7 @@ router.get('/', function(req, res) {
             }
             user_name = user.name;
             user_student_id = user.studentNumber;
+            auth.setStudentNumber(res, user_student_id);
 
             return db.Subject.getStatusesEachUser((<any>db).Sequelize, db.SubmitStatus, user.id);
         })
