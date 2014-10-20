@@ -195,9 +195,9 @@ var C2JS;
                     timestamp = oldtimestamp;
                 }
             }
-            if (content === "") {
-                content = GetHelloWorldSource();
-            }
+            //if(content === "") {
+            //content = GetHelloWorldSource();
+            //}
             sessionStorage.setItem(filename + ".c", content);
             sessionStorage.setItem(filename + ".time", timestamp);
             this.FileModel = new FileModel(filename + ".c");

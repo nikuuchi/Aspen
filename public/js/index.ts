@@ -238,9 +238,9 @@ module C2JS {
             timestamp = oldtimestamp;
           }
         }
-        if(content === "") {
-          content = GetHelloWorldSource();
-        }
+        //if(content === "") {
+          //content = GetHelloWorldSource();
+        //}
         sessionStorage.setItem(filename + ".c", content);
         sessionStorage.setItem(filename + ".time", timestamp);
 
