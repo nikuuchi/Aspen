@@ -8,7 +8,8 @@ var lodash = require('lodash');
 var config = require('config');
 var sequelize = new Sequelize(config.db.database, config.db.user, config.db.password, {
     dialect: 'mysql',
-    port: 3306
+    port: 3306,
+    timezone: '+09:00'
 });
 var db = {};
 fs.readdirSync(__dirname).filter(function (file) {
