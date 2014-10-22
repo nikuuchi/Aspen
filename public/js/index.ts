@@ -826,7 +826,7 @@ $(function () {
     Aspen.Source = DB;
     Aspen.Context = Context;
     Aspen.Files = Files;
-    Aspen.Language = "en";
+    Aspen.Language = "ja";
     Aspen.Debug = {};
     Aspen.Debug.DeleteAllKey = () => {
         while(localStorage.length > 1) {
@@ -941,7 +941,7 @@ $(function () {
     if($('#file-reset').length > 0) {
         $('#reset-button').show().click(() => {
             if(confirm('この課題を解き始める前の状態に戻します。よろしいですか？')) {
-               Editor.SetValue($("#file-reset").text()); 
+               Editor.SetValue($("#file-reset").text());
             }
         });
     }

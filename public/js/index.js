@@ -803,7 +803,7 @@ $(function () {
     Aspen.Source = DB;
     Aspen.Context = Context;
     Aspen.Files = Files;
-    Aspen.Language = "en";
+    Aspen.Language = "ja";
     Aspen.Debug = {};
     Aspen.Debug.DeleteAllKey = function () {
         while (localStorage.length > 1) {
