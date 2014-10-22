@@ -3,6 +3,10 @@ html,body {
   height: 100%;
 }
 
+.demo-editor, .container, .editor-view {
+  height: 100%;
+}
+
 #create-file {
   background-color: #5cb85c;
   color: #fff;
@@ -26,7 +30,8 @@ code {
 
 #editor {
   width: 930px;
-  height: 500px;
+  height: 50%;
+  min-height: 300px;
   overflow: hidden;
 
 }
