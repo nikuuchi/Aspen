@@ -8,7 +8,19 @@ var auth = require('../helper/auth');
 var Promise = require('bluebird');
 var config = require('config');
 var lodash = require('lodash');
-var md = require("markdown").markdown.toHTML;
+//var md = require("markdown").markdown.toHTML;
+var marked = require('marked');
+marked.setOptions({
+      renderer: new marked.Renderer(),
+      gfm: true,
+      tables: true,
+      breaks: true,
+      pedantic: false,
+      sanitize: true,
+      smartLists: true,
+      smartypants: false
+});
+
 
 var tableHead = ["課題名", "提出状況", "締切"];
 /* GET home page. */
@@ -27,6 +39,7 @@ router.get('/', function(req, res) {
             }
             user_name = user.name;
             user_student_id = user.studentNumber;
+            auth.setStudentNumber(res, user_student_id);
 
             return db.Subject.getStatusesEachUser((<any>db).Sequelize, db.SubmitStatus, user.id);
         })
@@ -115,10 +128,11 @@ router.get('/editor/:name', function(req, res) {
                             res.render('editorView', {
                                 has_content: true,
                                 content: subject.example,
+                                subject_reset: subject.content,
                                 example: status.content,
                                 basePath: config.base.path,
                                 timestamp: status.updatedAt,
-                                md: md,
+                                md: marked,
                                 title: subject.name,
                                 is_show_content: true,
                                 user_name: user_name,
@@ -127,11 +141,12 @@ router.get('/editor/:name', function(req, res) {
                         } else {
                             res.render('editorView', {
                                 has_content: true,
-                                content: subject.content,
-                                example: subject.example,
+                                content: subject.example,
+                                subject_reset: subject.content,
+                                example: subject.content,
                                 basePath: config.base.path,
                                 timestamp: subject.createdAt,
-                                md: md,
+                                md: marked,
                                 title: subject.name,
                                 is_show_content: true,
                                 user_name: user_name,

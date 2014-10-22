@@ -10,8 +10,9 @@ block content
   .demo-editor
     include editor
   - if(has_content) {
-  #file-content(style="display: none")= example
-  #file-timestamp(style="display: none")= timestamp
+  #file-content(style="display: none;")= example
+  #file-reset(style="display: none;")= subject_reset
+  #file-timestamp(style="display: none;")= timestamp
   - }
   include sidebar_subject
   .mastfoot

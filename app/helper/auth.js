@@ -29,3 +29,7 @@ function isLogin(req) {
     return false;
 }
 exports.isLogin = isLogin;
+function setStudentNumber(res, id) {
+    res.cookie('studentNumber', id);
+}
+exports.setStudentNumber = setStudentNumber;

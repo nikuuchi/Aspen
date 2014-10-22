@@ -14,7 +14,8 @@ var sequelize = new Sequelize(
         config.db.password,
         {
             dialect: 'mysql',
-            port: 3306
+            port: 3306,
+            timezone: '+09:00'
         }
 );
 var db = <any>{};

@@ -13,6 +13,9 @@ input#file-open-dialog(type='file', style='display:none;', accept=".c")
             span.glyphicon.glyphicon-send
             | &nbsp;
             | 提出
+        button#reset-button.btn.navbar-btn.btn-default.disabled-on-files-empty.disabled-on-running(type='button', style='display: none;', onContextmenu="return false")
+          | リセット
+        | &nbsp;
         button#save-file-menu.btn.navbar-btn.btn-default.disabled-on-running.disabled-on-files-empty(type='button', data-toggle="tooltip", title="Download", onContextmenu="return false")
           span.glyphicon.glyphicon-floppy-save
           | &nbsp;
@@ -91,7 +94,7 @@ input#file-open-dialog(type='file', style='display:none;', accept=".c")
         h4 実行結果
           .checkbox
             label
-              input#JpModeCheck(type="checkbox")
+              input#JpModeCheck(type="checkbox" checked)
               | エラーメッセージを日本語化する(β)
       #output.panel-body
 //include sidebar

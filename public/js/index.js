@@ -773,6 +773,14 @@ $(function () {
         submit_button.hide();
     }
     else {
+        // A/Bテスト
+        var num = parseInt($.cookie("studentNumber").slice(1));
+        if (isNaN(num)) {
+            num = 0;
+        }
+        if (num < 1464200) {
+            $("#poplar").hide();
+        }
         //提出ボタンの挙動
         $("#submit-file").click(function (event) {
             var subjectId = C2JS.getSubjectId();
@@ -795,7 +803,7 @@ $(function () {
     Aspen.Source = DB;
     Aspen.Context = Context;
     Aspen.Files = Files;
-    Aspen.Language = "en";
+    Aspen.Language = "ja";
     Aspen.Debug = {};
     Aspen.Debug.DeleteAllKey = function () {
         while (localStorage.length > 1) {
@@ -898,6 +906,13 @@ $(function () {
         }));
         return errorLineNumbers;
     };
+    if ($('#file-reset').length > 0) {
+        $('#reset-button').show().click(function () {
+            if (confirm('この課題を解き始める前の状態に戻します。よろしいですか？')) {
+                Editor.SetValue($("#file-reset").text());
+            }
+        });
+    }
     var CompileCallback = function (e) {
         if (Files.Empty() || running)
             return;
