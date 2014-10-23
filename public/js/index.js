@@ -740,7 +740,7 @@ var C2JS;
             var code;
             var session = Aspen.Editor.editor.getSession();
             var row = message.position.line - 1;
-            line = "<b>" + (Aspen.Language == "ja" ? "行" : "line") + message.position.line + "</b>:";
+            line = "<b>" + (Aspen.Language == "ja" ? "" : "line") + message.position.line + (Aspen.Language == "ja" ? "行目" : "") + "</b>:";
             message.text = UnescapeUTFChar(message.text).replace(/</gm, "&lt;").replace(/>/gm, "&gt;");
             if (Aspen.Language == "ja") {
                 message.text = TranslateMessageToJapanese(message.text);
