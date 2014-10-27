@@ -235,7 +235,23 @@ function chooseClass(status, remainingDays) {
     }
 }
 
-var statusArray = ["未提出", "提出済", "合格"];
+//var statusArray = ["未提出", "提出済", "合格"];
+
+function getStatus(num: number, submit: any) {
+    switch(num) {
+        case 0:
+            return "未提出";
+        case 1:
+            if(submit) {
+                return formatDate('YYYY-MM-DD HH:mm', submit.updatedAt) + ' 提出';
+            } else {
+                return '提出済み';
+            }
+        case 2:
+            return "合格";
+    }
+}
+
 var oneDay = 86400000;
 
 function createAllSubmitViews(submits, students, subjects) {
@@ -260,7 +276,7 @@ function createAllSubmitViews(submits, students, subjects) {
                 student_name: student.name,
                 student_number: student.studentNumber,
                 subject_name: subject.name,
-                status: statusArray[status],
+                status: getStatus(status, submit),
                 endAt: formatEndAt(subject.endAt),
                 endAtTime: subject.endAt.getTime(),
                 cl: chooseClass(status, remainingDays),
@@ -289,7 +305,7 @@ function createSubmitView(subject, submit_statuses) {
     return {
         id: subject.id,
         name: subject.name,
-        status: statusArray[status],
+        status: getStatus(status, submitStatus[0]),
         endAt: formatEndAt(subject.endAt),
         endAtTime: subject.endAt.getTime(),
         cl: chooseClass(status, remainingDays),
