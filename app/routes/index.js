@@ -117,7 +117,9 @@ router.get('/editor/:name', function (req, res) {
                     title: subject.name,
                     is_show_content: true,
                     user_name: user_name,
-                    student_id: user_studentId
+                    student_id: user_studentId,
+                    status_submitted: status.status > 0,
+                    status_date: formatDate('YYYY-MM-DD HH:mm', status.updatedAt)
                 });
             }
             else {
@@ -132,7 +134,8 @@ router.get('/editor/:name', function (req, res) {
                     title: subject.name,
                     is_show_content: true,
                     user_name: user_name,
-                    student_id: user_studentId
+                    student_id: user_studentId,
+                    status_submitted: false
                 });
             }
         });
