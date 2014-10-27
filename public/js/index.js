@@ -688,19 +688,24 @@ var C2JS;
                 if (textlines[i + 1].lastIndexOf(filename, 0) != 0) {
                     var code = textlines[i + 1];
                     var indicator = textlines[i + 2];
-                    var begin = indicator.indexOf("~");
-                    var end = indicator.lastIndexOf("~") + 1;
-                    var replacee = code.substring(begin, end);
+                    var replacee = '';
+                    if (indicator) {
+                        var begin = indicator.indexOf("~");
+                        var end = indicator.lastIndexOf("~") + 1;
+                        replacee = code.substring(begin, end);
+                    }
                     var code = replacee.length > 0 ? code.replace(replacee, "<u>" + replacee + "</u>") : code;
                     var consumedLines = 1;
                     textlines[i + 1] = "<code>" + code.replace(/ /gm, "&nbsp;") + "</code>";
-                    if (textlines[i + 2].lastIndexOf(filename, 0) != 0) {
-                        textlines[i + 2] = "<samp>" + indicator.replace(/~/g, " ").replace(/ /gm, "&nbsp;").replace(/\^/, "<span class='glyphicon glyphicon-arrow-up'></span>") + "</samp>";
-                        consumedLines++;
-                    }
-                    if (textlines[i + 3].lastIndexOf(filename, 0) != 0) {
-                        textlines[i + 3] = "<samp>" + textlines[i + 3].replace(/ /gm, "&nbsp;") + "</samp>";
-                        consumedLines++;
+                    if (indicator) {
+                        if (textlines[i + 2].lastIndexOf(filename, 0) != 0) {
+                            textlines[i + 2] = "<samp>" + indicator.replace(/~/g, " ").replace(/ /gm, "&nbsp;").replace(/\^/, "<span class='glyphicon glyphicon-arrow-up'></span>") + "</samp>";
+                            consumedLines++;
+                        }
+                        if (textlines[i + 3].lastIndexOf(filename, 0) != 0) {
+                            textlines[i + 3] = "<samp>" + textlines[i + 3].replace(/ /gm, "&nbsp;") + "</samp>";
+                            consumedLines++;
+                        }
                     }
                     i += consumedLines;
                 }
