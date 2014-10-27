@@ -779,17 +779,17 @@ module C2JS {
           if(message.code) {
             var utfCount = CountUTFChar(message.code);
             message.code = UnescapeUTFChar(message.code);
-            code = "&nbsp;&nbsp;&nbsp;&nbsp;<code>" + message.code + "</code>";
+            code = "<code>" + message.code + "</code>";
             body = body + "<br>" + code;
             var sp = "";
-            var indent = session.getDocument().getLine(row).lastIndexOf(message.code);
-            for(var i = 0; i < message.position.column - indent - 1 - utfCount; i++) {
+
+            for(var i = 0; i < message.position.column - 1 - utfCount * 2; i++) {
               sp = sp + "&nbsp;"
             }
-            var marker = "&nbsp;&nbsp;&nbsp;&nbsp;<samp>" + sp + "<span class='glyphicon glyphicon-arrow-up'></span></samp>";
+            var marker = "<samp>" + sp + "<span class='glyphicon glyphicon-arrow-up'></span></samp>";
             body = body + "<br>" + marker;
             if(message.insertion) {
-              var insertion = "&nbsp;&nbsp;&nbsp;&nbsp;<samp>" + sp + message.insertion + "</samp>";
+              var insertion = "<samp>" + sp + message.insertion + "</samp>";
               body = body + "<br>" + insertion;
             }
           }
@@ -1046,9 +1046,6 @@ $(function () {
         C2JS.Compile(src, opt, file.GetName(), changeFlag, Context, function(res){
             console.log(changeFlag);
             console.log(res);
-
-            //
-            res.error = "/tmp/aspen18003cjq0tcw.c:3:5: warning: implicitly declaring library function 'printf' with type 'int (const char *, ...)'\n    printf(\"<U+3042><U+3042><U+3042><U+3042>\")\n    ^\n/tmp/aspen18003cjq0tcw.c:3:5: note: please include the header <stdio.h> or explicitly provide a declaration for 'printf'\n/tmp/aspen18003cjq0tcw.c:3:27: error: expected ';' after expression\n    printf(\"<U+3042><U+3042><U+3042><U+3042>\")\n                                              ^\n                                              ;\n1 warning and 1 error generated.\nERROR    root: \u001b[31mcompiler frontend failed to generate LLVM bitcode, halting\u001b[0m";
 
             try{
                 changeFlag = false;
