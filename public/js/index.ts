@@ -5,9 +5,9 @@
 /// <reference path="FileManager.ts"/>
 
 declare var CodeMirror: any;
+declare var ClangErrorParser: any;
 declare function saveAs(data :Blob, filename: String): void;
 var _ua: any;
-
 
 module C2JS {
 
@@ -736,6 +736,87 @@ module C2JS {
         return FormatMessage(FormatFilename(ConvertTerminalColor(text), fileName), fileName);
     }
 
+    export function CountUTFChar(text: string): number {
+      var cnt = 0;
+      text.replace(/<U\+(.{4})>/g, function (all, code) {
+        cnt++;
+        return "";
+      });
+      return cnt;
+    }
+
+    export function UnescapeUTFChar(text: string): string {
+      return text.replace(/<U\+(.{4})>/g, function (all, code) {
+        return String.fromCharCode(parseInt(code, 16));
+      });
+    }
+
+    export function ProsessErrorMessage(text:string, fileName: string): void {
+        var errorObject = ClangErrorParser.parse(text);
+        var annotations = [];
+        errorObject.messages.forEach((message) => {
+          var line: string;
+          var label: string;
+          var body: string;
+          var code: string;
+          var session = Aspen.Editor.editor.getSession();
+          var row = message.position.line - 1;
+
+          line = "<b>" + (Aspen.Language == "ja" ? "" : "line") + message.position.line + (Aspen.Language == "ja" ? "行目" : "") + "</b>:";
+          message.text = UnescapeUTFChar(message.text).replace(/</gm, "&lt;").replace(/>/gm, "&gt;");
+          if (Aspen.Language == "ja") {
+            message.text = TranslateMessageToJapanese(message.text);
+          }
+          switch(message.type){
+            case "info":
+              label = "<span class='label label-info'>" + (Aspen.Language == "ja" ? "ヒント" : "info") + "</span>";
+              body = "<span class='text-info'>" + message.text + "</span>";
+              break;
+            case "warning":
+              label = "<span class='label label-warning'>" + (Aspen.Language == "ja" ? "警告" : "warning") + "</span>";
+              body = "<span class='text-warning'>" + message.text.replace(/\s*\[-W.+?\]/) + "</span>";
+              break;
+            default:
+              label = "<span class='label label-danger'>" + (Aspen.Language == "ja" ? "エラー" : "error") + "</span>";
+              body = "<span class='text-danger'>" + message.text + "</span>";
+              break;
+          }
+          if(message.code) {
+            var utfCount = CountUTFChar(message.code);
+            message.code = UnescapeUTFChar(message.code);
+            code = "<code>" + message.code + "</code>";
+            body = body + "<br>" + code;
+            var sp = "";
+
+            for(var i = 0; i < message.position.column - 1 - utfCount * 2; i++) {
+              sp = sp + "&nbsp;"
+            }
+            var marker = "<samp>" + sp + "<span class='glyphicon glyphicon-arrow-up'></span></samp>";
+            body = body + "<br>" + marker;
+            if(message.insertion) {
+              var insertion = "<samp>" + sp + message.insertion + "</samp>";
+              body = body + "<br>" + insertion;
+            }
+          }
+
+          Aspen.Output.PrintLn(line + " " + label + " " + body);
+
+          var range = session.highlightLines(row, row, "error_line");
+          Aspen.Editor.errorLineIds.push(range.id);
+          annotations.push({
+              row: row,
+              type: "error",
+              text: message.text
+          });
+          //message.position.line;
+          //message.position.column;
+          //message.text
+          //message.type
+        });
+
+        Aspen.Editor.editor.getSession().setAnnotations(annotations);
+    }
+
     export function CheckFileName(name: string, DB: SourceDB, path: string = "default"): string {
         var filename = name;
         if(path == "") {
@@ -970,6 +1051,7 @@ $(function () {
         C2JS.Compile(src, opt, file.GetName(), changeFlag, Context, function(res){
             console.log(changeFlag);
             console.log(res);
+
             try{
                 changeFlag = false;
                 if(res == null) {
@@ -977,8 +1059,9 @@ $(function () {
                     return;
                 }
                 if(res.error.length > 0) {
-                    Output.PrintLn(C2JS.FormatClangErrorMessage(res.error, file.GetBaseName()));
-                    Editor.SetErrorLines(FindErrorNumbersInErrorMessage(res.error));
+                    C2JS.ProsessErrorMessage(res.error, file.GetBaseName());
+                    //Output.PrintLn(C2JS.FormatClangErrorMessage(res.error, file.GetBaseName()));
+                    //Editor.SetErrorLines(FindErrorNumbersInErrorMessage(res.error));
                 }
                 Output.Prompt();
 

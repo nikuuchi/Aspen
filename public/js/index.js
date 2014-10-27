@@ -720,6 +720,82 @@ var C2JS;
         return FormatMessage(FormatFilename(ConvertTerminalColor(text), fileName), fileName);
     }
     C2JS.FormatClangErrorMessage = FormatClangErrorMessage;
+    function CountUTFChar(text) {
+        var cnt = 0;
+        text.replace(/<U\+(.{4})>/g, function (all, code) {
+            cnt++;
+            return "";
+        });
+        return cnt;
+    }
+    C2JS.CountUTFChar = CountUTFChar;
+    function UnescapeUTFChar(text) {
+        return text.replace(/<U\+(.{4})>/g, function (all, code) {
+            return String.fromCharCode(parseInt(code, 16));
+        });
+    }
+    C2JS.UnescapeUTFChar = UnescapeUTFChar;
+    function ProsessErrorMessage(text, fileName) {
+        var errorObject = ClangErrorParser.parse(text);
+        var annotations = [];
+        errorObject.messages.forEach(function (message) {
+            var line;
+            var label;
+            var body;
+            var code;
+            var session = Aspen.Editor.editor.getSession();
+            var row = message.position.line - 1;
+            line = "<b>" + (Aspen.Language == "ja" ? "" : "line") + message.position.line + (Aspen.Language == "ja" ? "行目" : "") + "</b>:";
+            message.text = UnescapeUTFChar(message.text).replace(/</gm, "&lt;").replace(/>/gm, "&gt;");
+            if (Aspen.Language == "ja") {
+                message.text = TranslateMessageToJapanese(message.text);
+            }
+            switch (message.type) {
+                case "info":
+                    label = "<span class='label label-info'>" + (Aspen.Language == "ja" ? "ヒント" : "info") + "</span>";
+                    body = "<span class='text-info'>" + message.text + "</span>";
+                    break;
+                case "warning":
+                    label = "<span class='label label-warning'>" + (Aspen.Language == "ja" ? "警告" : "warning") + "</span>";
+                    body = "<span class='text-warning'>" + message.text.replace(/\s*\[-W.+?\]/) + "</span>";
+                    break;
+                default:
+                    label = "<span class='label label-danger'>" + (Aspen.Language == "ja" ? "エラー" : "error") + "</span>";
+                    body = "<span class='text-danger'>" + message.text + "</span>";
+                    break;
+            }
+            if (message.code) {
+                var utfCount = CountUTFChar(message.code);
+                message.code = UnescapeUTFChar(message.code);
+                code = "<code>" + message.code + "</code>";
+                body = body + "<br>" + code;
+                var sp = "";
+                for (var i = 0; i < message.position.column - 1 - utfCount * 2; i++) {
+                    sp = sp + "&nbsp;";
+                }
+                var marker = "<samp>" + sp + "<span class='glyphicon glyphicon-arrow-up'></span></samp>";
+                body = body + "<br>" + marker;
+                if (message.insertion) {
+                    var insertion = "<samp>" + sp + message.insertion + "</samp>";
+                    body = body + "<br>" + insertion;
+                }
+            }
+            Aspen.Output.PrintLn(line + " " + label + " " + body);
+            var range = session.highlightLines(row, row, "error_line");
+            Aspen.Editor.errorLineIds.push(range.id);
+            annotations.push({
+                row: row,
+                type: "error",
+                text: message.text
+            });
+            //message.position.line;
+            //message.position.column;
+            //message.text
+            //message.type
+        });
+        Aspen.Editor.editor.getSession().setAnnotations(annotations);
+    }
+    C2JS.ProsessErrorMessage = ProsessErrorMessage;
     function CheckFileName(name, DB, path) {
         if (path === void 0) { path = "default"; }
         var filename = name;
@@ -944,8 +1020,7 @@ $(function () {
                     return;
                 }
                 if (res.error.length > 0) {
-                    Output.PrintLn(C2JS.FormatClangErrorMessage(res.error, file.GetBaseName()));
-                    Editor.SetErrorLines(FindErrorNumbersInErrorMessage(res.error));
+                    C2JS.ProsessErrorMessage(res.error, file.GetBaseName());
                 }
                 Output.Prompt();
                 Context.error = res.error;
