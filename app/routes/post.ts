@@ -6,6 +6,8 @@ var router = express.Router();
 var db = require('../models');
 var http = require('http');
 var config = require('config');
+var Promise = require('bluebird');
+var formatDate = require('../helper/date').formatDate;
 
 router.post('/save', function(req, res) {
     if(!req.signedCookies) {
@@ -17,7 +19,7 @@ router.post('/save', function(req, res) {
     var gUserId = req.signedCookies.sessionUserId;
     db.User.findByGithub(gUserId)
         .then(function(user) {
-            return db.SubmitStatus.saveTemporary(content, user.id, subjectId, db.Sequelize);
+            return db.SubmitStatus.saveTemporary(content, user.id, subjectId, db.Sequelize, Promise);
         })
         .then(function(submit) {
             console.log(submit);
@@ -42,7 +44,7 @@ router.post('/submit', function(req, res) {
         })
         .then(function(submit) {
             console.log(submit);
-            res.json({});
+            res.json({status: submit.status, date: formatDate('YYYY-MM-DD HH:mm', submit.updatedAt)});
         })
         .catch(function() {
             res.status(401).json({error: "something bad"});

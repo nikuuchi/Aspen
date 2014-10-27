@@ -2,6 +2,7 @@
 ///<reference path='../../typings/ace/ace.d.ts'/>
 ///<reference path='../../typings/jstree/jstree.d.ts'/>
 ///<reference path='../../typings/config/config.d.ts'/>
+///<reference path='../../typings/lodash/lodash.d.ts'/>
 /// <reference path="FileManager.ts"/>
 var _ua;
 var C2JS;
@@ -866,7 +867,10 @@ $(function () {
         //提出ボタンの挙動
         $("#submit-file").click(function (event) {
             var subjectId = C2JS.getSubjectId();
-            var callback = function () {
+            var callback = function (res) {
+                $("#submit-confirm-view").children().remove();
+                var compiled = _.template($("#submit-confirm-template").text());
+                $("#submit-confirm-view").append(compiled({ submit_date: res.date }));
                 alert('提出しました！');
             };
             $.ajax({

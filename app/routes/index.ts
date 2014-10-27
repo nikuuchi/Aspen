@@ -5,6 +5,7 @@ var express = require('express');
 var router = express.Router();
 var db = require('../models');
 var auth = require('../helper/auth');
+var formatDate = require('../helper/date').formatDate;
 var Promise = require('bluebird');
 var config = require('config');
 var lodash = require('lodash');
@@ -59,22 +60,6 @@ router.get('/', function(req, res) {
             res.render('top', {basePath: config.base.path });
         });
 });
-
-
-/**
- * Format a date like YYYY-MM-DD.
- * @method formatDate
- * @param {string} template
- * @return {string}
- * @license MIT
- */
-function formatDate(template, d) {
-    var specs = 'YYYY:MM:DD:HH:mm:ss'.split(':');
-    var date = new Date(d - d.getTimezoneOffset() * 60000);
-    return date.toISOString().split(/[-:.TZ]/).reduce(function(template, item, i) {
-        return template.split(specs[i]).join(item);
-    }, template);
-}
 
 router.get('/subject/:file', function(req, res) {
     if(!auth.isLogin(req)) {
