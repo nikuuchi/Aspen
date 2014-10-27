@@ -784,6 +784,7 @@ module C2JS {
           if(message.code) {
             var utfCount = CountUTFChar(message.code);
             message.code = UnescapeUTFChar(message.code);
+            message.code = message.code.replace(/ /g, "&nbsp;");
             code = "<code>" + message.code + "</code>";
             body = body + "<br>" + code;
             var sp = "";
