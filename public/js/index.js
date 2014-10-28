@@ -932,12 +932,18 @@ $(function () {
             DB.Save(Files.GetCurrent().GetName(), Editor.GetValue());
         }
     });
+    var copiedText = "";
     Editor.OnCopy(function (text) {
+        copiedText = text;
         console.log(text);
     });
     Editor.OnPaste(function (text) {
-        console.log(text);
-        swal({ title: "", text: "コピペを検出しました。自分で入力してみよう！", type: "error" });
+        console.log(text.text);
+        if (copiedText !== text.text) {
+            C2JS.postActivity('copy_and_paste', { copied_data: text.text });
+            swal({ title: "", text: "コピペを検出しました。自分で入力してみよう！", type: "error" });
+        }
+        ;
     });
     var running = false;
     var DisableUI = function () {

@@ -965,13 +965,18 @@ $(function () {
         }
     });
 
-    Editor.OnCopy((text: String)=> {
+    var copiedText: string = "";
+    Editor.OnCopy((text: string)=> {
+        copiedText = text;
         console.log(text);
     });
 
-    Editor.OnPaste((text: String)=> {
-        console.log(text);
-        swal({title: "", text: "コピペを検出しました。自分で入力してみよう！",   type: "error"});
+    Editor.OnPaste((text: any)=> {
+        console.log(text.text);
+        if(copiedText !== text.text){
+          C2JS.postActivity('copy_and_paste', { copied_data: text.text });
+          swal({title: "", text: "コピペを検出しました。自分で入力してみよう！",   type: "error"});
+        };
     });
 
     var running = false;
