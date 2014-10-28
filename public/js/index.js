@@ -22,6 +22,12 @@ var C2JS;
         Editor.prototype.OnChange = function (callback) {
             this.editor.on("change", callback);
         };
+        Editor.prototype.OnCopy = function (callback) {
+            this.editor.on("copy", callback);
+        };
+        Editor.prototype.OnPaste = function (callback) {
+            this.editor.on("paste", callback);
+        };
         Editor.prototype.GetValue = function () {
             return this.editor.getValue();
         };
@@ -862,7 +868,7 @@ $(function () {
         $("#submit-file").click(function (event) {
             var subjectId = C2JS.getSubjectId();
             var callback = function () {
-                alert('提出しました！');
+                swal({ title: "", text: '提出しました！', type: "success" });
             };
             $.ajax({
                 type: "POST",
@@ -900,6 +906,13 @@ $(function () {
             changeFlag = true;
             DB.Save(Files.GetCurrent().GetName(), Editor.GetValue());
         }
+    });
+    Editor.OnCopy(function (text) {
+        console.log(text);
+    });
+    Editor.OnPaste(function (text) {
+        console.log(text);
+        swal({ title: "", text: "コピペを検出しました。自分で入力してみよう！", type: "error" });
     });
     var running = false;
     var DisableUI = function () {

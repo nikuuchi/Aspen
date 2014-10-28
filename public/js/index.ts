@@ -4,6 +4,7 @@
 ///<reference path='../../typings/config/config.d.ts'/>
 /// <reference path="FileManager.ts"/>
 
+declare var swal: any;
 declare var CodeMirror: any;
 declare var ClangErrorParser: any;
 declare function saveAs(data :Blob, filename: String): void;
@@ -35,6 +36,14 @@ module C2JS {
 
         OnChange(callback: (e: Event)=>void): void {
             this.editor.on("change", callback);
+        }
+
+        OnCopy(callback: (text: String)=>void): void {
+            this.editor.on("copy", callback);
+        }
+
+        OnPaste(callback: (text: String)=>void): void {
+            this.editor.on("paste", callback);
         }
 
         GetValue(): string {
@@ -887,7 +896,7 @@ $(function () {
         $("#submit-file").click(function(event) {
             var subjectId = C2JS.getSubjectId();
             var callback = () => {
-                alert('提出しました！');
+                swal({title:"", text:'提出しました！', type: "success"});
             };
             (<any>$).ajax({
                 type: "POST",
@@ -928,6 +937,15 @@ $(function () {
             changeFlag = true;
             DB.Save(Files.GetCurrent().GetName(), Editor.GetValue());
         }
+    });
+
+    Editor.OnCopy((text: String)=> {
+        console.log(text);
+    });
+
+    Editor.OnPaste((text: String)=> {
+        console.log(text);
+        swal({title: "", text: "コピペを検出しました。自分で入力してみよう！",   type: "error"});
     });
 
     var running = false;
