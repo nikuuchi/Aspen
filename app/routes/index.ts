@@ -5,11 +5,14 @@ var express = require('express');
 var router = express.Router();
 var db = require('../models');
 var auth = require('../helper/auth');
+var formatDate = require('../helper/date').formatDate;
 var Promise = require('bluebird');
 var config = require('config');
 var lodash = require('lodash');
 //var md = require("markdown").markdown.toHTML;
 var marked = require('marked');
+var http   = require('../helper/post');
+
 marked.setOptions({
       renderer: new marked.Renderer(),
       gfm: true,
@@ -60,22 +63,6 @@ router.get('/', function(req, res) {
         });
 });
 
-
-/**
- * Format a date like YYYY-MM-DD.
- * @method formatDate
- * @param {string} template
- * @return {string}
- * @license MIT
- */
-function formatDate(template, d) {
-    var specs = 'YYYY:MM:DD:HH:mm:ss'.split(':');
-    var date = new Date(d - d.getTimezoneOffset() * 60000);
-    return date.toISOString().split(/[-:.TZ]/).reduce(function(template, item, i) {
-        return template.split(specs[i]).join(item);
-    }, template);
-}
-
 router.get('/subject/:file', function(req, res) {
     if(!auth.isLogin(req)) {
         res.redirect(config.base.path + '/');
@@ -102,6 +89,12 @@ router.get('/subject/:file', function(req, res) {
         });
 });
 
+var activity_option = {
+    hostname: config.activity.host,
+    port: config.activity.port,
+    path: config.activity.path
+};
+
 router.get('/editor/:name', function(req, res) {
     if(!auth.isLogin(req)) {
         res.redirect(config.base.path + '/');
@@ -110,6 +103,13 @@ router.get('/editor/:name', function(req, res) {
     var userId = 0;
     var user_name = "";
     var user_studentId = "";
+
+    var activity_data = {
+        type: 'subject_open',
+        data: {},
+        subjectId: req.params.name,
+        userId: req.signedCookies.sessionUserId
+    };
 
     db.User.find({where: {github_id: req.signedCookies.sessionUserId}})
                 .then(function(user) {
@@ -136,9 +136,14 @@ router.get('/editor/:name', function(req, res) {
                                 title: subject.name,
                                 is_show_content: true,
                                 user_name: user_name,
-                                student_id: user_studentId
+                                student_id: user_studentId,
+                                status_submitted: status.status > 0,
+                                status_date: formatDate('YYYY-MM-DD HH:mm', status.updatedAt),
                             });
                         } else {
+                            http.postJSON(activity_data, activity_option, function(data) {
+                                console.log(data);
+                            });
                             res.render('editorView', {
                                 has_content: true,
                                 content: subject.example,
@@ -150,7 +155,8 @@ router.get('/editor/:name', function(req, res) {
                                 title: subject.name,
                                 is_show_content: true,
                                 user_name: user_name,
-                                student_id: user_studentId
+                                student_id: user_studentId,
+                                status_submitted: false
                             });
                         }
                     })
@@ -247,7 +253,23 @@ function chooseClass(status, remainingDays) {
     }
 }
 
-var statusArray = ["未提出", "提出済", "合格"];
+//var statusArray = ["未提出", "提出済", "合格"];
+
+function getStatus(num: number, submit: any) {
+    switch(num) {
+        case 0:
+            return "未提出";
+        case 1:
+            if(submit) {
+                return formatDate('YYYY-MM-DD HH:mm', submit.updatedAt) + ' 提出';
+            } else {
+                return '提出済み';
+            }
+        case 2:
+            return "合格";
+    }
+}
+
 var oneDay = 86400000;
 
 function createAllSubmitViews(submits, students, subjects) {
@@ -272,7 +294,7 @@ function createAllSubmitViews(submits, students, subjects) {
                 student_name: student.name,
                 student_number: student.studentNumber,
                 subject_name: subject.name,
-                status: statusArray[status],
+                status: getStatus(status, submit),
                 endAt: formatEndAt(subject.endAt),
                 endAtTime: subject.endAt.getTime(),
                 cl: chooseClass(status, remainingDays),
@@ -301,7 +323,7 @@ function createSubmitView(subject, submit_statuses) {
     return {
         id: subject.id,
         name: subject.name,
-        status: statusArray[status],
+        status: getStatus(status, submitStatus[0]),
         endAt: formatEndAt(subject.endAt),
         endAtTime: subject.endAt.getTime(),
         cl: chooseClass(status, remainingDays),

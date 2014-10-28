@@ -2,6 +2,7 @@
 ///<reference path='../../typings/ace/ace.d.ts'/>
 ///<reference path='../../typings/jstree/jstree.d.ts'/>
 ///<reference path='../../typings/config/config.d.ts'/>
+///<reference path='../../typings/lodash/lodash.d.ts'/>
 /// <reference path="FileManager.ts"/>
 var _ua;
 var C2JS;
@@ -407,6 +408,22 @@ var C2JS;
         }
     }
     C2JS.Compile = Compile;
+    function postActivity(type, data) {
+        var subjectId = getSubjectId();
+        var callback = function () {
+            console.log("Activity ok.");
+        };
+        $.ajax({
+            type: "POST",
+            url: Config.basePath + "/activity",
+            data: JSON.stringify({ type: type, data: data, subjectId: subjectId }),
+            dataType: 'json',
+            contentType: "application/json; charset=utf-8",
+            success: callback,
+            error: onerror
+        });
+    }
+    C2JS.postActivity = postActivity;
     function saveInServer(subjectId, editorContent) {
         var callback = function () {
             console.log("ok.");
@@ -866,8 +883,11 @@ $(function () {
         //提出ボタンの挙動
         $("#submit-file").click(function (event) {
             var subjectId = C2JS.getSubjectId();
-            var callback = function () {
-                swal({ title: "", text: '提出しました！', type: "success" });
+            var callback = function (res) {
+                $("#submit-confirm-view").children().remove();
+                var compiled = _.template($("#submit-confirm-template").text());
+                $("#submit-confirm-view").append(compiled({ submit_date: res.date }));
+                swal({ title: "", text: '提出しました！', type: "success" });                
             };
             $.ajax({
                 type: "POST",

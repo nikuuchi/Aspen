@@ -63,17 +63,23 @@ module.exports = (sequelize, DataTypes) => {
              * @param {String} content 提出内容
              * @param {Number} userId ユーザID
              * @param {Number} subjectId 課題番号
+             * @param {Promise} Promise promise
              * @return {Promise}
              */
-            saveTemporary: (content, userId, subjectId, seq) => {
+            saveTemporary: (content, userId, subjectId, seq, Promise) => {
                 return SubmitStatus
                     .find({where: seq.and({UserId: userId}, {SubjectId: subjectId})})
                     .then(function(submit) {
                         if(submit) {
-                            submit.content = content;
-                            return submit.save();
+                            if(submit.status == 0) {
+                                submit.content = content;
+                                return submit.save();
+                            } else {
+                                return new Promise((resolve) => {
+                                    resolve(submit);
+                                });
+                            }
                         } else {
-                            console.log("hi");
                             return SubmitStatus.create({
                                 UserId: userId,
                                 SubjectId: subjectId,

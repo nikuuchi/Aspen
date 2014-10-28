@@ -2,6 +2,7 @@
 ///<reference path='../../typings/ace/ace.d.ts'/>
 ///<reference path='../../typings/jstree/jstree.d.ts'/>
 ///<reference path='../../typings/config/config.d.ts'/>
+///<reference path='../../typings/lodash/lodash.d.ts'/>
 /// <reference path="FileManager.ts"/>
 
 declare var CodeMirror: any;
@@ -479,21 +480,36 @@ module C2JS {
         }
     }
 
+    export function postActivity(type, data) {
+        var subjectId = getSubjectId();
+        var callback = () => { console.log("Activity ok."); };
+
+        (<any>$).ajax({
+            type: "POST",
+            url: Config.basePath + "/activity",
+            data: JSON.stringify({type: type, data: data, subjectId: subjectId}),
+            dataType: 'json',
+            contentType: "application/json; charset=utf-8",
+            success: callback,
+            error: onerror
+        });
+    }
+
     export function saveInServer(subjectId, editorContent) {
-            var callback = () => { console.log("ok."); };
-            if(subjectId == -1 || subjectId == null) {
-                return;
-            }
-            (<any>$).ajax({
-                type: "POST",
-                url: Config.basePath + "/save",
-                data: JSON.stringify({content: editorContent, subjectId: subjectId}),
-                dataType: 'json',
-                contentType: "application/json; charset=utf-8",
-                success: callback,
-                error: onerror
-            });
+        var callback = () => { console.log("ok."); };
+        if(subjectId == -1 || subjectId == null) {
+            return;
         }
+        (<any>$).ajax({
+            type: "POST",
+            url: Config.basePath + "/save",
+            data: JSON.stringify({content: editorContent, subjectId: subjectId}),
+            dataType: 'json',
+            contentType: "application/json; charset=utf-8",
+            success: callback,
+            error: onerror
+        });
+    }
 
     export function Run(source: string, ctx, out){
         ctx.source = source;
@@ -893,7 +909,11 @@ $(function () {
         //提出ボタンの挙動
         $("#submit-file").click(function(event) {
             var subjectId = C2JS.getSubjectId();
-            var callback = () => {
+            var callback = (res) => {
+                $("#submit-confirm-view").children().remove();
+                var compiled = _.template($("#submit-confirm-template").text());
+
+                $("#submit-confirm-view").append(compiled({submit_date: res.date}));
                 swal({title:"", text:'提出しました！', type: "success"});
             };
             (<any>$).ajax({
