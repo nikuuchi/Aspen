@@ -888,6 +888,7 @@ $(function () {
                 var compiled = _.template($("#submit-confirm-template").text());
                 $("#submit-confirm-view").append(compiled({ submit_date: res.date }));
                 alert('提出しました！');
+                //swal({title:"", text:'提出しました！', type: "success"});
             };
             $.ajax({
                 type: "POST",

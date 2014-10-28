@@ -7,6 +7,7 @@
 
 declare var CodeMirror: any;
 declare var ClangErrorParser: any;
+declare function swal(obj :Object): void;
 declare function saveAs(data :Blob, filename: String): void;
 var _ua: any;
 
@@ -914,6 +915,7 @@ $(function () {
 
                 $("#submit-confirm-view").append(compiled({submit_date: res.date}));
                 alert('提出しました！');
+                //swal({title:"", text:'提出しました！', type: "success"});
             };
             (<any>$).ajax({
                 type: "POST",
