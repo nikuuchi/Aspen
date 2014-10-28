@@ -867,7 +867,7 @@ $(function () {
         $("#submit-file").click(function (event) {
             var subjectId = C2JS.getSubjectId();
             var callback = function () {
-                alert('提出しました！');
+                swal({ title: "", text: '提出しました！', type: "success" });
             };
             $.ajax({
                 type: "POST",
