@@ -11,7 +11,7 @@ var config = require('config');
 var lodash = require('lodash');
 //var md = require("markdown").markdown.toHTML;
 var marked = require('marked');
-var http   = require('http');
+var http   = require('../helper/post');
 
 marked.setOptions({
       renderer: new marked.Renderer(),
