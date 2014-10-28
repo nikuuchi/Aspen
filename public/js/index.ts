@@ -2,11 +2,12 @@
 ///<reference path='../../typings/ace/ace.d.ts'/>
 ///<reference path='../../typings/jstree/jstree.d.ts'/>
 ///<reference path='../../typings/config/config.d.ts'/>
+///<reference path='../../typings/lodash/lodash.d.ts'/>
 /// <reference path="FileManager.ts"/>
 
-declare var swal: any;
 declare var CodeMirror: any;
 declare var ClangErrorParser: any;
+declare function swal(obj :Object): void;
 declare function saveAs(data :Blob, filename: String): void;
 var _ua: any;
 
@@ -487,21 +488,36 @@ module C2JS {
         }
     }
 
+    export function postActivity(type, data) {
+        var subjectId = getSubjectId();
+        var callback = () => { console.log("Activity ok."); };
+
+        (<any>$).ajax({
+            type: "POST",
+            url: Config.basePath + "/activity",
+            data: JSON.stringify({type: type, data: data, subjectId: subjectId}),
+            dataType: 'json',
+            contentType: "application/json; charset=utf-8",
+            success: callback,
+            error: onerror
+        });
+    }
+
     export function saveInServer(subjectId, editorContent) {
-            var callback = () => { console.log("ok."); };
-            if(subjectId == -1 || subjectId == null) {
-                return;
-            }
-            (<any>$).ajax({
-                type: "POST",
-                url: Config.basePath + "/save",
-                data: JSON.stringify({content: editorContent, subjectId: subjectId}),
-                dataType: 'json',
-                contentType: "application/json; charset=utf-8",
-                success: callback,
-                error: onerror
-            });
+        var callback = () => { console.log("ok."); };
+        if(subjectId == -1 || subjectId == null) {
+            return;
         }
+        (<any>$).ajax({
+            type: "POST",
+            url: Config.basePath + "/save",
+            data: JSON.stringify({content: editorContent, subjectId: subjectId}),
+            dataType: 'json',
+            contentType: "application/json; charset=utf-8",
+            success: callback,
+            error: onerror
+        });
+    }
 
     export function Run(source: string, ctx, out){
         ctx.source = source;
@@ -702,21 +718,26 @@ module C2JS {
                 if(textlines[i+1].lastIndexOf(filename, 0) != 0){
                     var code = textlines[i+1];
                     var indicator = textlines[i+2];
-                    var begin = indicator.indexOf("~");
-                    var end = indicator.lastIndexOf("~") + 1;
-                    var replacee = code.substring(begin, end);
+                    var replacee = '';
+                    if(indicator) {
+                        var begin = indicator.indexOf("~");
+                        var end = indicator.lastIndexOf("~") + 1;
+                        replacee = code.substring(begin, end);
+                    }
                     var code = replacee.length > 0 ? code.replace(replacee, "<u>" + replacee + "</u>") : code;
                     var consumedLines = 1;
                     textlines[i+1] = "<code>" + code.replace(/ /gm, "&nbsp;") + "</code>";
-                    if(textlines[i+2].lastIndexOf(filename, 0) != 0){
-                        textlines[i+2] = "<samp>" + indicator.replace(/~/g, " ")
-                                                  .replace(/ /gm, "&nbsp;")
-                                                  .replace(/\^/, "<span class='glyphicon glyphicon-arrow-up'></span>") + "</samp>";
-                        consumedLines++;
-                    }
-                    if(textlines[i+3].lastIndexOf(filename, 0) != 0){
-                        textlines[i+3] = "<samp>" + textlines[i+3].replace(/ /gm, "&nbsp;") + "</samp>";
-                        consumedLines++;
+                    if(indicator) {
+                        if(textlines[i+2].lastIndexOf(filename, 0) != 0){
+                            textlines[i+2] = "<samp>" + indicator.replace(/~/g, " ")
+                                                      .replace(/ /gm, "&nbsp;")
+                                                      .replace(/\^/, "<span class='glyphicon glyphicon-arrow-up'></span>") + "</samp>";
+                            consumedLines++;
+                        }
+                        if(textlines[i+3].lastIndexOf(filename, 0) != 0){
+                            textlines[i+3] = "<samp>" + textlines[i+3].replace(/ /gm, "&nbsp;") + "</samp>";
+                            consumedLines++;
+                        }
                     }
                     i += consumedLines;
                 }
@@ -788,17 +809,18 @@ module C2JS {
           if(message.code) {
             var utfCount = CountUTFChar(message.code);
             message.code = UnescapeUTFChar(message.code);
-            code = "&nbsp;&nbsp;&nbsp;&nbsp;<code>" + message.code + "</code>";
+            message.code = message.code.replace(/ /g, "&nbsp;");
+            code = "<code>" + message.code + "</code>";
             body = body + "<br>" + code;
             var sp = "";
-            var indent = session.getDocument().getLine(row).lastIndexOf(message.code);
-            for(var i = 0; i < message.position.column - indent - 1 - utfCount; i++) {
+
+            for(var i = 0; i < message.position.column - 1 - utfCount * 2; i++) {
               sp = sp + "&nbsp;"
             }
-            var marker = "&nbsp;&nbsp;&nbsp;&nbsp;<samp>" + sp + "<span class='glyphicon glyphicon-arrow-up'></span></samp>";
+            var marker = "<samp>" + sp + "<span class='glyphicon glyphicon-arrow-up'></span></samp>";
             body = body + "<br>" + marker;
             if(message.insertion) {
-              var insertion = "&nbsp;&nbsp;&nbsp;&nbsp;<samp>" + sp + message.insertion + "</samp>";
+              var insertion = "<samp>" + sp + message.insertion + "</samp>";
               body = body + "<br>" + insertion;
             }
           }
@@ -895,7 +917,11 @@ $(function () {
         //提出ボタンの挙動
         $("#submit-file").click(function(event) {
             var subjectId = C2JS.getSubjectId();
-            var callback = () => {
+            var callback = (res) => {
+                $("#submit-confirm-view").children().remove();
+                var compiled = _.template($("#submit-confirm-template").text());
+
+                $("#submit-confirm-view").append(compiled({submit_date: res.date}));
                 swal({title:"", text:'提出しました！', type: "success"});
             };
             (<any>$).ajax({
@@ -1064,9 +1090,6 @@ $(function () {
         C2JS.Compile(src, opt, file.GetName(), changeFlag, Context, function(res){
             console.log(changeFlag);
             console.log(res);
-
-            //
-            res.error = "/tmp/aspen18003cjq0tcw.c:3:5: warning: implicitly declaring library function 'printf' with type 'int (const char *, ...)'\n    printf(\"<U+3042><U+3042><U+3042><U+3042>\")\n    ^\n/tmp/aspen18003cjq0tcw.c:3:5: note: please include the header <stdio.h> or explicitly provide a declaration for 'printf'\n/tmp/aspen18003cjq0tcw.c:3:27: error: expected ';' after expression\n    printf(\"<U+3042><U+3042><U+3042><U+3042>\")\n                                              ^\n                                              ;\n1 warning and 1 error generated.\nERROR    root: \u001b[31mcompiler frontend failed to generate LLVM bitcode, halting\u001b[0m";
 
             try{
                 changeFlag = false;

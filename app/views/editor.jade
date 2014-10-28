@@ -1,4 +1,11 @@
 input#file-open-dialog(type='file', style='display:none;', accept=".c")
+script#submit-confirm-template(type='text/html')
+  span.submit-confilm-text.text-success
+    span.glyphicon.glyphicon-ok
+    |&nbsp;
+    span.submit-date <%=submit_date%>
+    |&nbsp;
+    span 提出&nbsp;
 .container(style="width: 960px;")
   .editor-view
     .alert.alert-danger#NotSupportedBrouserAlert(style="display: none;")
@@ -8,6 +15,16 @@ input#file-open-dialog(type='file', style='display:none;', accept=".c")
         a.navbar-brand Aspen
       .navbar-collapse
         .navbar-header.pull-right
+          span#submit-confirm-view
+            - if(status_submitted) {
+            span.submit-confilm-text.text-success
+              span.glyphicon.glyphicon-ok
+              |&nbsp;
+              span.submit-date= status_date
+              |&nbsp;
+              span 提出&nbsp;
+            - }
+
           button#submit-file.btn.navbar-btn.btn-success.disabled-on-files-empty.disabled-on-running(type='button', data-toggle="tooltip", title="Submit", onContextmenu="return false")
             | &nbsp;
             span.glyphicon.glyphicon-send
@@ -112,6 +129,7 @@ input#file-open-dialog(type='file', style='display:none;', accept=".c")
 +js('/js/index.js')
 //+js('/js/editorView.js')
 +js('/vendor/jstree/dist/jstree.min.js')
++js('/vendor/sweetalert/lib/sweet-alert.min.js')
 style.
   body {
   }
