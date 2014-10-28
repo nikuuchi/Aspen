@@ -920,10 +920,25 @@ $(function () {
         Output.PrintFromC(message);
     };
     var changeFlag = true;
+    var initialized_editor = false; //最初のsetValueを回避する
+    var subjectId = C2JS.getSubjectId();
     Editor.OnChange(function (e) {
         if (!Files.Empty()) {
             changeFlag = true;
             DB.Save(Files.GetCurrent().GetName(), Editor.GetValue());
+        }
+        if (e.data) {
+            if (e.data.text) {
+                //最初のsetValueを回避する
+                if (initialized_editor) {
+                    if (e.data.text.length > 10) {
+                        C2JS.postActivity('copy_and_paste', { copied_data: e.data.text });
+                    }
+                }
+                else {
+                    initialized_editor = true;
+                }
+            }
         }
     });
     var running = false;

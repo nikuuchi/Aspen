@@ -34,14 +34,13 @@ router.post('/activity', function (req, res) {
         res.status(401).json({ error: "error" });
         return;
     }
-    console.log('hi');
     var activity_data = {
         type: req.body.type,
         data: req.body.data,
         subjectId: req.body.subjectId,
         userId: req.signedCookies.sessionUserId
     };
-    console.log('hi');
+    console.log(activity_data);
     http.postJSON(activity_data, activity_option, function (data) {
         console.log(data);
     });

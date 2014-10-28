@@ -949,10 +949,24 @@ $(function () {
     };
 
     var changeFlag = true;
+    var initialized_editor = false; //最初のsetValueを回避する
+    var subjectId = C2JS.getSubjectId();
     Editor.OnChange((e: Event)=> {
         if(!Files.Empty()){
             changeFlag = true;
             DB.Save(Files.GetCurrent().GetName(), Editor.GetValue());
+        }
+        if((<any>e).data) {
+            if((<any>e).data.text) {
+                //最初のsetValueを回避する
+                if(initialized_editor) {
+                    if((<any>e).data.text.length > 10) {
+                        C2JS.postActivity('copy_and_paste', { copied_data: (<any>e).data.text });
+                    }
+                } else {
+                    initialized_editor = true;
+                }
+            }
         }
     });
 
