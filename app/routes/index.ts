@@ -11,6 +11,8 @@ var config = require('config');
 var lodash = require('lodash');
 //var md = require("markdown").markdown.toHTML;
 var marked = require('marked');
+var http   = require('http');
+
 marked.setOptions({
       renderer: new marked.Renderer(),
       gfm: true,
@@ -87,6 +89,12 @@ router.get('/subject/:file', function(req, res) {
         });
 });
 
+var activity_option = {
+    hostname: config.activity.host,
+    port: config.activity.port,
+    path: config.activity.path
+};
+
 router.get('/editor/:name', function(req, res) {
     if(!auth.isLogin(req)) {
         res.redirect(config.base.path + '/');
@@ -95,6 +103,13 @@ router.get('/editor/:name', function(req, res) {
     var userId = 0;
     var user_name = "";
     var user_studentId = "";
+
+    var activity_data = {
+        type: 'subject_open',
+        data: {},
+        subjectId: req.params.name,
+        userId: req.signedCookies.sessionUserId
+    };
 
     db.User.find({where: {github_id: req.signedCookies.sessionUserId}})
                 .then(function(user) {
@@ -126,6 +141,9 @@ router.get('/editor/:name', function(req, res) {
                                 status_date: formatDate('YYYY-MM-DD HH:mm', status.updatedAt),
                             });
                         } else {
+                            http.postJSON(activity_data, activity_option, function(data) {
+                                console.log(data);
+                            });
                             res.render('editorView', {
                                 has_content: true,
                                 content: subject.example,

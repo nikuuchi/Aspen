@@ -479,21 +479,36 @@ module C2JS {
         }
     }
 
+    export function postActivity(type, data) {
+        var subjectId = getSubjectId();
+        var callback = () => { console.log("Activity ok."); };
+
+        (<any>$).ajax({
+            type: "POST",
+            url: Config.basePath + "/activity",
+            data: JSON.stringify({type: type, data: data, subjectId: subjectId}),
+            dataType: 'json',
+            contentType: "application/json; charset=utf-8",
+            success: callback,
+            error: onerror
+        });
+    }
+
     export function saveInServer(subjectId, editorContent) {
-            var callback = () => { console.log("ok."); };
-            if(subjectId == -1 || subjectId == null) {
-                return;
-            }
-            (<any>$).ajax({
-                type: "POST",
-                url: Config.basePath + "/save",
-                data: JSON.stringify({content: editorContent, subjectId: subjectId}),
-                dataType: 'json',
-                contentType: "application/json; charset=utf-8",
-                success: callback,
-                error: onerror
-            });
+        var callback = () => { console.log("ok."); };
+        if(subjectId == -1 || subjectId == null) {
+            return;
         }
+        (<any>$).ajax({
+            type: "POST",
+            url: Config.basePath + "/save",
+            data: JSON.stringify({content: editorContent, subjectId: subjectId}),
+            dataType: 'json',
+            contentType: "application/json; charset=utf-8",
+            success: callback,
+            error: onerror
+        });
+    }
 
     export function Run(source: string, ctx, out){
         ctx.source = source;

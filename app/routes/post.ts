@@ -4,10 +4,10 @@
 var express = require('express');
 var router = express.Router();
 var db = require('../models');
-var http = require('http');
 var config = require('config');
 var Promise = require('bluebird');
 var formatDate = require('../helper/date').formatDate;
+var http = require('../helper/post');
 
 router.post('/save', function(req, res) {
     if(!req.signedCookies) {
@@ -28,6 +28,30 @@ router.post('/save', function(req, res) {
         .catch(function() {
             res.status(401).json({error: "something bad"});
         });
+});
+
+var activity_option = {
+    hostname: config.activity.host,
+    port: config.activity.port,
+    path: config.activity.path
+};
+
+router.post('/activity', function(req, res) {
+    if(!req.signedCookies) {
+        res.status(401).json({error: "error"});
+        return;
+    }
+    console.log('hi');
+    var activity_data = {
+        type: req.body.type,
+        data: req.body.data,
+        subjectId: req.body.subjectId,
+        userId: req.signedCookies.sessionUserId
+    };
+    console.log('hi');
+    http.postJSON(activity_data, activity_option, function(data) {
+        console.log(data);
+    });
 });
 
 router.post('/submit', function(req, res) {
@@ -112,23 +136,9 @@ router.post('/compile', function(req, res) {
         client_body.userId = req.signedCookies.sessionUserId;
     }
 
-    var request = http.request(post_compile_option, function(response) {
-        var body = '';
-        response.setEncoding('utf8');
-
-        response.on('data', function(chunk) {
-            body += chunk;
-        });
-
-        response.on('end', function() {
-            var ret = JSON.parse(body);
-            res.json(ret);
-        });
+    http.postJSON(client_body, post_compile_option, function(data) {
+        res.json(data);
     });
-    //TODO POST
-    request.write(JSON.stringify(client_body));
-    request.write('\n');
-    request.end();
 });
 
 var post_poplar_option = {
@@ -145,23 +155,9 @@ router.post('/poplar', function(req, res) {
         client_body.userId = req.signedCookies.sessionUserId;
     }
 
-    var request = http.request(post_poplar_option, function(response) {
-        var body = '';
-        response.setEncoding('utf8');
-
-        response.on('data', function(chunk) {
-            body += chunk;
-        });
-
-        response.on('end', function() {
-            var ret = JSON.parse(body);
-            res.json(ret);
-        });
+   http.postJSON(client_body, post_poplar_option, function(data) {
+        res.json(data);
     });
-    //TODO POST
-    request.write(JSON.stringify(client_body));
-    request.write('\n');
-    request.end();
 });
 
 router.post('/dummy/compile', function(req, res) {
@@ -176,7 +172,12 @@ router.post('/dummy/compile', function(req, res) {
 });
 
 router.post('/dummy/poplar', function(req, res) {
+    //FIXME
+    res.json({});
 });
 
+router.post('/dummy/activity', function(req, res) {
+    res.json({});
+});
 
 module.exports = router;

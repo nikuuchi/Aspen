@@ -408,6 +408,22 @@ var C2JS;
         }
     }
     C2JS.Compile = Compile;
+    function postActivity(type, data) {
+        var subjectId = getSubjectId();
+        var callback = function () {
+            console.log("Activity ok.");
+        };
+        $.ajax({
+            type: "POST",
+            url: Config.basePath + "/activity",
+            data: JSON.stringify({ type: type, data: data, subjectId: subjectId }),
+            dataType: 'json',
+            contentType: "application/json; charset=utf-8",
+            success: callback,
+            error: onerror
+        });
+    }
+    C2JS.postActivity = postActivity;
     function saveInServer(subjectId, editorContent) {
         var callback = function () {
             console.log("ok.");

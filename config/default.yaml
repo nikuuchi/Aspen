@@ -17,6 +17,10 @@ poplar:
   host: 'localhost'
   port: 3000
   path: '/dummy/poplar'
+activity:
+  host: 'localhost'
+  port: 3000
+  path: '/dummy/activity'
 passport:
   host_url: ''
   github:
