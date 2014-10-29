@@ -230,14 +230,16 @@ module C2JS {
         } else {
           timestamp = "";
         }
-        var oldcontent = sessionStorage.getItem(filename + ".c");
-        var olddate = sessionStorage.getItem(filename + ".time");
-        var oldtimestamp;
-        if(oldcontent !== null && olddate !== null) {
-          oldtimestamp = new Date(olddate);
-          if(timestamp < oldtimestamp) {
-            content = oldcontent;
-            timestamp = oldtimestamp;
+        var localContent = sessionStorage.getItem(filename + ".c");
+        var localDate    = sessionStorage.getItem(filename + ".time");
+        var localTimestamp;
+        if(localContent !== null && localDate !== null) {
+          localTimestamp = new Date(localDate);
+          console.log("local:"+localTimestamp.getTime());
+          console.log("remote:"+timestamp.getTime());
+          if(timestamp < localTimestamp) {
+            content = localContent;
+            timestamp = localTimestamp;
           }
         }
         //if(content === "") {
@@ -433,10 +435,13 @@ module C2JS {
         constructor() {
         }
 
-        Save(fileName: string, source: string): void {
+        Save(fileName: string, source: string, noUpdateTimestamp?: boolean): void {
             sessionStorage.setItem(fileName, source);
             var timeName = fileName.replace(/\..*/, ".time");
             var date = new Date();
+            if(noUpdateTimestamp) {
+                date = sessionStorage.getItem(timeName);
+            }
             sessionStorage.setItem(timeName, date.toString());
         }
 
@@ -1328,7 +1333,7 @@ $(function () {
     };
 
     $(window).on("beforeunload", (e: Event)=> {
-        DB.Save(Files.GetCurrent().GetName(), Editor.GetValue());
+        DB.Save(Files.GetCurrent().GetName(), Editor.GetValue(), true);
     });
 
     if(DB.Exist(Files.GetCurrent().GetName())) {
