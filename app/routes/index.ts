@@ -189,12 +189,27 @@ router.get('/user/:userid', function(req, res) {
     res.render('list', { basePath: config.base.path });
 });
 
+router.get('/user/:userId/subject/:subjectId', function(req, res) {
+    if(!auth.isLogin(req)) {
+        res.redirect(config.base.path + '/');
+        return;
+    }
+    db.SubmitStatus.find({where: db.Sequelize.and({UserId: req.params.userId},{SubjectId: req.params.subjectId})})
+        .then(function(submit) {
+            if(submit) {
+                res.render('source_view', {content: submit.content});
+            } else {
+                res.send('Not yet.');
+            }
+        });
+});
+
 router.get('/list/all', function(req, res) {
     var tableHead = ["学籍番号", "氏名", "課題名", "提出状況", "締切"];
 
     db.Subject.getStatuses(db, 1/*lectureId*/)
         .then(function(values) {
-        var students = values[0].map((student) => [student.studentNumber, student.name]);
+        var students = values[0].map((student) => [student.studentNumber, student.name, student.id]);
         var subjects = values[1].map((subject) => [subject.id, subject.name]);
 
         var submits  = createAllSubmitViews(values[2], values[0], values[1]);
@@ -291,6 +306,7 @@ function createAllSubmitViews(submits, students, subjects) {
             }
             result.push({
                 id: subject.id,
+                user_id: student.id,
                 student_name: student.name,
                 student_number: student.studentNumber,
                 subject_name: subject.name,

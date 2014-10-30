@@ -966,7 +966,6 @@ $(function () {
             changeFlag = true;
             DB.Save(Files.GetCurrent().GetName(), Editor.GetValue());
         }
-
     });
 
     var copiedText: string = "";
@@ -980,7 +979,6 @@ $(function () {
         if(location.pathname != Config.basePath + "/") {
           if(copiedText !== text.text){
             C2JS.postActivity('copy_and_paste', { copied_data: text.text });
-
             swal({title: "", text: "コピペを検出しました。自分で入力してみよう！",   type: "error", timer:100000});
           };
         };
