@@ -1086,7 +1086,7 @@ $(function () {
               closeOnConfirm: false },
               function(){
                 Editor.SetValue($("#file-reset").text());
-                swal("リセットしました", "心機一転がんばりましょう！", "success");
+                swal({ title: "リセットしました", text: "心機一転がんばりましょう！", type: "success", timer: 100000 });
             });
         });
     }
