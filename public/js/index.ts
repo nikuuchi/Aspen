@@ -39,6 +39,14 @@ module C2JS {
             this.editor.on("change", callback);
         }
 
+        OnCopy(callback: (text: String)=>void): void {
+            this.editor.on("copy", callback);
+        }
+
+        OnPaste(callback: (text: String)=>void): void {
+            this.editor.on("paste", callback);
+        }
+
         GetValue(): string {
             return this.editor.getValue();
         }
@@ -230,16 +238,14 @@ module C2JS {
         } else {
           timestamp = "";
         }
-        var localContent = sessionStorage.getItem(filename + ".c");
-        var localDate    = sessionStorage.getItem(filename + ".time");
-        var localTimestamp;
-        if(localContent !== null && localDate !== null) {
-          localTimestamp = new Date(localDate);
-          console.log("local:"+localTimestamp.getTime());
-          console.log("remote:"+timestamp.getTime());
-          if(timestamp < localTimestamp) {
-            content = localContent;
-            timestamp = localTimestamp;
+        var oldcontent = sessionStorage.getItem(filename + ".c");
+        var olddate = sessionStorage.getItem(filename + ".time");
+        var oldtimestamp;
+        if(oldcontent !== null && olddate !== null) {
+          oldtimestamp = new Date(olddate);
+          if(timestamp < oldtimestamp) {
+            content = oldcontent;
+            timestamp = oldtimestamp;
           }
         }
         //if(content === "") {
@@ -435,13 +441,10 @@ module C2JS {
         constructor() {
         }
 
-        Save(fileName: string, source: string, noUpdateTimestamp?: boolean): void {
+        Save(fileName: string, source: string): void {
             sessionStorage.setItem(fileName, source);
             var timeName = fileName.replace(/\..*/, ".time");
             var date = new Date();
-            if(noUpdateTimestamp) {
-                date = sessionStorage.getItem(timeName);
-            }
             sessionStorage.setItem(timeName, date.toString());
         }
 
@@ -904,13 +907,13 @@ $(function () {
         submit_button.hide();
     } else {
         // A/Bテスト
-        //var num = parseInt($.cookie("studentNumber").slice(1));
-        //if(isNaN(num)) {
-        //    num = 0;
-        //}
-        //if(num < 1464200) {
-        //    $("#poplar").hide();
-        //}
+        var num = parseInt($.cookie("studentNumber").slice(1));
+        if(isNaN(num)) {
+            num = 0;
+        }
+        if(num < 1464200) {
+            $("#poplar").hide();
+        }
         //提出ボタンの挙動
         $("#submit-file").click(function(event) {
             var subjectId = C2JS.getSubjectId();
@@ -931,7 +934,6 @@ $(function () {
                 success: callback,
                 error: onerror
             });
-            C2JS.postActivity('submit', { content: Editor.GetValue() });
         });
     }
 
@@ -957,29 +959,32 @@ $(function () {
     };
 
     var changeFlag = true;
-    var initialized_editor = false; //最初のsetValueを回避する
+
     var subjectId = C2JS.getSubjectId();
     Editor.OnChange((e: Event)=> {
         if(!Files.Empty()){
             changeFlag = true;
             DB.Save(Files.GetCurrent().GetName(), Editor.GetValue());
         }
-        if((<any>e).data) {
-            if((<any>e).data.text) {
-                //最初のsetValueを回避する
-                if(initialized_editor) {
-                    if((<any>e).data.text.length > 10) {
-                        C2JS.postActivity('copy_and_paste', { copied_data: (<any>e).data.text });
-                    }
-                } else {
-                    initialized_editor = true;
-                }
-            }
-        }
+
     });
 
+    var copiedText: string = "";
+    Editor.OnCopy((text: string)=> {
+        copiedText = text;
+        console.log(text);
+    });
 
+    Editor.OnPaste((text: any)=> {
+        console.log(text.text);
+        if(location.pathname != Config.basePath + "/") {
+          if(copiedText !== text.text){
+            C2JS.postActivity('copy_and_paste', { copied_data: text.text });
 
+            swal({title: "", text: "コピペを検出しました。自分で入力してみよう！",   type: "error", timer:100000});
+          };
+        };
+    });
     var running = false;
 
     var DisableUI = () => {
@@ -1071,9 +1076,19 @@ $(function () {
 
     if($('#file-reset').length > 0) {
         $('#reset-button').show().click(() => {
-            if(confirm('この課題を解き始める前の状態に戻します。よろしいですか？')) {
-               Editor.SetValue($("#file-reset").text());
-            }
+            swal({
+              title: "",
+              text: "この課題を解き始める前の状態に戻します。よろしいですか？",
+              type: "warning",
+              showCancelButton: true,
+              confirmButtonColor: "#DD6B55",
+              confirmButtonText: "はい",
+              cancelButtonText: "いいえ",
+              closeOnConfirm: false },
+              function(){
+                Editor.SetValue($("#file-reset").text());
+                swal("リセットしました", "心機一転がんばりましょう！", "success");
+            });
         });
     }
 
@@ -1336,7 +1351,7 @@ $(function () {
     };
 
     $(window).on("beforeunload", (e: Event)=> {
-        DB.Save(Files.GetCurrent().GetName(), Editor.GetValue(), true);
+        DB.Save(Files.GetCurrent().GetName(), Editor.GetValue());
     });
 
     if(DB.Exist(Files.GetCurrent().GetName())) {
