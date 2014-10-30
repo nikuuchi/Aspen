@@ -43,7 +43,7 @@ module.exports = function (sequelize, DataTypes) {
                 return Promise.all([
                     db.User.getStudentList(lectureId),
                     db.Subject.getList(lectureId),
-                    db.Subject.findAll({ where: isLecture })
+                    db.SubmitStatus.findAll()
                 ]);
             },
             /**
