@@ -893,7 +893,8 @@ $(function () {
                 $("#submit-confirm-view").children().remove();
                 var compiled = _.template($("#submit-confirm-template").text());
                 $("#submit-confirm-view").append(compiled({ submit_date: res.date }));
-                swal({ title: "", text: '提出しました！', type: "success" });
+                //alert('提出しました！');
+                swal({ title: "", text: '提出しました！', type: "success", timer: 100000 });
             };
             $.ajax({
                 type: "POST",
@@ -926,10 +927,25 @@ $(function () {
         Output.PrintFromC(message);
     };
     var changeFlag = true;
+    var initialized_editor = false; //最初のsetValueを回避する
+    var subjectId = C2JS.getSubjectId();
     Editor.OnChange(function (e) {
         if (!Files.Empty()) {
             changeFlag = true;
             DB.Save(Files.GetCurrent().GetName(), Editor.GetValue());
+        }
+        if (e.data) {
+            if (e.data.text) {
+                //最初のsetValueを回避する
+                if (initialized_editor) {
+                    if (e.data.text.length > 10) {
+                        C2JS.postActivity('copy_and_paste', { copied_data: e.data.text });
+                    }
+                }
+                else {
+                    initialized_editor = true;
+                }
+            }
         }
     });
     var copiedText = "";
