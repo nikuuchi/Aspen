@@ -23,6 +23,12 @@ var C2JS;
         Editor.prototype.OnChange = function (callback) {
             this.editor.on("change", callback);
         };
+        Editor.prototype.OnCopy = function (callback) {
+            this.editor.on("copy", callback);
+        };
+        Editor.prototype.OnPaste = function (callback) {
+            this.editor.on("paste", callback);
+        };
         Editor.prototype.GetValue = function () {
             return this.editor.getValue();
         };
@@ -186,16 +192,14 @@ var C2JS;
             else {
                 timestamp = "";
             }
-            var localContent = sessionStorage.getItem(filename + ".c");
-            var localDate = sessionStorage.getItem(filename + ".time");
-            var localTimestamp;
-            if (localContent !== null && localDate !== null) {
-                localTimestamp = new Date(localDate);
-                console.log("local:" + localTimestamp.getTime());
-                console.log("remote:" + timestamp.getTime());
-                if (timestamp < localTimestamp) {
-                    content = localContent;
-                    timestamp = localTimestamp;
+            var oldcontent = sessionStorage.getItem(filename + ".c");
+            var olddate = sessionStorage.getItem(filename + ".time");
+            var oldtimestamp;
+            if (oldcontent !== null && olddate !== null) {
+                oldtimestamp = new Date(olddate);
+                if (timestamp < oldtimestamp) {
+                    content = oldcontent;
+                    timestamp = oldtimestamp;
                 }
             }
             //if(content === "") {
@@ -365,13 +369,10 @@ var C2JS;
     var SourceDB = (function () {
         function SourceDB() {
         }
-        SourceDB.prototype.Save = function (fileName, source, noUpdateTimestamp) {
+        SourceDB.prototype.Save = function (fileName, source) {
             sessionStorage.setItem(fileName, source);
             var timeName = fileName.replace(/\..*/, ".time");
             var date = new Date();
-            if (noUpdateTimestamp) {
-                date = sessionStorage.getItem(timeName);
-            }
             sessionStorage.setItem(timeName, date.toString());
         };
         SourceDB.prototype.Load = function (fileName) {
@@ -927,26 +928,28 @@ $(function () {
         Output.PrintFromC(message);
     };
     var changeFlag = true;
-    var initialized_editor = false; //最初のsetValueを回避する
     var subjectId = C2JS.getSubjectId();
     Editor.OnChange(function (e) {
         if (!Files.Empty()) {
             changeFlag = true;
             DB.Save(Files.GetCurrent().GetName(), Editor.GetValue());
         }
-        if (e.data) {
-            if (e.data.text) {
-                //最初のsetValueを回避する
-                if (initialized_editor) {
-                    if (e.data.text.length > 10) {
-                        C2JS.postActivity('copy_and_paste', { copied_data: e.data.text });
-                    }
-                }
-                else {
-                    initialized_editor = true;
-                }
+    });
+    var copiedText = "";
+    Editor.OnCopy(function (text) {
+        copiedText = text;
+        console.log(text);
+    });
+    Editor.OnPaste(function (text) {
+        console.log(text.text);
+        if (location.pathname != Config.basePath + "/") {
+            if (copiedText !== text.text) {
+                C2JS.postActivity('copy_and_paste', { copied_data: text.text });
+                swal({ title: "", text: "コピペを検出しました。自分で入力してみよう！", type: "error", timer: 100000 });
             }
+            ;
         }
+        ;
     });
     var running = false;
     var DisableUI = function () {
@@ -1265,7 +1268,7 @@ $(function () {
         }
     };
     $(window).on("beforeunload", function (e) {
-        DB.Save(Files.GetCurrent().GetName(), Editor.GetValue(), true);
+        DB.Save(Files.GetCurrent().GetName(), Editor.GetValue());
     });
     if (DB.Exist(Files.GetCurrent().GetName())) {
         Editor.SetValue(DB.Load(Files.GetCurrent().GetName()));
