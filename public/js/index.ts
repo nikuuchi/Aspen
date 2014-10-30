@@ -986,11 +986,16 @@ $(function () {
         console.log(text);
     });
 
+    google.load("search", "1");
+
     Editor.OnPaste((text: any)=> {
         console.log(text.text);
         if(copiedText !== text.text){
           C2JS.postActivity('copy_and_paste', { copied_data: text.text });
-          swal({title: "", text: "コピペを検出しました。自分で入力してみよう！",   type: "error"});
+          $.get("http://ajax.googleapis.com/ajax/services/search/web", {v: "1.0", q: "C言語" + text.text}, function(data) {
+            console.log(data);
+          });
+          swal({title: "", text: "コピペを検出しました。自分で入力してみよう！",   type: "error", , timer:100000});
         };
     });
 
