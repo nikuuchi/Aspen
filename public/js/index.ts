@@ -7,7 +7,7 @@
 
 declare var CodeMirror: any;
 declare var ClangErrorParser: any;
-declare function swal(obj :Object): void;
+declare var swal: any;
 declare function saveAs(data :Blob, filename: String): void;
 var _ua: any;
 
@@ -1078,6 +1078,7 @@ $(function () {
               title: "",
               text: "この課題を解き始める前の状態に戻します。よろしいですか？",
               type: "warning",
+              timer: 100000,
               showCancelButton: true,
               confirmButtonColor: "#DD6B55",
               confirmButtonText: "はい",

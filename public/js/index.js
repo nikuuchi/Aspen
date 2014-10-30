@@ -1038,6 +1038,7 @@ $(function () {
                 title: "",
                 text: "この課題を解き始める前の状態に戻します。よろしいですか？",
                 type: "warning",
+                timer: 100000,
                 showCancelButton: true,
                 confirmButtonColor: "#DD6B55",
                 confirmButtonText: "はい",
