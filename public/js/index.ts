@@ -238,16 +238,14 @@ module C2JS {
         } else {
           timestamp = "";
         }
-        var localContent = sessionStorage.getItem(filename + ".c");
-        var localDate    = sessionStorage.getItem(filename + ".time");
-        var localTimestamp;
-        if(localContent !== null && localDate !== null) {
-          localTimestamp = new Date(localDate);
-          console.log("local:"+localTimestamp.getTime());
-          console.log("remote:"+timestamp.getTime());
-          if(timestamp < localTimestamp) {
-            content = localContent;
-            timestamp = localTimestamp;
+        var oldcontent = sessionStorage.getItem(filename + ".c");
+        var olddate = sessionStorage.getItem(filename + ".time");
+        var oldtimestamp;
+        if(oldcontent !== null && olddate !== null) {
+          oldtimestamp = new Date(olddate);
+          if(timestamp < oldtimestamp) {
+            content = oldcontent;
+            timestamp = oldtimestamp;
           }
         }
         //if(content === "") {
@@ -443,13 +441,10 @@ module C2JS {
         constructor() {
         }
 
-        Save(fileName: string, source: string, noUpdateTimestamp?: boolean): void {
+        Save(fileName: string, source: string): void {
             sessionStorage.setItem(fileName, source);
             var timeName = fileName.replace(/\..*/, ".time");
             var date = new Date();
-            if(noUpdateTimestamp) {
-                date = sessionStorage.getItem(timeName);
-            }
             sessionStorage.setItem(timeName, date.toString());
         }
 
@@ -964,25 +959,14 @@ $(function () {
     };
 
     var changeFlag = true;
-    var initialized_editor = false; //最初のsetValueを回避する
+
     var subjectId = C2JS.getSubjectId();
     Editor.OnChange((e: Event)=> {
         if(!Files.Empty()){
             changeFlag = true;
             DB.Save(Files.GetCurrent().GetName(), Editor.GetValue());
         }
-        if((<any>e).data) {
-            if((<any>e).data.text) {
-                //最初のsetValueを回避する
-                if(initialized_editor) {
-                    if((<any>e).data.text.length > 10) {
-                        C2JS.postActivity('copy_and_paste', { copied_data: (<any>e).data.text });
-                    }
-                } else {
-                    initialized_editor = true;
-                }
-            }
-        }
+
     });
 
     var copiedText: string = "";
@@ -991,16 +975,12 @@ $(function () {
         console.log(text);
     });
 
-    google.load("search", "1");
-
     Editor.OnPaste((text: any)=> {
         console.log(text.text);
         if(copiedText !== text.text){
           C2JS.postActivity('copy_and_paste', { copied_data: text.text });
-          $.get("http://ajax.googleapis.com/ajax/services/search/web", {v: "1.0", q: "C言語" + text.text}, function(data) {
-            console.log(data);
-          });
-          swal({title: "", text: "コピペを検出しました。自分で入力してみよう！",   type: "error", , timer:100000});
+
+          swal({title: "", text: "コピペを検出しました。自分で入力してみよう！",   type: "error", timer:100000});
         };
     });
 
@@ -1360,7 +1340,7 @@ $(function () {
     };
 
     $(window).on("beforeunload", (e: Event)=> {
-        DB.Save(Files.GetCurrent().GetName(), Editor.GetValue(), true);
+        DB.Save(Files.GetCurrent().GetName(), Editor.GetValue());
     });
 
     if(DB.Exist(Files.GetCurrent().GetName())) {
