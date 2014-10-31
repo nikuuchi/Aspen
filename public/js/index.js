@@ -369,11 +369,13 @@ var C2JS;
     var SourceDB = (function () {
         function SourceDB() {
         }
-        SourceDB.prototype.Save = function (fileName, source) {
+        SourceDB.prototype.Save = function (fileName, source, noUpdateTimestamp) {
             sessionStorage.setItem(fileName, source);
             var timeName = fileName.replace(/\..*/, ".time");
             var date = new Date();
-            sessionStorage.setItem(timeName, date.toString());
+            if (noUpdateTimestamp) {
+                sessionStorage.setItem(timeName, date.toString());
+            }
         };
         SourceDB.prototype.Load = function (fileName) {
             return sessionStorage.getItem(fileName);
@@ -879,13 +881,13 @@ $(function () {
     }
     else {
         // A/Bテスト
-        var num = parseInt($.cookie("studentNumber").slice(1));
-        if (isNaN(num)) {
-            num = 0;
-        }
-        if (num < 1464200) {
-            $("#poplar").hide();
-        }
+        //var num = parseInt($.cookie("studentNumber").slice(1));
+        //if(isNaN(num)) {
+        //    num = 0;
+        //}
+        //if(num < 1464200) {
+        //    $("#poplar").hide();
+        //}
         //提出ボタンの挙動
         $("#submit-file").click(function (event) {
             var subjectId = C2JS.getSubjectId();
@@ -905,6 +907,7 @@ $(function () {
                 success: callback,
                 error: onerror
             });
+            C2JS.postActivity('submit', { content: Editor.GetValue() });
         });
     }
     Aspen.Editor = Editor;
@@ -1278,7 +1281,7 @@ $(function () {
         }
     };
     $(window).on("beforeunload", function (e) {
-        DB.Save(Files.GetCurrent().GetName(), Editor.GetValue());
+        DB.Save(Files.GetCurrent().GetName(), Editor.GetValue(), true);
     });
     if (DB.Exist(Files.GetCurrent().GetName())) {
         Editor.SetValue(DB.Load(Files.GetCurrent().GetName()));

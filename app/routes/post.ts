@@ -51,6 +51,7 @@ router.post('/activity', function(req, res) {
     http.postJSON(activity_data, activity_option, function(data) {
         console.log(data);
     });
+    res.json({});
 });
 
 router.post('/submit', function(req, res) {

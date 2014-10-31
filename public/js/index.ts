@@ -441,11 +441,13 @@ module C2JS {
         constructor() {
         }
 
-        Save(fileName: string, source: string): void {
+        Save(fileName: string, source: string, noUpdateTimestamp?: boolean): void {
             sessionStorage.setItem(fileName, source);
             var timeName = fileName.replace(/\..*/, ".time");
             var date = new Date();
-            sessionStorage.setItem(timeName, date.toString());
+            if (noUpdateTimestamp) {
+                sessionStorage.setItem(timeName, date.toString());
+            }
         }
 
         Load(fileName: string): string {
@@ -907,13 +909,13 @@ $(function () {
         submit_button.hide();
     } else {
         // A/Bテスト
-        var num = parseInt($.cookie("studentNumber").slice(1));
-        if(isNaN(num)) {
-            num = 0;
-        }
-        if(num < 1464200) {
-            $("#poplar").hide();
-        }
+        //var num = parseInt($.cookie("studentNumber").slice(1));
+        //if(isNaN(num)) {
+        //    num = 0;
+        //}
+        //if(num < 1464200) {
+        //    $("#poplar").hide();
+        //}
         //提出ボタンの挙動
         $("#submit-file").click(function(event) {
             var subjectId = C2JS.getSubjectId();
@@ -934,6 +936,7 @@ $(function () {
                 success: callback,
                 error: onerror
             });
+            C2JS.postActivity('submit', { content: Editor.GetValue() });
         });
     }
 
@@ -1350,7 +1353,7 @@ $(function () {
     };
 
     $(window).on("beforeunload", (e: Event)=> {
-        DB.Save(Files.GetCurrent().GetName(), Editor.GetValue());
+        DB.Save(Files.GetCurrent().GetName(), Editor.GetValue(), true);
     });
 
     if(DB.Exist(Files.GetCurrent().GetName())) {
