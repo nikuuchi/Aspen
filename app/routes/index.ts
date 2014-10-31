@@ -293,7 +293,10 @@ function createAllSubmitViews(submits, students, subjects) {
     var result = [];
 
     lodash.forEach(subjects, (subject) => {
-        var remainingDays = ((<any>subject.endAt) - (<any>today)) / oneDay;
+        //〆切が次の日の0時になるようにする
+        var endAt = new Date(subject.endAt.getTime());
+        endAt.setDate(subject.endAt.getDate()+1);
+        var remainingDays = ((<any>endAt) - (<any>today)) / oneDay;
 
         var submits_eachSubject = findBySubjectId(submits, subject.id);
 
@@ -330,7 +333,14 @@ function findBySubjectId(submit_statuses, subjectId) {
 
 function createSubmitView(subject, submit_statuses) {
     var today = new Date();
-    var remainingDays = ((<any>subject.endAt) - (<any>today)) / oneDay;
+
+    //〆切が次の日の0時になるようにする
+    var endAt = new Date(subject.endAt.getTime());
+    endAt.setDate(subject.endAt.getDate()+1);
+
+    var remainingDays = ((<any>endAt) - (<any>today)) / oneDay;
+
+    //var remainingDays = ((<any>subject.endAt) - (<any>today)) / oneDay;
     var status = 0;
     var submitStatus = findBySubjectId(submit_statuses, subject.id);
     if(submitStatus[0]) {
