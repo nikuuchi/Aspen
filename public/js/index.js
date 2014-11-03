@@ -859,6 +859,21 @@ var C2JS;
         return confirm('The item "' + BaseName + '.c" will be delete immediately. Are you sure you want to continue?');
     }
     C2JS.ConfirmToRemove = ConfirmToRemove;
+    function test_AB() {
+        var s = $.cookie("studentNumber");
+        if (!s) {
+            return true;
+        }
+        if (s.length <= 2) {
+            return true;
+        }
+        var num = parseInt(s.slice(1));
+        if (isNaN(num)) {
+            return true;
+        }
+        return num < 1464200;
+    }
+    C2JS.test_AB = test_AB;
 })(C2JS || (C2JS = {}));
 var Aspen = {};
 $(function () {
@@ -880,14 +895,6 @@ $(function () {
         submit_button.hide();
     }
     else {
-        // A/Bテスト
-        //var num = parseInt($.cookie("studentNumber").slice(1));
-        //if(isNaN(num)) {
-        //    num = 0;
-        //}
-        //if(num < 1464200) {
-        //    $("#poplar").hide();
-        //}
         //提出ボタンの挙動
         $("#submit-file").click(function (event) {
             var subjectId = C2JS.getSubjectId();
@@ -917,6 +924,7 @@ $(function () {
     Aspen.Files = Files;
     Aspen.Language = "ja";
     Aspen.Debug = {};
+    Aspen.PEditor = peditor;
     Aspen.Debug.DeleteAllKey = function () {
         while (localStorage.length > 1) {
             localStorage.removeItem(localStorage.key(0));
@@ -938,6 +946,9 @@ $(function () {
         }
     });
     var copiedText = "";
+    peditor.on("copy", function (text) {
+        copiedText = text;
+    });
     Editor.OnCopy(function (text) {
         copiedText = text;
         console.log(text);
@@ -947,7 +958,9 @@ $(function () {
         if (location.pathname != Config.basePath + "/") {
             if (copiedText !== text.text) {
                 C2JS.postActivity('copy_and_paste', { copied_data: text.text });
-                swal({ title: "", text: "コピペを検出しました。自分で入力してみよう！", type: "error", timer: 100000 });
+                if (C2JS.test_AB()) {
+                    swal({ title: "", text: "コピペを検出しました。自分で入力してみよう！", type: "error", timer: 100000 });
+                }
             }
             ;
         }
